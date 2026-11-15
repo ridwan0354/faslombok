@@ -167,10 +167,10 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 5–6 SD/MI',
                 'grades' => ['KELAS_5', 'KELAS_6'],
                 'criteria' => [
-                    ['title' => 'Kelancaran Hafalan', 'weight_pct' => 40.0],
-                    ['title' => 'Ketepatan Makna / Terjemah', 'weight_pct' => 30.0],
-                    ['title' => 'Tajwid & Lafaz', 'weight_pct' => 20.0],
-                    ['title' => 'Adab & Sikap', 'weight_pct' => 10.0],
+                    ['title' => 'Ketepatan dalil', 'weight_pct' => 35.0],
+                    ['title' => 'Kelancaran', 'weight_pct' => 30.0],
+                    ['title' => 'Fasih', 'weight_pct' => 20.0],
+                    ['title' => 'Adab', 'weight_pct' => 15.0],
                 ],
             ],
             [
@@ -179,11 +179,11 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 1–6 SD/MI',
                 'grades' => $allSd,
                 'criteria' => [
-                    ['title' => 'Tema / Pesan 29 Karakter Luhur', 'weight_pct' => 35.0],
-                    ['title' => 'Kreativitas Gerak & Formasi', 'weight_pct' => 25.0],
-                    ['title' => 'Kekompakan & Semangat', 'weight_pct' => 20.0],
-                    ['title' => 'Ekspresi & Vokal', 'weight_pct' => 10.0],
-                    ['title' => 'Kostum & Properti', 'weight_pct' => 10.0],
+                    ['title' => 'Kesesuaian tema dan pesan karakter luhur', 'weight_pct' => 35.0],
+                    ['title' => 'Kreativitas dan keunikan yel-yel', 'weight_pct' => 25.0],
+                    ['title' => 'Kekompakan dan semangat tim', 'weight_pct' => 20.0],
+                    ['title' => 'Penampilan dan ekspresi', 'weight_pct' => 10.0],
+                    ['title' => 'Kostum dan properti', 'weight_pct' => 10.0],
                 ],
             ],
             [
@@ -192,11 +192,11 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 1–6 SD/MI',
                 'grades' => $allSd,
                 'criteria' => [
-                    ['title' => 'Makhraj & Tajwid', 'weight_pct' => 25.0],
-                    ['title' => 'Ketepatan Lafaz', 'weight_pct' => 25.0],
-                    ['title' => 'Irama & Suara', 'weight_pct' => 20.0],
+                    ['title' => 'Makhraj huruf dan tajwid', 'weight_pct' => 25.0],
+                    ['title' => 'Ketepatan lafaz', 'weight_pct' => 25.0],
+                    ['title' => 'Irama dan suara', 'weight_pct' => 20.0],
                     ['title' => 'Kelancaran', 'weight_pct' => 15.0],
-                    ['title' => 'Adab', 'weight_pct' => 15.0],
+                    ['title' => 'Adab dan penampilan', 'weight_pct' => 15.0],
                 ],
             ],
             [
@@ -205,10 +205,11 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 1–4 SD/MI',
                 'grades' => ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4'],
                 'criteria' => [
-                    ['title' => 'Fashohah & Kebenaran Bacaan', 'weight_pct' => 40.0],
-                    ['title' => 'Kaidah Tajwid', 'weight_pct' => 30.0],
-                    ['title' => 'Irama / Lagu Tilawati', 'weight_pct' => 20.0],
-                    ['title' => 'Adab', 'weight_pct' => 10.0],
+                    ['title' => 'Makhrodz huruf', 'weight_pct' => 30.0],
+                    ['title' => 'Kelancaran', 'weight_pct' => 25.0],
+                    ['title' => 'Fasih', 'weight_pct' => 20.0],
+                    ['title' => 'Irama dan keindahan suara', 'weight_pct' => 15.0],
+                    ['title' => 'Adab membaca tilawati', 'weight_pct' => 10.0],
                 ],
             ],
             [
@@ -217,10 +218,10 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'TK A–B, Kelas 1–2 SD/MI',
                 'grades' => ['TK_A', 'TK_B', 'KELAS_1', 'KELAS_2'],
                 'criteria' => [
-                    ['title' => 'Hafalan Lafaz Doa', 'weight_pct' => 40.0],
-                    ['title' => 'Terjemah Doa', 'weight_pct' => 30.0],
-                    ['title' => 'Makhraj & Artikulasi', 'weight_pct' => 20.0],
-                    ['title' => 'Adab', 'weight_pct' => 10.0],
+                    ['title' => 'Ketepatan hafalan', 'weight_pct' => 40.0],
+                    ['title' => 'Kelancaran', 'weight_pct' => 30.0],
+                    ['title' => 'Kefasihan', 'weight_pct' => 20.0],
+                    ['title' => 'Adab dan sikap', 'weight_pct' => 10.0],
                 ],
             ],
             [
@@ -230,9 +231,9 @@ class FestivalSeeder extends Seeder
                 'grades' => ['PAUD', 'TK_A', 'TK_B'],
                 'criteria' => [
                     ['title' => 'Kerapian', 'weight_pct' => 20.0],
-                    ['title' => 'Harmoni Warna', 'weight_pct' => 25.0],
+                    ['title' => 'Harmoni warna', 'weight_pct' => 25.0],
                     ['title' => 'Kreativitas', 'weight_pct' => 25.0],
-                    ['title' => 'Komposisi Bidang', 'weight_pct' => 20.0],
+                    ['title' => 'Komposisi warna', 'weight_pct' => 20.0],
                     ['title' => 'Kebersihan', 'weight_pct' => 10.0],
                 ],
             ],
@@ -242,10 +243,14 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 1–6 SD/MI',
                 'grades' => $allSd,
                 'criteria' => [
-                    ['title' => 'Kaidah Khat / Bentuk Huruf', 'weight_pct' => 40.0],
-                    ['title' => 'Keindahan & Komposisi', 'weight_pct' => 30.0],
-                    ['title' => 'Kreativitas Hiasan', 'weight_pct' => 20.0],
-                    ['title' => 'Kebersihan & Kerapian', 'weight_pct' => 10.0],
+                    ['title' => 'Kesesuaian dengan tema', 'weight_pct' => 15.0],
+                    ['title' => 'Kreativitas dan orisinalitas', 'weight_pct' => 15.0],
+                    ['title' => 'Komposisi', 'weight_pct' => 15.0],
+                    ['title' => 'Teknik menggambar', 'weight_pct' => 15.0],
+                    ['title' => 'Pewarnaan', 'weight_pct' => 15.0],
+                    ['title' => 'Kerapian', 'weight_pct' => 10.0],
+                    ['title' => 'Estetika', 'weight_pct' => 10.0],
+                    ['title' => 'Pesan yang disampaikan melalui gambar', 'weight_pct' => 5.0],
                 ],
             ],
             [
@@ -254,10 +259,12 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 5–6 SD/MI',
                 'grades' => ['KELAS_5', 'KELAS_6'],
                 'criteria' => [
-                    ['title' => 'Penerapan Ilmu Tajwid', 'weight_pct' => 40.0],
-                    ['title' => 'Fashohah & Makharijul Huruf', 'weight_pct' => 30.0],
-                    ['title' => 'Irama & Suara', 'weight_pct' => 20.0],
-                    ['title' => 'Adab', 'weight_pct' => 10.0],
+                    ['title' => 'Tajwid', 'weight_pct' => 30.0],
+                    ['title' => 'Makhrodz huruf', 'weight_pct' => 20.0],
+                    ['title' => 'Kelancaran', 'weight_pct' => 15.0],
+                    ['title' => 'Fasih', 'weight_pct' => 15.0],
+                    ['title' => 'Irama dan keindahan suara', 'weight_pct' => 10.0],
+                    ['title' => 'Adab membaca Al Qur’an', 'weight_pct' => 10.0],
                 ],
             ],
             [
@@ -266,11 +273,9 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 1–6 SD/MI',
                 'grades' => $allSd,
                 'criteria' => [
-                    ['title' => 'Kesesuaian Materi & Dalil', 'weight_pct' => 35.0],
-                    ['title' => 'Retorika & Gaya Bahasa', 'weight_pct' => 25.0],
-                    ['title' => 'Vokal, Intonasi & Artikulasi', 'weight_pct' => 20.0],
-                    ['title' => 'Penguasaan Panggung & Ekspresi', 'weight_pct' => 10.0],
-                    ['title' => 'Adab', 'weight_pct' => 10.0],
+                    ['title' => 'Penyampaian (Kelancaran, artikulasi, intonasi, ekspresi)', 'weight_pct' => 40.0],
+                    ['title' => 'Materi (Kesesuaian 29 karakter luhur, kedalaman isi)', 'weight_pct' => 35.0],
+                    ['title' => 'Dalil-dalil (Ketepatan dalil Al-Qur’an & hadis, penjelasan makna)', 'weight_pct' => 25.0],
                 ],
             ],
             [
@@ -279,10 +284,10 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 1–4 SD/MI',
                 'grades' => ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4'],
                 'criteria' => [
-                    ['title' => 'Ketepatan Hafalan', 'weight_pct' => 35.0],
-                    ['title' => 'Tajwid & Makharijul Huruf', 'weight_pct' => 30.0],
-                    ['title' => 'Kefasihan & Irama', 'weight_pct' => 20.0],
-                    ['title' => 'Adab', 'weight_pct' => 15.0],
+                    ['title' => 'Ketepatan dan kelancaran hafalan', 'weight_pct' => 35.0],
+                    ['title' => 'Ketepatan tajwid dan makharijul huruf', 'weight_pct' => 30.0],
+                    ['title' => 'Kefasihan dalam membaca', 'weight_pct' => 20.0],
+                    ['title' => 'Adab dan sikap saat membacakan hafalan', 'weight_pct' => 15.0],
                 ],
             ],
             [
@@ -291,10 +296,11 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 4–6 SD/MI',
                 'grades' => ['KELAS_4', 'KELAS_5', 'KELAS_6'],
                 'criteria' => [
-                    ['title' => 'Kelancaran 99 Nama', 'weight_pct' => 40.0],
-                    ['title' => 'Ketepatan Nada & Irama', 'weight_pct' => 25.0],
-                    ['title' => 'Makhraj & Pelafalan', 'weight_pct' => 25.0],
-                    ['title' => 'Adab', 'weight_pct' => 10.0],
+                    ['title' => 'Ketepatan hafalan Asmaul Husna', 'weight_pct' => 25.0],
+                    ['title' => 'Kelancaran dan kefasihan', 'weight_pct' => 25.0],
+                    ['title' => 'Ketepatan urutan Asmaul Husna', 'weight_pct' => 20.0],
+                    ['title' => 'Ketepatan pelafalan', 'weight_pct' => 15.0],
+                    ['title' => 'Adab dan sikap saat membawakan hafalan', 'weight_pct' => 15.0],
                 ],
             ],
             [
@@ -303,10 +309,11 @@ class FestivalSeeder extends Seeder
                 'eligibility_rule' => 'Kelas 1–6 SD/MI',
                 'grades' => $allSd,
                 'criteria' => [
-                    ['title' => 'Ketepatan Membaca Pegon', 'weight_pct' => 40.0],
-                    ['title' => 'Ketepatan Menulis Pegon', 'weight_pct' => 35.0],
-                    ['title' => 'Kecepatan & Kelancaran', 'weight_pct' => 15.0],
-                    ['title' => 'Kerapian Tulisan', 'weight_pct' => 10.0],
+                    ['title' => 'Ketepatan membaca dan menulis Pegon sesuai kaidah yang benar', 'weight_pct' => 30.0],
+                    ['title' => 'Kelancaran, kefasihan, dan ketepatan pelafalan saat membaca', 'weight_pct' => 25.0],
+                    ['title' => 'Ketepatan penggunaan huruf dan penulisan kata Pegon', 'weight_pct' => 20.0],
+                    ['title' => 'Kelengkapan bacaan dan tulisan sesuai buku materi kelas', 'weight_pct' => 15.0],
+                    ['title' => 'Kerapian, kejelasan, dan kebersihan hasil tulisan', 'weight_pct' => 10.0],
                 ],
             ],
         ];
@@ -353,16 +360,16 @@ class FestivalSeeder extends Seeder
             }
 
             // Criteria
+            RubricCriterion::where('rubric_id', $rubric->id)->delete();
             $sort = 1;
             foreach ($cData['criteria'] as $crit) {
-                RubricCriterion::firstOrCreate(
-                    ['rubric_id' => $rubric->id, 'title' => $crit['title']],
-                    [
-                        'weight_pct' => $crit['weight_pct'],
-                        'sort_order' => $sort++,
-                        'required' => true,
-                    ]
-                );
+                RubricCriterion::create([
+                    'rubric_id' => $rubric->id,
+                    'title' => $crit['title'],
+                    'weight_pct' => $crit['weight_pct'],
+                    'sort_order' => $sort++,
+                    'required' => true,
+                ]);
             }
 
             // Standard Awards for each competition

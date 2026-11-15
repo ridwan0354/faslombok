@@ -341,8 +341,8 @@ class FestivalSystemTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Kriteria Penilaian: Kaligrafi');
-        $response->assertSee('Kaidah Khat');
-        $response->assertSee('Keindahan &amp; Komposisi', false);
+        $response->assertSee('Kesesuaian dengan tema');
+        $response->assertSee('Kreativitas dan orisinalitas');
     }
 
     /**
