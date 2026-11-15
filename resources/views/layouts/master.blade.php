@@ -66,12 +66,6 @@
                 Juri & Hak Akses
             </a>
 
-            <a href="{{ route('master.queue') }}" 
-               class="flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all {{ request()->routeIs('master.queue*') ? 'bg-gradient-to-r from-purple-700 to-pink-700 text-white shadow-lg border border-purple-400/30' : 'text-purple-200/80 hover:bg-purple-800/50 hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
-                Antrean & Panggilan
-            </a>
-
             <a href="{{ route('master.scores') }}" 
                class="flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all {{ request()->routeIs('master.scores*') ? 'bg-gradient-to-r from-purple-700 to-pink-700 text-white shadow-lg border border-purple-400/30' : 'text-purple-200/80 hover:bg-purple-800/50 hover:text-white' }}">
                 <svg class="w-5 h-5 mr-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
