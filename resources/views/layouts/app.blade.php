@@ -7,11 +7,12 @@
     <title>@yield('title', 'Festival Anak Sholeh Lombok 2026')</title>
 
     <!-- PWA & Mobile Web App Meta -->
+    <link rel="icon" type="image/png" href="/images/logo.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#581c87">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+    <link rel="apple-touch-icon" href="/images/logo.png">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')

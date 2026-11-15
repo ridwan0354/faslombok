@@ -8,11 +8,7 @@
     <header class="bg-gradient-to-r from-purple-950 via-purple-900 to-pink-950 text-white shadow-lg sticky top-0 z-30 border-b border-amber-400/30">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 p-0.5 shadow-md flex items-center justify-center">
-                    <div class="w-full h-full bg-purple-950 rounded-[14px] flex items-center justify-center text-amber-300 font-black text-sm">
-                        FAS
-                    </div>
-                </div>
+                <img src="/images/logo.png" alt="PPG SAK JAGAT RAYA Lombok" class="w-10 h-10 object-contain drop-shadow-md">
                 <div>
                     <span class="text-sm sm:text-base font-extrabold tracking-tight block leading-tight text-white">
                         FAS & Bazar Remaja
@@ -250,9 +246,7 @@
     <!-- Footer with Poster Theme -->
     <footer class="bg-gradient-to-r from-purple-950 via-purple-900 to-pink-950 text-purple-200/90 py-10 text-center text-xs border-t-2 border-amber-400/40">
         <div class="max-w-4xl mx-auto px-4 space-y-2">
-            <div class="w-10 h-10 rounded-2xl bg-amber-400 text-purple-950 flex items-center justify-center mx-auto font-black text-sm shadow-md">
-                FAS
-            </div>
+            <img src="/images/logo.png" alt="PPG SAK JAGAT RAYA Lombok" class="w-16 h-16 object-contain mx-auto drop-shadow-md">
             <h4 class="font-black text-base text-white">Festival Anak Sholeh & Bazar Remaja Lombok 2026</h4>
             <p class="text-amber-300 font-medium italic">"Membangun Karakter, Menumbuhkan Teladan, Mewujudkan Generasi Masa Depan"</p>
             <p class="text-purple-300">Diselenggarakan oleh LDII (Lembaga Dakwah Islam Indonesia) & PPG SAK JAGAT RAYA Lombok</p>

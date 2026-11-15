@@ -8,9 +8,7 @@
     <header class="bg-gradient-to-r from-purple-950 via-purple-900 to-pink-950 text-white shadow-lg sticky top-0 z-30 border-b border-amber-400/30">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-400 to-pink-500 flex items-center justify-center text-purple-950 font-black text-sm shadow-sm">
-                    FAS
-                </div>
+                <img src="/images/logo.png" alt="PPG SAK JAGAT RAYA Lombok" class="w-9 h-9 object-contain drop-shadow-sm">
                 <div>
                     <span class="text-sm font-bold tracking-tight block leading-tight">FAS & Bazar Remaja</span>
                     <span class="text-[11px] text-amber-300">Pengumuman Pemenang</span>

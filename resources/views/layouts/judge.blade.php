@@ -31,9 +31,7 @@
     <header class="bg-gradient-to-r from-purple-950 via-purple-900 to-pink-950 text-white sticky top-0 z-30 shadow-md border-b border-amber-400/30">
         <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-400 to-pink-500 flex items-center justify-center text-purple-950 font-black text-xs shadow-sm">
-                    FAS
-                </div>
+                <img src="/images/logo.png" alt="PPG SAK JAGAT RAYA Lombok" class="w-9 h-9 object-contain drop-shadow-sm">
                 <div>
                     <h1 class="text-xs sm:text-sm font-bold leading-tight">Portal Juri • FAS & Bazar Remaja</h1>
                     <p class="text-[11px] text-amber-300 truncate max-w-[180px]">{{ Auth::user()->name }}</p>

@@ -19,11 +19,7 @@
         <!-- Logo Header -->
         <div class="flex items-center justify-between px-6 py-5 border-b border-purple-800/60 bg-purple-950/80">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 p-0.5 shadow-md flex items-center justify-center">
-                    <div class="w-full h-full bg-purple-950 rounded-[14px] flex items-center justify-center text-amber-300 font-black text-sm">
-                        FAS
-                    </div>
-                </div>
+                <img src="/images/logo.png" alt="PPG SAK JAGAT RAYA Lombok" class="w-10 h-10 object-contain drop-shadow-md">
                 <div>
                     <h1 class="text-sm font-bold tracking-tight text-white leading-tight">FAS & Bazar Remaja</h1>
                     <span class="text-[11px] text-amber-300 font-medium">Dashboard Master Admin</span>

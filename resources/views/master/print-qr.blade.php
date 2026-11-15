@@ -27,14 +27,14 @@
     <!-- Top Action Bar (hidden on print) -->
     <div class="max-w-6xl mx-auto mb-6 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between no-print border border-slate-200">
         <div>
-            <h1 class="text-base font-extrabold text-slate-900">Cetak Kartu & Badge QR Peserta ({{ count($badges) }} Kartu)</h1>
+            <h1 class="text-base font-extrabold text-purple-950">Cetak Kartu & Badge QR Peserta ({{ count($badges) }} Kartu)</h1>
             <p class="text-xs text-slate-500">Klik tombol Cetak / PDF untuk mencetak kartu tanda peserta resmi.</p>
         </div>
         <div class="flex items-center space-x-2">
             <a href="{{ route('master.participants') }}" class="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">
                 ← Kembali
             </a>
-            <button onclick="window.print()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center space-x-1.5">
+            <button onclick="window.print()" class="px-4 py-2 bg-gradient-to-r from-purple-800 to-pink-700 hover:from-purple-900 hover:to-pink-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center space-x-1.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                 <span>Cetak / Simpan PDF</span>
             </button>
@@ -44,11 +44,14 @@
     <!-- Printable Cards Grid -->
     <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         @foreach($badges as $b)
-        <div class="badge-card bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between text-center relative overflow-hidden">
-            <!-- Card Header Ribbon -->
-            <div class="bg-emerald-900 text-white -mx-5 -mt-5 p-3.5 mb-4">
-                <h3 class="text-xs font-black uppercase tracking-wider text-amber-300">Festival Anak Sholeh 2026</h3>
-                <p class="text-[10px] text-emerald-200 font-medium">Lombok • Kartu Tanda Peserta Resmi</p>
+        <div class="badge-card bg-white rounded-3xl p-5 border border-purple-100 shadow-sm flex flex-col justify-between text-center relative overflow-hidden">
+            <!-- Card Header Ribbon with Logo -->
+            <div class="bg-gradient-to-r from-purple-950 via-purple-900 to-pink-950 text-white -mx-5 -mt-5 p-3.5 mb-4 flex items-center justify-between px-5">
+                <img src="/images/logo.png" alt="PPG Lombok" class="w-8 h-8 object-contain">
+                <div class="text-right">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-amber-300">FAS & Bazar Remaja 2026</h3>
+                    <p class="text-[10px] text-purple-200 font-medium">Lombok • Kartu Tanda Peserta Resmi</p>
+                </div>
             </div>
 
             <!-- QR Code Container -->
@@ -59,11 +62,11 @@
             </div>
 
             <div class="space-y-1 mt-2">
-                <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 text-slate-800">
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-50 text-purple-900 border border-purple-200">
                     {{ $b['code'] }}
                 </span>
                 <h2 class="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">{{ $b['name'] }}</h2>
-                <p class="text-xs font-semibold text-emerald-800">{{ $b['group'] }}</p>
+                <p class="text-xs font-bold text-pink-700">{{ $b['group'] }}</p>
                 <p class="text-[11px] text-slate-500 font-medium">Tingkat: {{ $b['grade'] }}</p>
             </div>
 
