@@ -367,6 +367,120 @@ class MasterController extends Controller
         return redirect()->route('master.participants')->with('success', "Peserta {$name} ({$code}) berhasil dihapus.");
     }
 
+    /* -------------------------------------------------------------
+     * Kelompok / TPQ Management
+     * ------------------------------------------------------------- */
+    public function storeGroup(Request $request)
+    {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:50'],
+        ]);
+
+        $code = !empty($data['code']) 
+            ? strtoupper(trim($data['code'])) 
+            : strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $data['name']), 0, 4) . '-' . rand(10, 99));
+
+        Group::create([
+            'event_id' => $event->id,
+            'name' => trim($data['name']),
+            'code' => $code,
+        ]);
+
+        return redirect()->back()->with('success', "Kelompok / TPQ '{$data['name']}' berhasil ditambahkan.");
+    }
+
+    public function updateGroup(Request $request, Group $group)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:50'],
+        ]);
+
+        $group->update([
+            'name' => trim($data['name']),
+            'code' => !empty($data['code']) ? strtoupper(trim($data['code'])) : $group->code,
+        ]);
+
+        return redirect()->back()->with('success', "Kelompok / TPQ '{$group->name}' berhasil diperbarui.");
+    }
+
+    public function destroyGroup(Group $group)
+    {
+        $participantCount = $group->participants()->count();
+        $teamCount = $group->teams()->count();
+
+        if ($participantCount > 0 || $teamCount > 0) {
+            return redirect()->back()->with('error', "Gagal menghapus: Kelompok / TPQ '{$group->name}' masih memiliki {$participantCount} peserta dan {$teamCount} tim terdaftar.");
+        }
+
+        $name = $group->name;
+        $group->delete();
+
+        return redirect()->back()->with('success', "Kelompok / TPQ '{$name}' berhasil dihapus.");
+    }
+
+    /* -------------------------------------------------------------
+     * Tingkat Kelas Management
+     * ------------------------------------------------------------- */
+    public function storeGradeLevel(Request $request)
+    {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:50'],
+            'sort_order' => ['nullable', 'integer'],
+        ]);
+
+        $code = !empty($data['code']) 
+            ? strtoupper(preg_replace('/[^A-Za-z0-9_]/', '', str_replace([' ', '-'], '_', $data['code'])))
+            : strtoupper(preg_replace('/[^A-Za-z0-9_]/', '', str_replace([' ', '-'], '_', $data['name'])));
+
+        $maxSort = GradeLevel::where('event_id', $event->id)->max('sort_order') ?? 0;
+
+        GradeLevel::create([
+            'event_id' => $event->id,
+            'name' => trim($data['name']),
+            'code' => $code,
+            'sort_order' => $data['sort_order'] ?? ($maxSort + 1),
+        ]);
+
+        return redirect()->back()->with('success', "Tingkat Kelas '{$data['name']}' berhasil ditambahkan.");
+    }
+
+    public function updateGradeLevel(Request $request, GradeLevel $gradeLevel)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:50'],
+            'sort_order' => ['nullable', 'integer'],
+        ]);
+
+        $gradeLevel->update([
+            'name' => trim($data['name']),
+            'code' => !empty($data['code']) ? strtoupper(trim($data['code'])) : $gradeLevel->code,
+            'sort_order' => $data['sort_order'] ?? $gradeLevel->sort_order,
+        ]);
+
+        return redirect()->back()->with('success', "Tingkat Kelas '{$gradeLevel->name}' berhasil diperbarui.");
+    }
+
+    public function destroyGradeLevel(GradeLevel $gradeLevel)
+    {
+        $participantCount = $gradeLevel->participants()->count();
+        if ($participantCount > 0) {
+            return redirect()->back()->with('error', "Gagal menghapus: Tingkat Kelas '{$gradeLevel->name}' masih digunakan oleh {$participantCount} peserta.");
+        }
+
+        $name = $gradeLevel->name;
+        $gradeLevel->delete();
+
+        return redirect()->back()->with('success', "Tingkat Kelas '{$name}' berhasil dihapus.");
+    }
+
     public function importParticipants(Request $request)
     {
         $event = Event::where('status', 'active')->first() ?? Event::latest()->first();

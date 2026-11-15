@@ -42,7 +42,7 @@
                     <tr>
                         <th class="py-3 px-4 text-center w-16">No. Urut</th>
                         <th class="py-3 px-4">Nama Peserta / Tim</th>
-                        <th class="py-3 px-4">Kafilah / TPQ</th>
+                        <th class="py-3 px-4">Kelompok / TPQ</th>
                         <th class="py-3 px-4 text-center">Status Tampil</th>
                         <th class="py-3 px-4 text-right">Ubah Status Cepat</th>
                     </tr>

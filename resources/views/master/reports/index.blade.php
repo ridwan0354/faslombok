@@ -13,7 +13,7 @@
     <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
         <div class="p-5 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
             <div>
-                <h3 class="text-base font-bold text-slate-900">Rekapitulasi Klasemen Juara Umum Kafilah</h3>
+                <h3 class="text-base font-bold text-slate-900">Rekapitulasi Klasemen Juara Umum Kelompok / TPQ</h3>
                 <p class="text-xs text-slate-500">Poin dihitung dari seluruh cabang lomba yang telah dipublikasikan.</p>
             </div>
             <a href="{{ route('juara-umum') }}" target="_blank" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">
@@ -26,7 +26,7 @@
                 <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                     <tr>
                         <th class="py-3 px-4 text-center w-16">Peringkat</th>
-                        <th class="py-3 px-4">Kafilah / TPQ</th>
+                        <th class="py-3 px-4">Kelompok / TPQ</th>
                         <th class="py-3 px-4 text-center">Emas (J1)</th>
                         <th class="py-3 px-4 text-center">Perak (J2)</th>
                         <th class="py-3 px-4 text-center">Perunggu (J3)</th>

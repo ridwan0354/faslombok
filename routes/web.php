@@ -47,6 +47,16 @@ Route::prefix('master')->name('master.')->middleware(['master'])->group(function
     Route::post('/peserta/import', [MasterController::class, 'importParticipants'])->name('participants.import');
     Route::get('/cetak-qr', [MasterController::class, 'printQr'])->name('print.qr');
 
+    // Groups / Kelompok / TPQ
+    Route::post('/kelompok', [MasterController::class, 'storeGroup'])->name('groups.store');
+    Route::put('/kelompok/{group}', [MasterController::class, 'updateGroup'])->name('groups.update');
+    Route::delete('/kelompok/{group}', [MasterController::class, 'destroyGroup'])->name('groups.destroy');
+
+    // Grade Levels / Tingkat Kelas
+    Route::post('/tingkat-kelas', [MasterController::class, 'storeGradeLevel'])->name('grade-levels.store');
+    Route::put('/tingkat-kelas/{gradeLevel}', [MasterController::class, 'updateGradeLevel'])->name('grade-levels.update');
+    Route::delete('/tingkat-kelas/{gradeLevel}', [MasterController::class, 'destroyGradeLevel'])->name('grade-levels.destroy');
+
     // Judges & Permissions
     Route::get('/juri', [MasterController::class, 'judges'])->name('judges');
     Route::post('/juri', [MasterController::class, 'storeJudge'])->name('judges.store');

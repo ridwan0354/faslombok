@@ -13,7 +13,7 @@
                 </div>
                 <div>
                     <span class="text-sm font-bold tracking-tight block leading-tight">FAS Lombok 2026</span>
-                    <span class="text-[11px] text-emerald-300">Klasemen Kafilah</span>
+                    <span class="text-[11px] text-emerald-300">Klasemen Kelompok / TPQ</span>
                 </div>
             </a>
 
@@ -30,7 +30,7 @@
             <span class="inline-block px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-400 text-emerald-950 mb-2">
                 Piala Bergilir • Juara Umum
             </span>
-            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Klasemen Juara Umum Kafilah / TPQ</h1>
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Klasemen Juara Umum Kelompok / TPQ</h1>
             <p class="text-xs sm:text-sm text-emerald-100 mt-2">Akumulasi perolehan poin medali dari seluruh cabang perlombaan resmi.</p>
         </div>
     </div>
@@ -39,7 +39,7 @@
         <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
             <div class="p-5 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
                 <div>
-                    <h3 class="text-base font-bold text-slate-900">Peringkat Kafilah / Kelompok</h3>
+                    <h3 class="text-base font-bold text-slate-900">Peringkat Kelompok / TPQ</h3>
                     <p class="text-xs text-slate-500">Sistem Poin: Juara 1 (10 pt), Juara 2 (7 pt), Juara 3 (5 pt), Harapan (3/2/1 pt)</p>
                 </div>
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">
@@ -52,7 +52,7 @@
                     <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                         <tr>
                             <th class="py-3 px-4 text-center w-16">Peringkat</th>
-                            <th class="py-3 px-4">Kafilah / TPQ</th>
+                            <th class="py-3 px-4">Kelompok / TPQ</th>
                             <th class="py-3 px-4 text-center">Emas (J1)</th>
                             <th class="py-3 px-4 text-center">Perak (J2)</th>
                             <th class="py-3 px-4 text-center">Perunggu (J3)</th>

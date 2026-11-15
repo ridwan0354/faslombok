@@ -45,7 +45,7 @@
                             <th class="py-3 px-4 text-center w-16">Peringkat</th>
                             <th class="py-3 px-4">Penghargaan</th>
                             <th class="py-3 px-4">Nama Peserta / Tim</th>
-                            <th class="py-3 px-4">Kafilah / TPQ</th>
+                            <th class="py-3 px-4">Kelompok / TPQ</th>
                             <th class="py-3 px-4 text-center">Status</th>
                             <th class="py-3 px-4 text-right">Nilai Akhir</th>
                         </tr>

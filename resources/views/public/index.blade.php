@@ -56,7 +56,7 @@
                 </div>
                 <div class="bg-emerald-950/40 backdrop-blur-md rounded-2xl p-4 border border-emerald-700/40">
                     <span class="block text-2xl sm:text-3xl font-extrabold text-amber-400">{{ $event->groups_count }}</span>
-                    <span class="text-xs text-emerald-200 font-medium">Kafilah / TPQ</span>
+                    <span class="text-xs text-emerald-200 font-medium">Kelompok / TPQ</span>
                 </div>
                 <div class="bg-emerald-950/40 backdrop-blur-md rounded-2xl p-4 border border-emerald-700/40">
                     <span class="block text-2xl sm:text-3xl font-extrabold text-amber-400">{{ $publishedCount }}</span>

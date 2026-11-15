@@ -29,7 +29,7 @@
         <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Peserta Terdaftar</span>
             <div class="text-2xl font-black text-slate-900 mt-1 font-mono">{{ $stats['total_participants'] }}</div>
-            <span class="text-[11px] text-emerald-600 font-medium">Dalam {{ $stats['total_groups'] }} Kafilah / TPQ</span>
+            <span class="text-[11px] text-emerald-600 font-medium">Dalam {{ $stats['total_groups'] }} Kelompok / TPQ</span>
         </div>
 
         <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">

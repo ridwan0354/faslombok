@@ -344,4 +344,105 @@ class FestivalSystemTest extends TestCase
         $response->assertSee('Kaidah Khat');
         $response->assertSee('Keindahan &amp; Komposisi', false);
     }
+
+    /**
+     * Test Master can create, update, and delete Kelompok / TPQ
+     */
+    public function test_master_can_manage_group(): void
+    {
+        $master = User::where('role', 'master')->first();
+
+        // 1. Create group
+        $response = $this->actingAs($master)
+            ->post(route('master.groups.store'), [
+                'name' => 'TPQ An-Nur Selaparang',
+                'code' => 'TPQ-ANNUR',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('groups', [
+            'name' => 'TPQ An-Nur Selaparang',
+            'code' => 'TPQ-ANNUR',
+        ]);
+
+        $group = \App\Models\Group::where('name', 'TPQ An-Nur Selaparang')->first();
+
+        // 2. Update group
+        $response = $this->actingAs($master)
+            ->put(route('master.groups.update', $group->id), [
+                'name' => 'TPQ An-Nur Mataram',
+                'code' => 'TPQ-ANNUR-MTR',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('groups', [
+            'id' => $group->id,
+            'name' => 'TPQ An-Nur Mataram',
+        ]);
+
+        // 3. Delete group (no participants)
+        $response = $this->actingAs($master)
+            ->delete(route('master.groups.destroy', $group->id));
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('groups', [
+            'id' => $group->id,
+        ]);
+    }
+
+    /**
+     * Test Master cannot delete group with participants
+     */
+    public function test_master_cannot_delete_group_with_participants(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $group = \App\Models\Group::where('name', 'TPQ Al-Falah Mataram')->first();
+
+        $response = $this->actingAs($master)
+            ->delete(route('master.groups.destroy', $group->id));
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('groups', [
+            'id' => $group->id,
+        ]);
+    }
+
+    /**
+     * Test Master can create, update, and delete Grade Level
+     */
+    public function test_master_can_manage_grade_level(): void
+    {
+        $master = User::where('role', 'master')->first();
+
+        // 1. Create grade level
+        $response = $this->actingAs($master)
+            ->post(route('master.grade-levels.store'), [
+                'name' => 'Kelas Remaja Masjid',
+                'code' => 'REMAJA',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('grade_levels', [
+            'name' => 'Kelas Remaja Masjid',
+            'code' => 'REMAJA',
+        ]);
+
+        $grade = \App\Models\GradeLevel::where('name', 'Kelas Remaja Masjid')->first();
+
+        // 2. Update grade level
+        $response = $this->actingAs($master)
+            ->put(route('master.grade-levels.update', $grade->id), [
+                'name' => 'Kelas Remaja Masjid & SMA',
+                'code' => 'REMAJA_SMA',
+            ]);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('grade_levels', [
+            'id' => $grade->id,
+            'name' => 'Kelas Remaja Masjid & SMA',
+        ]);
+
+        // 3. Delete grade level (no participants)
+        $response = $this->actingAs($master)
+            ->delete(route('master.grade-levels.destroy', $grade->id));
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('grade_levels', [
+            'id' => $grade->id,
+        ]);
+    }
 }

@@ -121,7 +121,7 @@
                     <tr>
                         <th class="py-3 px-4 w-12 text-center">No</th>
                         <th class="py-3 px-4">Nama Peserta / Tim</th>
-                        <th class="py-3 px-4">Kafilah</th>
+                        <th class="py-3 px-4">Kelompok / TPQ</th>
                         @foreach($judges as $j)
                             <th class="py-3 px-4 text-center">
                                 <span class="font-bold text-slate-800 block">{{ $j->user->name }}</span>
