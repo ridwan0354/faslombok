@@ -120,15 +120,17 @@ class FestivalSeeder extends Seeder
             );
         }
 
-        // 4. Create Grade Levels
+        // 4. Create Grade Levels (Jenjang kelas satuan/murni agar mudah difilter per peserta)
         $gradesData = [
             ['code' => 'PAUD', 'name' => 'PAUD', 'sort_order' => 1],
-            ['code' => 'TK_A_B', 'name' => 'TK A–B', 'sort_order' => 2],
-            ['code' => 'KELAS_1_2', 'name' => 'Kelas 1–2 SD/MI', 'sort_order' => 3],
-            ['code' => 'KELAS_1_4', 'name' => 'Kelas 1–4 SD/MI', 'sort_order' => 4],
-            ['code' => 'KELAS_4_6', 'name' => 'Kelas 4–6 SD/MI', 'sort_order' => 5],
-            ['code' => 'KELAS_5_6', 'name' => 'Kelas 5–6 SD/MI', 'sort_order' => 6],
-            ['code' => 'KELAS_1_6', 'name' => 'Kelas 1–6 SD/MI', 'sort_order' => 7],
+            ['code' => 'TK_A', 'name' => 'TK A', 'sort_order' => 2],
+            ['code' => 'TK_B', 'name' => 'TK B', 'sort_order' => 3],
+            ['code' => 'KELAS_1', 'name' => 'Kelas 1 SD/MI', 'sort_order' => 4],
+            ['code' => 'KELAS_2', 'name' => 'Kelas 2 SD/MI', 'sort_order' => 5],
+            ['code' => 'KELAS_3', 'name' => 'Kelas 3 SD/MI', 'sort_order' => 6],
+            ['code' => 'KELAS_4', 'name' => 'Kelas 4 SD/MI', 'sort_order' => 7],
+            ['code' => 'KELAS_5', 'name' => 'Kelas 5 SD/MI', 'sort_order' => 8],
+            ['code' => 'KELAS_6', 'name' => 'Kelas 6 SD/MI', 'sort_order' => 9],
         ];
 
         $grades = [];
@@ -139,7 +141,7 @@ class FestivalSeeder extends Seeder
             );
         }
 
-        // 5. Create Groups (Kafilah / TPQ)
+        // 5. Create Groups (Kelompok / TPQ)
         $groupsData = [
             ['name' => 'TPQ Al-Ikhlas Ampenan', 'code' => 'AMP-01'],
             ['name' => 'TPQ Al-Falah Mataram', 'code' => 'MTR-02'],
@@ -156,13 +158,14 @@ class FestivalSeeder extends Seeder
             );
         }
 
-        // 6. Define 12 Competitions with initial Rubrics
+        // 6. Define 12 Competitions with initial Rubrics & Eligible Grades
+        $allSd = ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4', 'KELAS_5', 'KELAS_6'];
         $competitionsConfig = [
             [
                 'name' => 'Hafalan Dalil',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 5–6',
-                'location' => 'Ruang Hafalan A',
+                'eligibility_rule' => 'Kelas 5–6 SD/MI',
+                'grades' => ['KELAS_5', 'KELAS_6'],
                 'criteria' => [
                     ['title' => 'Kelancaran Hafalan', 'weight_pct' => 40.0],
                     ['title' => 'Ketepatan Makna / Terjemah', 'weight_pct' => 30.0],
@@ -173,8 +176,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Yel-Yel 29 Karakter Luhur',
                 'format' => 'team',
-                'eligibility_rule' => 'Kelas 1–6',
-                'location' => 'Panggung Utama',
+                'eligibility_rule' => 'Kelas 1–6 SD/MI',
+                'grades' => $allSd,
                 'criteria' => [
                     ['title' => 'Tema / Pesan 29 Karakter Luhur', 'weight_pct' => 35.0],
                     ['title' => 'Kreativitas Gerak & Formasi', 'weight_pct' => 25.0],
@@ -186,8 +189,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Adzan',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6',
-                'location' => 'Panggung Pria / Musholla',
+                'eligibility_rule' => 'Kelas 1–6 SD/MI',
+                'grades' => $allSd,
                 'criteria' => [
                     ['title' => 'Makhraj & Tajwid', 'weight_pct' => 25.0],
                     ['title' => 'Ketepatan Lafaz', 'weight_pct' => 25.0],
@@ -199,8 +202,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Baca Tilawati',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–4',
-                'location' => 'Ruang Tilawati B',
+                'eligibility_rule' => 'Kelas 1–4 SD/MI',
+                'grades' => ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4'],
                 'criteria' => [
                     ['title' => 'Fashohah & Kebenaran Bacaan', 'weight_pct' => 40.0],
                     ['title' => 'Kaidah Tajwid', 'weight_pct' => 30.0],
@@ -211,8 +214,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Hafalan Doa',
                 'format' => 'individual',
-                'eligibility_rule' => 'TK A–B; Kelas 1–2',
-                'location' => 'Ruang C',
+                'eligibility_rule' => 'TK A–B, Kelas 1–2 SD/MI',
+                'grades' => ['TK_A', 'TK_B', 'KELAS_1', 'KELAS_2'],
                 'criteria' => [
                     ['title' => 'Hafalan Lafaz Doa', 'weight_pct' => 40.0],
                     ['title' => 'Terjemah Doa', 'weight_pct' => 30.0],
@@ -223,8 +226,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Mewarnai',
                 'format' => 'individual',
-                'eligibility_rule' => 'PAUD; TK A–B',
-                'location' => 'Aula Serbaguna',
+                'eligibility_rule' => 'PAUD, TK A–B',
+                'grades' => ['PAUD', 'TK_A', 'TK_B'],
                 'criteria' => [
                     ['title' => 'Kerapian', 'weight_pct' => 20.0],
                     ['title' => 'Harmoni Warna', 'weight_pct' => 25.0],
@@ -236,8 +239,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Kaligrafi',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6',
-                'location' => 'Ruang Seni',
+                'eligibility_rule' => 'Kelas 1–6 SD/MI',
+                'grades' => $allSd,
                 'criteria' => [
                     ['title' => 'Kaidah Khat / Bentuk Huruf', 'weight_pct' => 40.0],
                     ['title' => 'Keindahan & Komposisi', 'weight_pct' => 30.0],
@@ -248,8 +251,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Baca Al-Qur’an beserta Tajwid',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 5–6',
-                'location' => 'Ruang Qur\'an D',
+                'eligibility_rule' => 'Kelas 5–6 SD/MI',
+                'grades' => ['KELAS_5', 'KELAS_6'],
                 'criteria' => [
                     ['title' => 'Penerapan Ilmu Tajwid', 'weight_pct' => 40.0],
                     ['title' => 'Fashohah & Makharijul Huruf', 'weight_pct' => 30.0],
@@ -260,8 +263,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Dai Caberawit',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6',
-                'location' => 'Panggung 2',
+                'eligibility_rule' => 'Kelas 1–6 SD/MI',
+                'grades' => $allSd,
                 'criteria' => [
                     ['title' => 'Kesesuaian Materi & Dalil', 'weight_pct' => 35.0],
                     ['title' => 'Retorika & Gaya Bahasa', 'weight_pct' => 25.0],
@@ -273,8 +276,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Hafalan Surat Pendek',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–4',
-                'location' => 'Ruang Tahfidz E',
+                'eligibility_rule' => 'Kelas 1–4 SD/MI',
+                'grades' => ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4'],
                 'criteria' => [
                     ['title' => 'Ketepatan Hafalan', 'weight_pct' => 35.0],
                     ['title' => 'Tajwid & Makharijul Huruf', 'weight_pct' => 30.0],
@@ -285,8 +288,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Hafalan Asmaul Husna',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 4–6',
-                'location' => 'Ruang F',
+                'eligibility_rule' => 'Kelas 4–6 SD/MI',
+                'grades' => ['KELAS_4', 'KELAS_5', 'KELAS_6'],
                 'criteria' => [
                     ['title' => 'Kelancaran 99 Nama', 'weight_pct' => 40.0],
                     ['title' => 'Ketepatan Nada & Irama', 'weight_pct' => 25.0],
@@ -297,8 +300,8 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Baca Tulis Pegon',
                 'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6',
-                'location' => 'Ruang Pegon G',
+                'eligibility_rule' => 'Kelas 1–6 SD/MI',
+                'grades' => $allSd,
                 'criteria' => [
                     ['title' => 'Ketepatan Membaca Pegon', 'weight_pct' => 40.0],
                     ['title' => 'Ketepatan Menulis Pegon', 'weight_pct' => 35.0],
@@ -315,11 +318,19 @@ class FestivalSeeder extends Seeder
                 [
                     'format' => $cData['format'],
                     'eligibility_rule' => $cData['eligibility_rule'],
-                    'location' => $cData['location'],
                     'status' => 'ready',
                     'is_locked' => false,
                 ]
             );
+
+            // Sync eligible grade levels
+            $gradeIds = [];
+            foreach ($cData['grades'] as $gCode) {
+                if (isset($grades[$gCode])) {
+                    $gradeIds[] = $grades[$gCode]->id;
+                }
+            }
+            $comp->gradeLevels()->sync($gradeIds);
 
             // Create Rubric
             $rubric = Rubric::firstOrCreate(
@@ -427,49 +438,49 @@ class FestivalSeeder extends Seeder
             [
                 'name' => 'Muhammad Rayyan Al-Farisi',
                 'group' => $groups[0], // Ampenan
-                'grade' => $grades['KELAS_5_6'],
+                'grade' => $grades['KELAS_5'],
                 'gender' => 'L',
                 'comps' => ['Adzan', 'Dai Caberawit'],
             ],
             [
                 'name' => 'Ahmad Bilal Al-Habib',
                 'group' => $groups[1], // Mataram
-                'grade' => $grades['KELAS_1_6'],
+                'grade' => $grades['KELAS_5'],
                 'gender' => 'L',
                 'comps' => ['Adzan'],
             ],
             [
                 'name' => 'Fathir Azzam Robbani',
                 'group' => $groups[2], // Cakranegara
-                'grade' => $grades['KELAS_5_6'],
+                'grade' => $grades['KELAS_5'],
                 'gender' => 'L',
                 'comps' => ['Adzan'],
             ],
             [
                 'name' => 'Aisyah Putri Azzahra',
                 'group' => $groups[0], // Ampenan
-                'grade' => $grades['KELAS_1_4'],
+                'grade' => $grades['KELAS_3'],
                 'gender' => 'P',
                 'comps' => ['Hafalan Surat Pendek'],
             ],
             [
                 'name' => 'Fatimah Khairunnisa',
                 'group' => $groups[1], // Mataram
-                'grade' => $grades['KELAS_1_4'],
+                'grade' => $grades['KELAS_3'],
                 'gender' => 'P',
                 'comps' => ['Hafalan Surat Pendek'],
             ],
             [
                 'name' => 'Khaira Lubna Salsabila',
                 'group' => $groups[3], // Gerung
-                'grade' => $grades['TK_A_B'],
+                'grade' => $grades['TK_B'],
                 'gender' => 'P',
                 'comps' => ['Mewarnai'],
             ],
             [
                 'name' => 'Syamil Al-Banna',
                 'group' => $groups[4], // Praya
-                'grade' => $grades['KELAS_1_6'],
+                'grade' => $grades['KELAS_4'],
                 'gender' => 'L',
                 'comps' => ['Kaligrafi'],
             ],

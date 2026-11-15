@@ -9,6 +9,18 @@
     showEditModal: false,
     showGroupsModal: false,
     showGradesModal: false,
+    allCompetitions: {{ json_encode($competitions->map(fn($c) => [
+        'id' => $c->id,
+        'name' => $c->name,
+        'grade_ids' => $c->gradeLevels->pluck('id')->values()->all()
+    ])->values()->all()) }},
+    selectedGradeId: '',
+    selectedCompIds: [],
+    get filteredCompetitionsAdd() {
+        if (!this.selectedGradeId) return [];
+        const gid = parseInt(this.selectedGradeId);
+        return this.allCompetitions.filter(c => c.grade_ids.length === 0 || c.grade_ids.includes(gid));
+    },
     editData: {
         id: '',
         name: '',
@@ -18,12 +30,22 @@
         active: true,
         competitions: []
     },
+    get filteredCompetitionsEdit() {
+        if (!this.editData.grade_id) return this.allCompetitions;
+        const gid = parseInt(this.editData.grade_id);
+        return this.allCompetitions.filter(c => c.grade_ids.length === 0 || c.grade_ids.includes(gid) || this.editData.competitions.includes(c.id));
+    },
+    openAdd() {
+        this.selectedGradeId = '';
+        this.selectedCompIds = [];
+        this.showAddModal = true;
+    },
     openEdit(p) {
         this.editData = {
             id: p.id,
             name: p.name,
             group_id: p.group_id,
-            grade_id: p.grade_id || '',
+            grade_id: p.grade_id ? String(p.grade_id) : '',
             gender: p.gender || 'L',
             active: p.active ? true : false,
             competitions: p.entries ? p.entries.map(e => e.competition_id) : []
@@ -58,7 +80,7 @@
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                 <span>Impor CSV / Excel</span>
             </button>
-            <button @click="showAddModal = true"
+            <button @click="openAdd()"
                     class="px-4 py-2.5 rounded-xl bg-emerald-700 text-white font-bold text-xs hover:bg-emerald-800 transition-colors shadow-sm flex items-center space-x-1.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Tambah Peserta</span>
@@ -240,7 +262,7 @@
                             + Kelola
                         </button>
                     </div>
-                    <select name="grade_id" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
+                    <select name="grade_id" x-model="selectedGradeId" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
                         <option value="">-- Pilih Tingkat Kelas --</option>
                         @foreach($grades as $gr)
                             <option value="{{ $gr->id }}">{{ $gr->name }}</option>
@@ -249,14 +271,29 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Cabang Lomba Diikuti</label>
-                    <div class="space-y-1.5 max-h-40 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                        @foreach($competitions as $c)
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="competitions[]" value="{{ $c->id }}" class="rounded text-emerald-600">
-                            <span>{{ $c->name }}</span>
-                        </label>
-                        @endforeach
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Pilih Cabang Lomba Diikuti</label>
+                        <template x-if="selectedGradeId && filteredCompetitionsAdd.length > 0">
+                            <span class="text-[11px] text-emerald-700 font-semibold" x-text="'(' + filteredCompetitionsAdd.length + ' lomba memenuhi syarat)'"></span>
+                        </template>
+                    </div>
+                    <div class="space-y-1.5 max-h-48 overflow-y-auto p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                        <template x-if="!selectedGradeId">
+                            <p class="text-xs text-slate-400 italic py-2 text-center">
+                                Silakan pilih Tingkat Kelas di atas terlebih dahulu untuk menampilkan cabang lomba yang berhak diikuti santri.
+                            </p>
+                        </template>
+                        <template x-if="selectedGradeId && filteredCompetitionsAdd.length === 0">
+                            <p class="text-xs text-amber-600 font-medium py-2 text-center">
+                                Belum ada cabang lomba individu yang dibuka untuk tingkat kelas ini.
+                            </p>
+                        </template>
+                        <template x-for="c in filteredCompetitionsAdd" :key="c.id">
+                            <label class="flex items-center space-x-2 py-1 px-1.5 rounded-lg hover:bg-white cursor-pointer transition-colors">
+                                <input type="checkbox" name="competitions[]" :value="c.id" x-model="selectedCompIds" class="rounded text-emerald-600 focus:ring-emerald-500">
+                                <span class="text-slate-800 font-medium" x-text="c.name"></span>
+                            </label>
+                        </template>
                     </div>
                 </div>
 
@@ -326,14 +363,25 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Cabang Lomba Diikuti</label>
-                    <div class="space-y-1.5 max-h-40 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                        @foreach($competitions as $c)
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="competitions[]" value="{{ $c->id }}" :checked="editData.competitions.includes({{ $c->id }})" class="rounded text-emerald-600">
-                            <span>{{ $c->name }}</span>
-                        </label>
-                        @endforeach
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Pilih Cabang Lomba Diikuti</label>
+                        <template x-if="editData.grade_id">
+                            <span class="text-[11px] text-emerald-700 font-semibold" x-text="'(' + filteredCompetitionsEdit.length + ' lomba tersedia)'"></span>
+                        </template>
+                    </div>
+                    <div class="space-y-1.5 max-h-48 overflow-y-auto p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                        <template x-for="c in filteredCompetitionsEdit" :key="c.id">
+                            <label class="flex items-center space-x-2 py-1 px-1.5 rounded-lg hover:bg-white cursor-pointer transition-colors">
+                                <input type="checkbox" name="competitions[]" :value="c.id" :checked="editData.competitions.includes(c.id)" @change="
+                                    if ($event.target.checked) {
+                                        if (!editData.competitions.includes(c.id)) editData.competitions.push(c.id);
+                                    } else {
+                                        editData.competitions = editData.competitions.filter(id => id !== c.id);
+                                    }
+                                " class="rounded text-emerald-600 focus:ring-emerald-500">
+                                <span class="text-slate-800 font-medium" x-text="c.name"></span>
+                            </label>
+                        </template>
                     </div>
                 </div>
 

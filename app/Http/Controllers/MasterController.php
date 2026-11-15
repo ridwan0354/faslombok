@@ -82,10 +82,11 @@ class MasterController extends Controller
         $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
         $competitions = Competition::where('event_id', $event->id)
             ->withCount('entries')
-            ->with(['activeRubric', 'judgeAssignments.user', 'latestPublication'])
+            ->with(['activeRubric', 'judgeAssignments.user', 'latestPublication', 'gradeLevels'])
             ->get();
+        $gradeLevels = GradeLevel::where('event_id', $event->id)->orderBy('sort_order')->get();
 
-        return view('master.competitions.index', compact('event', 'competitions'));
+        return view('master.competitions.index', compact('event', 'competitions', 'gradeLevels'));
     }
 
     public function storeCompetition(Request $request)
@@ -95,15 +96,27 @@ class MasterController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'format' => ['required', 'in:individual,team'],
-            'eligibility_rule' => ['nullable', 'string'],
-            'location' => ['nullable', 'string'],
+            'grade_ids' => ['nullable', 'array'],
+            'grade_ids.*' => ['exists:grade_levels,id'],
         ]);
 
-        DB::transaction(function () use ($event, $data) {
-            $competition = Competition::create(array_merge($data, [
+        $gradeIds = $request->input('grade_ids', []);
+        $selectedGrades = GradeLevel::whereIn('id', $gradeIds)->orderBy('sort_order')->pluck('name');
+        $eligibilityRule = $selectedGrades->isNotEmpty() ? $selectedGrades->join(', ') : 'Semua Tingkat';
+
+        DB::transaction(function () use ($event, $data, $gradeIds, $eligibilityRule) {
+            $competition = Competition::create([
                 'event_id' => $event->id,
+                'name' => $data['name'],
+                'format' => $data['format'],
+                'eligibility_rule' => $eligibilityRule,
                 'status' => 'ready',
-            ]));
+                'is_locked' => false,
+            ]);
+
+            if (!empty($gradeIds)) {
+                $competition->gradeLevels()->sync($gradeIds);
+            }
 
             // Create default active rubric
             $rubric = Rubric::create([
@@ -139,6 +152,30 @@ class MasterController extends Controller
         });
 
         return redirect()->route('master.competitions')->with('success', 'Cabang lomba baru berhasil ditambahkan.');
+    }
+
+    public function updateCompetition(Request $request, Competition $competition)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'format' => ['required', 'in:individual,team'],
+            'grade_ids' => ['nullable', 'array'],
+            'grade_ids.*' => ['exists:grade_levels,id'],
+        ]);
+
+        $gradeIds = $request->input('grade_ids', []);
+        $selectedGrades = GradeLevel::whereIn('id', $gradeIds)->orderBy('sort_order')->pluck('name');
+        $eligibilityRule = $selectedGrades->isNotEmpty() ? $selectedGrades->join(', ') : 'Semua Tingkat';
+
+        $competition->update([
+            'name' => $data['name'],
+            'format' => $data['format'],
+            'eligibility_rule' => $eligibilityRule,
+        ]);
+
+        $competition->gradeLevels()->sync($gradeIds);
+
+        return redirect()->back()->with('success', "Data cabang lomba '{$competition->name}' berhasil diperbarui.");
     }
 
     public function competitionDetail(Competition $competition)
@@ -254,9 +291,13 @@ class MasterController extends Controller
         }
 
         $participants = $query->latest('id')->paginate(20)->withQueryString();
-        $groups = Group::where('event_id', $event->id)->get();
-        $grades = GradeLevel::where('event_id', $event->id)->get();
-        $competitions = Competition::where('event_id', $event->id)->where('format', 'individual')->get();
+        $groups = Group::where('event_id', $event->id)->orderBy('name')->get();
+        $grades = GradeLevel::where('event_id', $event->id)->orderBy('sort_order')->get();
+        $competitions = Competition::where('event_id', $event->id)
+            ->where('format', 'individual')
+            ->with('gradeLevels')
+            ->orderBy('name')
+            ->get();
 
         return view('master.participants.index', compact('event', 'participants', 'groups', 'grades', 'competitions'));
     }

@@ -35,7 +35,7 @@
                 </span>
                 <h1 class="text-xl sm:text-2xl font-black text-slate-900 leading-snug">{{ $competition->name }}</h1>
             </div>
-            <p class="text-xs text-slate-500 mt-1">Syarat: {{ $competition->eligibility_rule ?? 'Semua' }} • Lokasi: {{ $competition->location ?? 'Panggung Utama' }}</p>
+            <p class="text-xs text-slate-500 mt-1">Syarat Tingkat Kelas: <span class="font-semibold text-slate-700">{{ $competition->eligibility_rule ?? 'Semua Tingkat Kelas' }}</span></p>
         </div>
 
         <div class="flex items-center space-x-2">

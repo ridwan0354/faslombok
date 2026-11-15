@@ -25,4 +25,9 @@ class GradeLevel extends Model
     {
         return $this->hasMany(Participant::class, 'grade_id');
     }
+
+    public function competitions()
+    {
+        return $this->belongsToMany(Competition::class, 'competition_grade_levels');
+    }
 }

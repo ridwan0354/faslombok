@@ -58,6 +58,11 @@ class Competition extends Model
         return $this->hasMany(JudgeAssignment::class);
     }
 
+    public function gradeLevels()
+    {
+        return $this->belongsToMany(GradeLevel::class, 'competition_grade_levels');
+    }
+
     public function awards()
     {
         return $this->hasMany(CompetitionAward::class)->orderBy('rank_position');

@@ -445,4 +445,48 @@ class FestivalSystemTest extends TestCase
             'id' => $grade->id,
         ]);
     }
+
+    /**
+     * Test Master can create and update competition with eligible grade levels
+     */
+    public function test_master_can_create_and_update_competition_with_grade_levels(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $grade1 = \App\Models\GradeLevel::where('code', 'KELAS_1')->first();
+        $grade2 = \App\Models\GradeLevel::where('code', 'KELAS_2')->first();
+
+        // 1. Create competition with Grade 1 & 2
+        $response = $this->actingAs($master)
+            ->post(route('master.competitions.store'), [
+                'name' => 'Cerdas Cermat Cilik',
+                'format' => 'individual',
+                'grade_ids' => [$grade1->id, $grade2->id],
+            ]);
+
+        $response->assertRedirect(route('master.competitions'));
+        $this->assertDatabaseHas('competitions', [
+            'name' => 'Cerdas Cermat Cilik',
+            'format' => 'individual',
+        ]);
+
+        $comp = Competition::where('name', 'Cerdas Cermat Cilik')->first();
+        $this->assertEquals(2, $comp->gradeLevels()->count());
+        $this->assertTrue($comp->gradeLevels->contains($grade1->id));
+        $this->assertTrue($comp->gradeLevels->contains($grade2->id));
+
+        // 2. Update competition to only Grade 1
+        $response = $this->actingAs($master)
+            ->put(route('master.competitions.update', $comp->id), [
+                'name' => 'Cerdas Cermat Cilik (Khusus Kelas 1)',
+                'format' => 'individual',
+                'grade_ids' => [$grade1->id],
+            ]);
+
+        $response->assertRedirect();
+        $comp->refresh();
+        $this->assertEquals('Cerdas Cermat Cilik (Khusus Kelas 1)', $comp->name);
+        $this->assertEquals(1, $comp->gradeLevels()->count());
+        $this->assertTrue($comp->gradeLevels->contains($grade1->id));
+        $this->assertFalse($comp->gradeLevels->contains($grade2->id));
+    }
 }

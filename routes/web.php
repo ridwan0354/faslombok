@@ -34,6 +34,7 @@ Route::prefix('master')->name('master.')->middleware(['master'])->group(function
     // Competitions & Rubrics
     Route::get('/lomba', [MasterController::class, 'competitions'])->name('competitions');
     Route::post('/lomba', [MasterController::class, 'storeCompetition'])->name('competitions.store');
+    Route::put('/lomba/{competition}', [MasterController::class, 'updateCompetition'])->name('competitions.update');
     Route::get('/lomba/{competition}', [MasterController::class, 'competitionDetail'])->name('competitions.detail');
     Route::post('/lomba/{competition}/rubrik', [MasterController::class, 'updateRubricCriteria'])->name('competitions.rubric.update');
     Route::post('/lomba/{competition}/lock', [MasterController::class, 'toggleLock'])->name('competitions.lock');
