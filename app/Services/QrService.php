@@ -10,6 +10,8 @@ use App\Models\Participant;
 use App\Models\QrToken;
 use App\Models\Team;
 use App\Models\User;
+use chillerlan\QRCode\Common\EccLevel;
+use chillerlan\QRCode\Output\QRMarkupSVG;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Illuminate\Support\Str;
@@ -78,13 +80,22 @@ class QrService
     public function renderSvg(string $text, int $size = 200): string
     {
         $options = new QROptions([
-            'version'    => 5,
-            'outputType' => QRCode::OUTPUT_MARKUP_SVG,
-            'eccLevel'   => QRCode::ECC_M,
-            'addQuietzone' => true,
+            'version'         => 5,
+            'outputInterface' => QRMarkupSVG::class,
+            'outputBase64'    => false,
+            'svgAddXmlHeader' => false,
+            'eccLevel'        => EccLevel::M,
+            'addQuietzone'    => true,
         ]);
 
-        return (new QRCode($options))->render($text);
+        $svg = (new QRCode($options))->render($text);
+
+        // Inject width and height into root <svg> tag for clean rendering
+        if ($size > 0 && !str_contains($svg, 'width=')) {
+            $svg = preg_replace('/<svg /', "<svg width=\"{$size}\" height=\"{$size}\" ", $svg, 1);
+        }
+
+        return $svg;
     }
 
     /**

@@ -288,4 +288,19 @@ class FestivalSystemTest extends TestCase
         $this->assertNotNull($zaidan->qrToken);
         $this->assertNotEmpty($zaidan->entries);
     }
+
+    /**
+     * Test Master can access and render print QR badges page without error
+     */
+    public function test_master_can_access_print_qr_badges(): void
+    {
+        $master = User::where('role', 'master')->first();
+
+        $response = $this->actingAs($master)
+            ->get(route('master.print.qr'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Cetak Kartu & Badge QR Peserta');
+        $response->assertSee('<svg', false);
+    }
 }
