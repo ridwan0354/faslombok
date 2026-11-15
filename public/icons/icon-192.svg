@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="grad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="38" fill="url(#grad192)"/>
+  <circle cx="96" cy="65" r="26" fill="#fde047"/>
+  <path d="M50 150 C 50 110, 142 110, 142 150 Z" fill="#ffffff"/>
+  <text x="96" y="176" font-family="sans-serif" font-size="16" font-weight="bold" fill="#fde047" text-anchor="middle">FAS 2026</text>
+</svg>
