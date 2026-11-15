@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Login Panitia & Juri - Festival Anak Sholeh Lombok 2026')
+@section('title', 'Login Panitia & Juri - Festival Anak Sholeh & Bazar Remaja 2026')
 
 @section('body')
-<div class="min-h-screen bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-4" 
+<div class="min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-pink-950 flex flex-col justify-center py-8 sm:px-6 lg:px-8 px-4" 
      x-data="{
         phone: '{{ old('phone', '') }}',
         password: '',
@@ -12,110 +12,156 @@
             this.password = pw;
         }
      }">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div class="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-emerald-400 flex items-center justify-center text-emerald-950 font-black text-2xl shadow-xl shadow-emerald-950/50 mb-4">
-            FAS
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Festival Anak Sholeh
-        </h2>
-        <p class="text-sm text-emerald-300 font-medium mt-1">Lombok 2026 • Portal Masuk Panitia & Juri</p>
-    </div>
+    <div class="max-w-4xl w-full mx-auto">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-2 border-amber-300/40 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+            
+            <!-- Left Column: Poster & Event Branding (Desktop) -->
+            <div class="lg:col-span-5 bg-gradient-to-b from-purple-950 to-pink-950 p-6 flex flex-col items-center justify-between text-white text-center relative overflow-hidden">
+                <div class="w-full space-y-3 relative z-10">
+                    <!-- Badges -->
+                    <div class="flex items-center justify-center space-x-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-400 text-purple-950">
+                            LDII
+                        </span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-white/20 text-white">
+                            PPG SAK JAGAT RAYA
+                        </span>
+                    </div>
 
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-8 px-6 shadow-2xl rounded-3xl sm:px-10 border border-emerald-800/20">
-            @if(session('success'))
-                <div class="mb-4 p-3.5 rounded-xl bg-emerald-50 text-emerald-900 text-xs font-semibold border border-emerald-200">
-                    {{ session('success') }}
-                </div>
-            @endif
+                    <!-- Poster Artwork Container -->
+                    <div class="rounded-2xl overflow-hidden border-2 border-amber-300/60 shadow-xl max-w-[240px] mx-auto">
+                        <img src="/images/poster.jpg" 
+                             alt="Festival Anak Sholeh dan Bazar Remaja" 
+                             class="w-full h-auto object-cover">
+                    </div>
 
-            @if(session('error'))
-                <div class="mb-4 p-3.5 rounded-xl bg-rose-50 text-rose-900 text-xs font-semibold border border-rose-200">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            @if($errors->any())
-                <div class="mb-4 p-3.5 rounded-xl bg-rose-50 text-rose-900 text-xs font-semibold border border-rose-200">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
-            <form action="{{ route('login.post') }}" method="POST" class="space-y-4">
-                @csrf
-                <div>
-                    <label for="phone" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                        Nomor HP (WhatsApp)
-                    </label>
-                    <div class="mt-1 relative">
-                        <input id="phone" name="phone" type="tel" required 
-                               x-model="phone"
-                               placeholder="Contoh: 081234567890" 
-                               class="appearance-none block w-full px-3.5 py-3 border border-slate-300 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 sm:text-sm font-medium">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-black text-amber-300 leading-tight">
+                            Festival Anak Sholeh
+                        </h2>
+                        <span class="inline-block px-2.5 py-0.5 rounded-md bg-pink-600 text-white font-bold text-xs mt-0.5">
+                            dan Bazar Remaja
+                        </span>
+                        <p class="text-[11px] text-purple-200 mt-1 italic">
+                            "Membangun Karakter, Menumbuhkan Teladan, Mewujudkan Generasi Masa Depan"
+                        </p>
                     </div>
                 </div>
 
-                <div>
-                    <label for="password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                        Password
-                    </label>
-                    <div class="mt-1">
-                        <input id="password" name="password" type="password" required 
-                               x-model="password"
-                               placeholder="••••••••" 
-                               class="appearance-none block w-full px-3.5 py-3 border border-slate-300 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 sm:text-sm font-medium">
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between text-xs">
-                    <label class="flex items-center text-slate-600 font-medium cursor-pointer">
-                        <input type="checkbox" name="remember" class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded">
-                        <span class="ml-2">Ingat saya di perangkat ini</span>
-                    </label>
-                </div>
-
-                <div>
-                    <button type="submit" 
-                            class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-emerald-700/30 text-sm font-bold text-white bg-emerald-700 hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all active:scale-[0.99]">
-                        Masuk ke Aplikasi
-                    </button>
-                </div>
-            </form>
-
-            <!-- Quick Demo Accounts Filler for Testing -->
-            <div class="mt-6 pt-6 border-t border-slate-200">
-                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center mb-2.5">
-                    Akun Uji Coba Cepat (Klik untuk isi)
-                </p>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <button type="button" @click="fillUser('081234567890', 'password123')"
-                            class="p-2 text-left bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg text-emerald-950 transition-colors">
-                        <span class="font-bold block text-[11px]">Master Admin</span>
-                        <span class="text-[10px] text-emerald-700">081234567890</span>
-                    </button>
-                    <button type="button" @click="fillUser('081111111111', 'password123')"
-                            class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-900 transition-colors">
-                        <span class="font-bold block text-[11px]">Ust. Ahmad (Juri Adzan)</span>
-                        <span class="text-[10px] text-slate-600">081111111111</span>
-                    </button>
-                    <button type="button" @click="fillUser('082222222222', 'password123')"
-                            class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-900 transition-colors">
-                        <span class="font-bold block text-[11px]">Ust. Fauzi (Juri Adzan/Surat)</span>
-                        <span class="text-[10px] text-slate-600">082222222222</span>
-                    </button>
-                    <button type="button" @click="fillUser('083333333333', 'password123')"
-                            class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-900 transition-colors">
-                        <span class="font-bold block text-[11px]">Usth. Siti (Juri Mewarnai)</span>
-                        <span class="text-[10px] text-slate-600">083333333333</span>
-                    </button>
+                <div class="pt-4 text-[10px] text-purple-300 border-t border-purple-800/60 w-full mt-4">
+                    <span>Masjid Uswatun Hasanah • Lombok 2026</span>
                 </div>
             </div>
 
-            <div class="mt-6 text-center">
-                <a href="{{ route('home') }}" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800">
-                    ← Kembali ke Halaman Publik
-                </a>
+            <!-- Right Column: Login Form -->
+            <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between">
+                <div>
+                    <div class="mb-6">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-pink-700 block">
+                            Portal Akses Petugas
+                        </span>
+                        <h3 class="text-2xl font-black text-purple-950 tracking-tight">
+                            Masuk Panitia & Juri
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">
+                            Gunakan nomor HP (WhatsApp) dan kata sandi yang telah didaftarkan oleh Master Admin.
+                        </p>
+                    </div>
+
+                    @if(session('success'))
+                        <div class="mb-4 p-3 rounded-xl bg-purple-50 text-purple-900 text-xs font-semibold border border-purple-200">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="mb-4 p-3 rounded-xl bg-rose-50 text-rose-900 text-xs font-semibold border border-rose-200">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="mb-4 p-3 rounded-xl bg-rose-50 text-rose-900 text-xs font-semibold border border-rose-200">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('login.post') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label for="phone" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                Nomor HP (WhatsApp)
+                            </label>
+                            <div class="mt-1">
+                                <input id="phone" name="phone" type="tel" required 
+                                       x-model="phone"
+                                       placeholder="Contoh: 081234567890" 
+                                       class="block w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 focus:outline-none font-medium">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                Password
+                            </label>
+                            <div class="mt-1">
+                                <input id="password" name="password" type="password" required 
+                                       x-model="password"
+                                       placeholder="••••••••" 
+                                       class="block w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 focus:outline-none font-medium">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs">
+                            <label class="flex items-center text-slate-600 font-medium cursor-pointer">
+                                <input type="checkbox" name="remember" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-slate-300 rounded">
+                                <span class="ml-2">Ingat saya di perangkat ini</span>
+                            </label>
+                        </div>
+
+                        <div>
+                            <button type="submit" 
+                                    class="w-full flex justify-center py-3 px-4 rounded-xl shadow-lg shadow-purple-900/20 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-purple-800 via-pink-700 to-purple-900 hover:from-purple-900 hover:to-pink-800 transition-all active:scale-[0.99]">
+                                Masuk ke Aplikasi
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Quick Demo Accounts Filler -->
+                    <div class="mt-6 pt-5 border-t border-slate-100">
+                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider text-center mb-2">
+                            Pintasan Akun Uji Coba Cepat (Klik untuk Mengisi)
+                        </p>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <button type="button" @click="fillUser('081234567890', 'password123')"
+                                    class="p-2 text-left bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl transition-colors">
+                                <span class="font-bold block text-[11px] text-purple-950">Master Admin</span>
+                                <span class="text-[10px] text-purple-700 font-mono">081234567890</span>
+                            </button>
+                            <button type="button" @click="fillUser('081111111111', 'password123')"
+                                    class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
+                                <span class="font-bold block text-[11px] text-slate-900">Ust. Ahmad (Juri Adzan)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">081111111111</span>
+                            </button>
+                            <button type="button" @click="fillUser('082222222222', 'password123')"
+                                    class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
+                                <span class="font-bold block text-[11px] text-slate-900">Ust. Fauzi (Juri Adzan/Surat)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">082222222222</span>
+                            </button>
+                            <button type="button" @click="fillUser('083333333333', 'password123')"
+                                    class="p-2 text-left bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-xl transition-colors">
+                                <span class="font-bold block text-[11px] text-pink-950">Usth. Siti (Juri Mewarnai)</span>
+                                <span class="text-[10px] text-pink-700 font-mono">083333333333</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <a href="{{ route('home') }}" class="text-xs font-bold text-pink-700 hover:text-pink-800">
+                        ← Kembali ke Halaman Publik
+                    </a>
+                </div>
             </div>
         </div>
     </div>

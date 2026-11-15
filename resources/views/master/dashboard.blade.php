@@ -1,23 +1,23 @@
 @extends('layouts.master')
 
-@section('title', 'Master Dashboard - FAS Lombok 2026')
+@section('title', 'Master Dashboard - FAS & Bazar Remaja 2026')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header with Quick Actions -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight">Overview Acara</h1>
-            <p class="text-xs text-slate-500 mt-1">Festival Anak Sholeh Lombok 2026 • Monitoring Terpadu</p>
+            <h1 class="text-2xl font-black text-purple-950 tracking-tight">Overview Acara</h1>
+            <p class="text-xs text-slate-500 mt-1">Festival Anak Sholeh & Bazar Remaja Lombok 2026 • Monitoring Terpadu</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('master.print.qr') }}" 
                class="px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-colors shadow-xs flex items-center space-x-1.5">
-                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <svg class="w-4 h-4 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                 <span>Cetak Badge QR</span>
             </a>
             <a href="{{ route('master.participants') }}" 
-               class="px-3.5 py-2 rounded-xl bg-emerald-700 text-white font-bold text-xs hover:bg-emerald-800 transition-colors shadow-sm flex items-center space-x-1.5">
+               class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-800 to-pink-700 text-white font-bold text-xs hover:from-purple-900 hover:to-pink-800 transition-colors shadow-xs flex items-center space-x-1.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Kelola Peserta & Impor</span>
             </a>
@@ -26,27 +26,27 @@
 
     <!-- KPI Metric Cards -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Peserta Terdaftar</span>
-            <div class="text-2xl font-black text-slate-900 mt-1 font-mono">{{ $stats['total_participants'] }}</div>
-            <span class="text-[11px] text-emerald-600 font-medium">Dalam {{ $stats['total_groups'] }} Kelompok / TPQ</span>
+        <div class="bg-white rounded-3xl p-5 border border-purple-100 shadow-xs">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Peserta Terdaftar</span>
+            <div class="text-3xl font-black text-purple-950 mt-1 font-mono">{{ $stats['total_participants'] }}</div>
+            <span class="text-[11px] text-pink-700 font-bold">Dalam {{ $stats['total_groups'] }} Kelompok / TPQ</span>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Cabang Perlombaan</span>
-            <div class="text-2xl font-black text-slate-900 mt-1 font-mono">{{ $stats['total_competitions'] }}</div>
-            <span class="text-[11px] text-amber-600 font-medium">{{ $stats['published_competitions'] }} Hasil Diumumkan</span>
+        <div class="bg-white rounded-3xl p-5 border border-purple-100 shadow-xs">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Cabang Perlombaan</span>
+            <div class="text-3xl font-black text-purple-950 mt-1 font-mono">{{ $stats['total_competitions'] }}</div>
+            <span class="text-[11px] text-amber-600 font-bold">{{ $stats['published_competitions'] }} Hasil Diumumkan</span>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Dewan Juri</span>
-            <div class="text-2xl font-black text-slate-900 mt-1 font-mono">{{ $stats['total_judges'] }}</div>
-            <span class="text-[11px] text-indigo-600 font-medium">Multi-assignment Aktif</span>
+        <div class="bg-white rounded-3xl p-5 border border-purple-100 shadow-xs">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Total Dewan Juri</span>
+            <div class="text-3xl font-black text-purple-950 mt-1 font-mono">{{ $stats['total_judges'] }}</div>
+            <span class="text-[11px] text-purple-700 font-bold">Multi-assignment Aktif</span>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Progres Penilaian</span>
-            <div class="text-2xl font-black text-emerald-800 mt-1 font-mono">
+        <div class="bg-white rounded-3xl p-5 border border-purple-100 shadow-xs">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Progres Penilaian</span>
+            <div class="text-3xl font-black text-pink-700 mt-1 font-mono">
                 {{ $stats['total_entries'] > 0 ? round(($stats['completed_entries'] / $stats['total_entries']) * 100) : 0 }}%
             </div>
             <span class="text-[11px] text-slate-500 font-medium">{{ $stats['completed_entries'] }} dari {{ $stats['total_entries'] }} Selesai</span>
@@ -54,13 +54,13 @@
     </div>
 
     <!-- Active Competitions Status Table -->
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
-        <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+    <div class="bg-white rounded-3xl border border-purple-100 shadow-xs overflow-hidden">
+        <div class="p-5 border-b border-purple-100 bg-purple-50/40 flex items-center justify-between">
             <div>
-                <h3 class="text-base font-bold text-slate-900">Status 12 Cabang Perlombaan</h3>
+                <h3 class="text-base font-extrabold text-purple-950">Status 12 Cabang Perlombaan</h3>
                 <p class="text-xs text-slate-500">Pantau progres penilaian juri, status kunci, dan publikasi juara.</p>
             </div>
-            <a href="{{ route('master.competitions') }}" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">
+            <a href="{{ route('master.competitions') }}" class="text-xs font-bold text-pink-700 hover:text-pink-800">
                 Kelola Semua Lomba →
             </a>
         </div>
@@ -80,13 +80,12 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
                     @foreach($competitions as $comp)
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-purple-50/20 transition-colors">
                         <td class="py-3.5 px-4 font-bold text-slate-900">
                             {{ $comp->name }}
-                            <span class="block text-[11px] text-slate-400 font-normal">{{ $comp->location ?? 'Panggung Utama' }}</span>
                         </td>
                         <td class="py-3.5 px-4">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $comp->format === 'team' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800' }}">
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold {{ $comp->format === 'team' ? 'bg-purple-100 text-purple-900' : 'bg-pink-100 text-pink-900' }}">
                                 {{ $comp->format === 'team' ? 'Beregu' : 'Individu' }}
                             </span>
                         </td>
@@ -98,7 +97,7 @@
                         </td>
                         <td class="py-3.5 px-4 text-center">
                             @if($comp->is_locked)
-                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
                                     Terkunci
                                 </span>
                             @else
@@ -109,7 +108,7 @@
                         </td>
                         <td class="py-3.5 px-4 text-center">
                             @if($comp->status === 'published')
-                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-900 border border-purple-200">
                                     Published (v{{ $comp->latestPublication ? $comp->latestPublication->version : 1 }})
                                 </span>
                             @else
@@ -120,7 +119,7 @@
                         </td>
                         <td class="py-3.5 px-4 text-right">
                             <a href="{{ route('master.competitions.detail', $comp->id) }}" 
-                               class="text-xs font-bold text-emerald-700 hover:text-emerald-900">
+                               class="text-xs font-bold text-pink-700 hover:text-pink-900">
                                 Konfigurasi & Rubrik →
                             </a>
                         </td>
@@ -132,15 +131,15 @@
     </div>
 
     <!-- Recent Audit Logs -->
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-5">
-        <h3 class="text-base font-bold text-slate-900 mb-1">Aktivitas & Log Audit Nilai Terkini</h3>
+    <div class="bg-white rounded-3xl border border-purple-100 shadow-xs p-5">
+        <h3 class="text-base font-extrabold text-purple-950 mb-1">Aktivitas & Log Audit Nilai Terkini</h3>
         <p class="text-xs text-slate-500 mb-4">Setiap tindakan penilaian, perubahan rubrik, dan publikasi terekam lengkap.</p>
 
         <div class="space-y-2">
             @forelse($recentAudits as $log)
             <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
                 <div class="flex items-center space-x-3">
-                    <span class="w-2 h-2 rounded-full {{ $log->action === 'publish' ? 'bg-amber-500' : ($log->action === 'lock' ? 'bg-rose-500' : 'bg-emerald-500') }}"></span>
+                    <span class="w-2 h-2 rounded-full {{ $log->action === 'publish' ? 'bg-amber-500' : ($log->action === 'lock' ? 'bg-rose-500' : 'bg-purple-600') }}"></span>
                     <div>
                         <span class="font-bold text-slate-900">{{ $log->actor ? $log->actor->name : 'Sistem' }}</span>
                         <span class="text-slate-500 font-medium">— {{ ucfirst($log->action) }} ({{ $log->reason ?? '-' }})</span>

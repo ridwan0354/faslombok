@@ -35,11 +35,11 @@
 }">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight">Cabang Perlombaan & Rubrik</h1>
+            <h1 class="text-2xl font-black text-purple-950 tracking-tight">Cabang Perlombaan & Rubrik</h1>
             <p class="text-xs text-slate-500 mt-1">Kelola format, syarat tingkat kelas peserta, kriteria rubrik bobot 100%, dan status publikasi.</p>
         </div>
         <button @click="showAddModal = true; addGradeIds = []"
-                class="px-4 py-2.5 rounded-xl bg-emerald-700 text-white font-bold text-xs hover:bg-emerald-800 transition-colors shadow-sm flex items-center space-x-1.5 self-start">
+                class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-800 to-pink-700 text-white font-bold text-xs hover:from-purple-900 hover:to-pink-800 transition-colors shadow-sm flex items-center space-x-1.5 self-start">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             <span>Tambah Cabang Lomba</span>
         </button>
@@ -184,7 +184,7 @@
 
                 <div class="pt-2 flex justify-end space-x-2">
                     <button type="button" @click="showAddModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs">Simpan Lomba</button>
+                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-purple-800 to-pink-700 hover:from-purple-900 hover:to-pink-800 text-white text-xs font-bold rounded-xl shadow-xs">Simpan Lomba</button>
                 </div>
             </form>
         </div>
@@ -236,7 +236,7 @@
 
                 <div class="pt-2 flex justify-end space-x-2">
                     <button type="button" @click="showEditModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs">Simpan Perubahan</button>
+                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-purple-800 to-pink-700 hover:from-purple-900 hover:to-pink-800 text-white text-xs font-bold rounded-xl shadow-xs">Simpan Perubahan</button>
                 </div>
             </form>
         </div>

@@ -8,7 +8,7 @@
 
     <!-- PWA & Mobile Web App Meta -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#047857">
+    <meta name="theme-color" content="#581c87">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/icons/icon-192.svg">
@@ -16,7 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+<body class="bg-slate-50/80 text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-purple-600 selection:text-white">
     @yield('body')
 
     @stack('scripts')
