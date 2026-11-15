@@ -489,4 +489,56 @@ class FestivalSystemTest extends TestCase
         $this->assertTrue($comp->gradeLevels->contains($grade1->id));
         $this->assertFalse($comp->gradeLevels->contains($grade2->id));
     }
+
+    /**
+     * Test Master can delete a competition without score submissions
+     */
+    public function test_master_can_delete_competition_without_scores(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $event = Event::where('status', 'active')->first();
+
+        // Create dummy competition
+        $comp = Competition::create([
+            'event_id' => $event->id,
+            'name' => 'Lomba Uji Coba Hapus',
+            'format' => 'individual',
+            'eligibility_rule' => 'Semua Tingkat',
+            'status' => 'ready',
+        ]);
+
+        $response = $this->actingAs($master)
+            ->delete(route('master.competitions.destroy', $comp->id));
+
+        $response->assertRedirect(route('master.competitions'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('competitions', ['id' => $comp->id]);
+    }
+
+    /**
+     * Test Master cannot delete a competition that has submitted scores
+     */
+    public function test_master_cannot_delete_competition_with_submitted_scores(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $entry = Entry::where('competition_id', $adzanComp->id)->first();
+        $assignment = JudgeAssignment::where('competition_id', $adzanComp->id)->first();
+
+        \App\Models\ScoreSubmission::create([
+            'entry_id' => $entry->id,
+            'assignment_id' => $assignment->id,
+            'rubric_id' => $adzanComp->activeRubric->id,
+            'score_total' => 85.0,
+            'status' => 'submitted',
+            'submitted_at' => now(),
+        ]);
+
+        $response = $this->actingAs($master)
+            ->delete(route('master.competitions.destroy', $adzanComp->id));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('competitions', ['id' => $adzanComp->id]);
+    }
 }

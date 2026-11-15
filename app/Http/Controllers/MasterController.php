@@ -178,6 +178,26 @@ class MasterController extends Controller
         return redirect()->back()->with('success', "Data cabang lomba '{$competition->name}' berhasil diperbarui.");
     }
 
+    public function destroyCompetition(Competition $competition)
+    {
+        $name = $competition->name;
+
+        // Check if there are active score submissions for this competition
+        $entryIds = $competition->entries()->pluck('id');
+        $hasScores = ScoreSubmission::whereIn('entry_id', $entryIds)->exists();
+
+        if ($hasScores) {
+            return redirect()->back()->with('error', "Gagal menghapus: Cabang lomba '{$name}' sudah memiliki data nilai dari dewan juri.");
+        }
+
+        DB::transaction(function () use ($competition) {
+            $competition->gradeLevels()->detach();
+            $competition->delete();
+        });
+
+        return redirect()->route('master.competitions')->with('success', "Cabang lomba '{$name}' berhasil dihapus.");
+    }
+
     public function competitionDetail(Competition $competition)
     {
         $competition->load([

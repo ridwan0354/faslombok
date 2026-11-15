@@ -131,6 +131,18 @@
                                class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200 transition-colors inline-block">
                                 Rubrik & Izin →
                             </a>
+                            <form action="{{ route('master.competitions.destroy', $comp->id) }}" 
+                                  method="POST" 
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus cabang lomba &quot;{{ addslashes($comp->name) }}&quot;?')" 
+                                  class="inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-800 font-bold text-xs border border-rose-200 transition-colors"
+                                        title="Hapus Cabang Lomba">
+                                    Hapus
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach
