@@ -327,4 +327,21 @@ class FestivalSystemTest extends TestCase
             'name' => 'Muhammad Rayyan Al-Farisi (Updated)',
         ]);
     }
+
+    /**
+     * Test Master can view score monitoring with criteria details
+     */
+    public function test_master_can_view_scores_monitoring_with_criteria_breakdown(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $kaligrafi = Competition::where('name', 'Kaligrafi')->first();
+
+        $response = $this->actingAs($master)
+            ->get(route('master.scores', ['competition_id' => $kaligrafi->id]));
+
+        $response->assertStatus(200);
+        $response->assertSee('Kriteria Penilaian: Kaligrafi');
+        $response->assertSee('Kaidah Khat');
+        $response->assertSee('Keindahan &amp; Komposisi', false);
+    }
 }

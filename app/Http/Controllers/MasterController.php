@@ -569,10 +569,16 @@ class MasterController extends Controller
         $judges = collect();
 
         if ($request->filled('competition_id')) {
-            $selectedComp = Competition::with(['judgeAssignments.user', 'activeRubric.criteria'])->find($request->input('competition_id'));
+            $selectedComp = Competition::with(['judgeAssignments.user', 'activeRubric.criteria', 'activeRubric.ratingOptions'])->find($request->input('competition_id'));
             if ($selectedComp) {
                 $judges = $selectedComp->judgeAssignments()->where('active', true)->with('user')->get();
-                $entries = $selectedComp->entries()->with(['participant.group', 'team.group', 'scoreSubmissions.items'])->get();
+                $entries = $selectedComp->entries()->with([
+                    'participant.group', 
+                    'team.group', 
+                    'scoreSubmissions.items.criterion',
+                    'scoreSubmissions.items.ratingOption',
+                    'scoreSubmissions.assignment.user'
+                ])->get();
 
                 foreach ($entries as $entry) {
                     $finalScore = $this->scoringService->getFinalScore($entry);
@@ -581,9 +587,21 @@ class MasterController extends Controller
                         $sub = $entry->scoreSubmissions->firstWhere('assignment_id', $ja->id);
                         $judgeScores[$ja->id] = $sub ? [
                             'submission_id' => $sub->id,
-                            'score_total' => $sub->score_total,
+                            'judge_name' => $ja->user->name,
+                            'score_total' => (float) $sub->score_total,
                             'status' => $sub->status,
-                            'items' => $sub->items,
+                            'notes' => $sub->notes,
+                            'submitted_at' => $sub->submitted_at ? $sub->submitted_at->setTimezone('Asia/Makassar')->format('d M Y, H:i') . ' WITA' : null,
+                            'items' => $sub->items->map(function ($it) {
+                                return [
+                                    'title' => $it->criterion ? $it->criterion->title : '-',
+                                    'weight_pct' => $it->criterion ? (float)$it->criterion->weight_pct : 0,
+                                    'rating_label' => $it->ratingOption ? $it->ratingOption->label : '-',
+                                    'numeric_value' => (float)$it->numeric_value,
+                                    'weighted_score' => (float)$it->weighted_score,
+                                    'comment' => $it->comment,
+                                ];
+                            })->values()->toArray(),
                         ] : null;
                     }
 
