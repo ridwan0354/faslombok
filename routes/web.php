@@ -42,6 +42,8 @@ Route::prefix('master')->name('master.')->middleware(['master'])->group(function
     // Participants & Teams
     Route::get('/peserta', [MasterController::class, 'participants'])->name('participants');
     Route::post('/peserta', [MasterController::class, 'storeParticipant'])->name('participants.store');
+    Route::put('/peserta/{participant}', [MasterController::class, 'updateParticipant'])->name('participants.update');
+    Route::delete('/peserta/{participant}', [MasterController::class, 'destroyParticipant'])->name('participants.destroy');
     Route::post('/peserta/import', [MasterController::class, 'importParticipants'])->name('participants.import');
     Route::get('/cetak-qr', [MasterController::class, 'printQr'])->name('print.qr');
 

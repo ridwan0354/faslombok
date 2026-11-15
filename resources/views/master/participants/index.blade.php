@@ -3,7 +3,32 @@
 @section('title', 'Data Peserta & Impor - FAS Lombok 2026')
 
 @section('content')
-<div class="space-y-6" x-data="{ showAddModal: false, showImportModal: false }">
+<div class="space-y-6" x-data="{
+    showAddModal: false, 
+    showImportModal: false,
+    showEditModal: false,
+    editData: {
+        id: '',
+        name: '',
+        group_id: '',
+        grade_id: '',
+        gender: 'L',
+        active: true,
+        competitions: []
+    },
+    openEdit(p) {
+        this.editData = {
+            id: p.id,
+            name: p.name,
+            group_id: p.group_id,
+            grade_id: p.grade_id || '',
+            gender: p.gender || 'L',
+            active: p.active ? true : false,
+            competitions: p.entries ? p.entries.map(e => e.competition_id) : []
+        };
+        this.showEditModal = true;
+    }
+}">
     <!-- Header with Action Buttons -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -63,11 +88,12 @@
                     <tr>
                         <th class="py-3 px-4">Kode</th>
                         <th class="py-3 px-4">Nama Peserta</th>
-                        <th class="py-3 px-4">L/P</th>
+                        <th class="py-3 px-4 text-center">L/P</th>
                         <th class="py-3 px-4">Kafilah / TPQ</th>
                         <th class="py-3 px-4">Tingkat Kelas</th>
                         <th class="py-3 px-4">Cabang Lomba Diikuti</th>
                         <th class="py-3 px-4 text-center">Status QR</th>
+                        <th class="py-3 px-4 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -112,10 +138,35 @@
                                 </span>
                             @endif
                         </td>
+                        <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                            <div class="flex items-center justify-end space-x-1.5">
+                                <button type="button" 
+                                        @click="openEdit({{ json_encode([
+                                            'id' => $p->id,
+                                            'name' => $p->name,
+                                            'group_id' => $p->group_id,
+                                            'grade_id' => $p->grade_id,
+                                            'gender' => $p->gender,
+                                            'active' => $p->active,
+                                            'entries' => $p->entries->map(fn($e) => ['competition_id' => $e->competition_id]),
+                                        ]) }})"
+                                        class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200 transition-colors flex items-center space-x-1">
+                                    <svg class="w-3.5 h-3.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    <span>Edit</span>
+                                </button>
+                                <form action="{{ route('master.participants.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus peserta {{ $p->name }}?')" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors" title="Hapus">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="py-8 text-center text-slate-400">
+                        <td colspan="8" class="py-8 text-center text-slate-400">
                             Tidak ada data peserta yang ditemukan.
                         </td>
                     </tr>
@@ -190,6 +241,80 @@
                 <div class="pt-2 flex justify-end space-x-2">
                     <button type="button" @click="showAddModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
                     <button type="submit" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs">Simpan Peserta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Data Peserta -->
+    <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4" @click.away="showEditModal = false">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-extrabold text-slate-900">Edit Data Peserta</h3>
+                <button @click="showEditModal = false" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form :action="'/master/peserta/' + editData.id" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap Peserta</label>
+                    <input type="text" name="name" x-model="editData.name" required placeholder="Nama Peserta" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kafilah / TPQ</label>
+                        <select name="group_id" x-model="editData.group_id" required class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
+                            @foreach($groups as $grp)
+                                <option value="{{ $grp->id }}">{{ $grp->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jenis Kelamin</label>
+                        <select name="gender" x-model="editData.gender" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
+                            <option value="L">Laki-laki (L)</option>
+                            <option value="P">Perempuan (P)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Tingkat Kelas</label>
+                    <select name="grade_id" x-model="editData.grade_id" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
+                        <option value="">-- Pilih Tingkat Kelas --</option>
+                        @foreach($grades as $gr)
+                            <option value="{{ $gr->id }}">{{ $gr->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Cabang Lomba Diikuti</label>
+                    <div class="space-y-1.5 max-h-40 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                        @foreach($competitions as $c)
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="competitions[]" value="{{ $c->id }}" :checked="editData.competitions.includes({{ $c->id }})" class="rounded text-emerald-600">
+                            <span>{{ $c->name }}</span>
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div>
+                    <label class="flex items-center space-x-2 text-xs text-slate-700 font-medium">
+                        <input type="checkbox" name="active" value="1" x-model="editData.active" class="rounded text-emerald-600">
+                        <span>Status Peserta Aktif</span>
+                    </label>
+                </div>
+
+                <div class="pt-2 flex justify-end space-x-2">
+                    <button type="button" @click="showEditModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs">Simpan Perubahan</button>
                 </div>
             </form>
         </div>

@@ -303,4 +303,28 @@ class FestivalSystemTest extends TestCase
         $response->assertSee('Cetak Kartu & Badge QR Peserta');
         $response->assertSee('<svg', false);
     }
+
+    /**
+     * Test Master can edit participant data
+     */
+    public function test_master_can_update_participant(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $participant = Participant::where('name', 'Muhammad Rayyan Al-Farisi')->first();
+        $group = $participant->group;
+
+        $response = $this->actingAs($master)
+            ->put(route('master.participants.update', $participant->id), [
+                'name' => 'Muhammad Rayyan Al-Farisi (Updated)',
+                'group_id' => $group->id,
+                'gender' => 'L',
+                'active' => 1,
+            ]);
+
+        $response->assertRedirect(route('master.participants'));
+        $this->assertDatabaseHas('participants', [
+            'id' => $participant->id,
+            'name' => 'Muhammad Rayyan Al-Farisi (Updated)',
+        ]);
+    }
 }

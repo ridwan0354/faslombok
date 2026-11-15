@@ -306,6 +306,67 @@ class MasterController extends Controller
         return redirect()->route('master.participants')->with('success', "Peserta {$participant->name} ({$participant->participant_code}) berhasil didaftarkan.");
     }
 
+    public function updateParticipant(Request $request, Participant $participant)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'group_id' => ['required', 'exists:groups,id'],
+            'grade_id' => ['nullable', 'exists:grade_levels,id'],
+            'gender' => ['required', 'in:L,P'],
+            'active' => ['nullable', 'boolean'],
+            'competitions' => ['nullable', 'array'],
+        ]);
+
+        DB::transaction(function () use ($participant, $data, $request) {
+            $participant->update([
+                'name' => $data['name'],
+                'group_id' => $data['group_id'],
+                'grade_id' => $data['grade_id'] ?? null,
+                'gender' => $data['gender'],
+                'active' => $request->boolean('active', true),
+            ]);
+
+            // Sync competitions
+            $selectedCompIds = $data['competitions'] ?? [];
+            $existingEntries = $participant->entries()->get()->keyBy('competition_id');
+
+            // Add new entries
+            foreach ($selectedCompIds as $compId) {
+                if (!$existingEntries->has($compId)) {
+                    $queue = Entry::where('competition_id', $compId)->count() + 1;
+                    Entry::create([
+                        'event_id' => $participant->event_id,
+                        'competition_id' => $compId,
+                        'participant_id' => $participant->id,
+                        'queue_number' => $queue,
+                        'status' => 'registered',
+                    ]);
+                }
+            }
+
+            // Remove unselected entries if no scores yet
+            foreach ($existingEntries as $compId => $entry) {
+                if (!in_array($compId, $selectedCompIds)) {
+                    if ($entry->scoreSubmissions()->count() === 0) {
+                        $entry->delete();
+                    }
+                }
+            }
+        });
+
+        return redirect()->route('master.participants')->with('success', "Data peserta {$participant->name} ({$participant->participant_code}) berhasil diperbarui.");
+    }
+
+    public function destroyParticipant(Participant $participant)
+    {
+        $name = $participant->name;
+        $code = $participant->participant_code;
+
+        $participant->delete();
+
+        return redirect()->route('master.participants')->with('success', "Peserta {$name} ({$code}) berhasil dihapus.");
+    }
+
     public function importParticipants(Request $request)
     {
         $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
