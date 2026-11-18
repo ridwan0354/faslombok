@@ -6,6 +6,7 @@ use App\Models\Competition;
 use App\Models\CompetitionAward;
 use App\Models\Entry;
 use App\Models\Event;
+use App\Models\EventSetting;
 use App\Models\GradeLevel;
 use App\Models\Group;
 use App\Models\JudgeAssignment;
@@ -26,6 +27,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class MasterController extends Controller
 {
@@ -843,5 +845,219 @@ class MasterController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /* -------------------------------------------------------------
+     * Certificate / Piagam Penghargaan
+     * ------------------------------------------------------------- */
+    public function certificates(Request $request)
+    {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+        $setting = EventSetting::firstOrCreate(['event_id' => $event->id]);
+        $template = $setting->getCertificateTemplate();
+
+        $competitions = Competition::where('event_id', $event->id)->get();
+        $groups = Group::where('event_id', $event->id)->get();
+
+        $selectedCompId = $request->input('competition_id');
+        $recipientType = $request->input('type', 'all');
+        $search = $request->input('search');
+
+        $recipients = $this->collectCertificateRecipients($event, $selectedCompId, $recipientType, $search);
+
+        return view('master.certificates.index', compact(
+            'event',
+            'setting',
+            'template',
+            'competitions',
+            'groups',
+            'recipients',
+            'selectedCompId',
+            'recipientType',
+            'search'
+        ));
+    }
+
+    public function saveCertificateTemplate(Request $request)
+    {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+        $setting = EventSetting::firstOrCreate(['event_id' => $event->id]);
+
+        $raw = $request->has('template') ? $request->input('template') : $request->all();
+
+        $validator = validator($raw, [
+            'background_image' => 'nullable|string',
+            'paper_size' => 'nullable|string',
+            'orientation' => 'nullable|string',
+            'fields' => 'required|array',
+        ]);
+
+        $data = $validator->validate();
+
+        $currentConfig = $setting->config_json ?? [];
+        $currentConfig['certificate_template'] = [
+            'background_image' => $data['background_image'] ?? ($currentConfig['certificate_template']['background_image'] ?? '/images/sample-sertifikat-a4.jpg'),
+            'paper_size' => $data['paper_size'] ?? 'a4',
+            'orientation' => $data['orientation'] ?? 'landscape',
+            'fields' => $data['fields'],
+        ];
+
+        $setting->config_json = $currentConfig;
+        $setting->save();
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Template dan posisi area sertifikat berhasil disimpan.']);
+        }
+
+        return redirect()->back()->with('success', 'Template dan posisi area sertifikat berhasil disimpan.');
+    }
+
+    public function uploadCertificateBackground(Request $request)
+    {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+        $setting = EventSetting::firstOrCreate(['event_id' => $event->id]);
+
+        $request->validate([
+            'background' => 'required|image|mimes:jpeg,png,jpg|max:10240',
+        ]);
+
+        $file = $request->file('background');
+        $filename = 'cert_bg_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/certificates'), $filename);
+
+        $bgUrl = '/uploads/certificates/' . $filename;
+
+        $currentConfig = $setting->config_json ?? [];
+        $certTemplate = $currentConfig['certificate_template'] ?? EventSetting::defaultCertificateTemplate();
+        $certTemplate['background_image'] = $bgUrl;
+        $currentConfig['certificate_template'] = $certTemplate;
+
+        $setting->config_json = $currentConfig;
+        $setting->save();
+
+        return redirect()->back()->with('success', 'Gambar template sertifikat baru berhasil diunggah.');
+    }
+
+    public function resetCertificateTemplate(Request $request)
+    {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+        $setting = EventSetting::firstOrCreate(['event_id' => $event->id]);
+
+        $currentConfig = $setting->config_json ?? [];
+        $currentConfig['certificate_template'] = EventSetting::defaultCertificateTemplate();
+        $setting->config_json = $currentConfig;
+        $setting->save();
+
+        return redirect()->back()->with('success', 'Template sertifikat berhasil di-reset ke contoh bawaan resmi A4 FAS 2026.');
+    }
+
+    public function printCertificates(Request $request)
+    {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+        $setting = EventSetting::firstOrCreate(['event_id' => $event->id]);
+        $template = $setting->getCertificateTemplate();
+
+        $selectedCompId = $request->input('competition_id');
+        $recipientType = $request->input('type', 'all');
+        $search = $request->input('search');
+        $singleEntryId = $request->input('entry_id');
+        $singleParticipantId = $request->input('participant_id');
+
+        $recipients = $this->collectCertificateRecipients($event, $selectedCompId, $recipientType, $search);
+
+        if ($singleEntryId) {
+            $recipients = array_values(array_filter($recipients, fn($r) => ($r['entry_id'] ?? null) == $singleEntryId));
+        } elseif ($singleParticipantId) {
+            $recipients = array_values(array_filter($recipients, fn($r) => ($r['participant_id'] ?? null) == $singleParticipantId));
+        }
+
+        return view('master.certificates.print', compact('event', 'template', 'recipients'));
+    }
+
+    protected function collectCertificateRecipients($event, $competitionId = null, $type = 'all', $search = null): array
+    {
+        $compQuery = Competition::where('event_id', $event->id);
+        if ($competitionId) {
+            $compQuery->where('id', $competitionId);
+        }
+        $competitions = $compQuery->get();
+
+        $recipients = [];
+        $certNum = 1;
+
+        foreach ($competitions as $comp) {
+            $leaderboard = $this->rankingService->getLeaderboard($comp);
+
+            foreach ($leaderboard as $row) {
+                $isWinner = !empty($row['rank']) && $row['rank'] <= 6 && !empty($row['award_label']);
+
+                if ($type === 'winners' && !$isWinner) {
+                    continue;
+                }
+                if ($type === 'participants' && $isWinner) {
+                    continue;
+                }
+
+                $name = $row['name'] ?? '-';
+                $groupName = $row['group_name'] ?? '-';
+
+                if ($search) {
+                    $s = strtolower($search);
+                    if (strpos(strtolower($name), $s) === false && strpos(strtolower($groupName), $s) === false) {
+                        continue;
+                    }
+                }
+
+                $awardText = $isWinner ? strtoupper($row['award_label']) : 'PESERTA';
+
+                $recipients[] = [
+                    'id' => 'entry_' . $row['entry']->id,
+                    'entry_id' => $row['entry']->id,
+                    'participant_id' => $row['entry']->participant_id,
+                    'team_id' => $row['entry']->team_id,
+                    'name' => $name,
+                    'award' => $awardText,
+                    'is_winner' => $isWinner,
+                    'rank' => $row['rank'] ?? null,
+                    'competition' => $comp->name,
+                    'group' => $groupName,
+                    'code' => $row['entry']->participant ? $row['entry']->participant->participant_code : ($row['entry']->team ? $row['entry']->team->team_code : '-'),
+                    'certificate_number' => sprintf('%03d/FAS-LBK/XII/2026', $certNum++),
+                ];
+            }
+        }
+
+        if (!$competitionId && $type !== 'winners') {
+            $unregisteredParticipants = Participant::where('event_id', $event->id)
+                ->whereDoesntHave('entries')
+                ->with('group')
+                ->get();
+
+            foreach ($unregisteredParticipants as $p) {
+                if ($search) {
+                    $s = strtolower($search);
+                    if (strpos(strtolower($p->name), $s) === false && (!$p->group || strpos(strtolower($p->group->name), $s) === false)) {
+                        continue;
+                    }
+                }
+
+                $recipients[] = [
+                    'id' => 'part_' . $p->id,
+                    'entry_id' => null,
+                    'participant_id' => $p->id,
+                    'team_id' => null,
+                    'name' => $p->name,
+                    'award' => 'PESERTA',
+                    'is_winner' => false,
+                    'rank' => null,
+                    'competition' => 'Festival Anak Sholeh 2026',
+                    'group' => $p->group ? $p->group->name : '-',
+                    'code' => $p->participant_code,
+                    'certificate_number' => sprintf('%03d/FAS-LBK/XII/2026', $certNum++),
+                ];
+            }
+        }
+
+        return $recipients;
     }
 }

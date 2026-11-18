@@ -75,4 +75,11 @@ Route::prefix('master')->name('master.')->middleware(['master'])->group(function
     // Reports & CSV Exports
     Route::get('/laporan', [MasterController::class, 'reports'])->name('reports');
     Route::get('/laporan/export-csv/{competition}', [MasterController::class, 'exportCompetitionCsv'])->name('reports.export.csv');
+
+    // Certificates / Piagam Penghargaan
+    Route::get('/sertifikat', [MasterController::class, 'certificates'])->name('certificates');
+    Route::post('/sertifikat/template', [MasterController::class, 'saveCertificateTemplate'])->name('certificates.template.save');
+    Route::post('/sertifikat/upload-background', [MasterController::class, 'uploadCertificateBackground'])->name('certificates.upload.background');
+    Route::post('/sertifikat/reset-template', [MasterController::class, 'resetCertificateTemplate'])->name('certificates.template.reset');
+    Route::get('/sertifikat/cetak', [MasterController::class, 'printCertificates'])->name('certificates.print');
 });

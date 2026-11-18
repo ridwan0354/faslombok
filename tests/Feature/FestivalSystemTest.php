@@ -541,4 +541,69 @@ class FestivalSystemTest extends TestCase
         $response->assertSessionHas('error');
         $this->assertDatabaseHas('competitions', ['id' => $adzanComp->id]);
     }
+
+    /**
+     * Test Master can access certificate editor page
+     */
+    public function test_master_can_access_certificates_page(): void
+    {
+        $master = User::where('role', 'master')->first();
+
+        $response = $this->actingAs($master)
+            ->get(route('master.certificates'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Cetak Piagam / Sertifikat');
+        $response->assertSee('Visual Editor Posisi Teks');
+        $response->assertSee('sample-sertifikat-a4.jpg');
+    }
+
+    /**
+     * Test Master can save certificate template coordinates and styles
+     */
+    public function test_master_can_save_certificate_template(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $defaults = \App\Models\EventSetting::defaultCertificateTemplate();
+
+        // Modify X/Y coordinate for name
+        $fields = $defaults['fields'];
+        $fields['name']['x'] = 52.5;
+        $fields['name']['y'] = 40.0;
+        $fields['name']['font_size'] = 42;
+
+        $response = $this->actingAs($master)
+            ->post(route('master.certificates.template.save'), [
+                'template' => [
+                    'background_image' => '/images/sample-sertifikat-a4.jpg',
+                    'paper_size' => 'a4',
+                    'orientation' => 'landscape',
+                    'fields' => $fields,
+                ]
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $setting = \App\Models\EventSetting::first();
+        $tpl = $setting->getCertificateTemplate();
+        $this->assertEquals(52.5, $tpl['fields']['name']['x']);
+        $this->assertEquals(40.0, $tpl['fields']['name']['y']);
+        $this->assertEquals(42, $tpl['fields']['name']['font_size']);
+    }
+
+    /**
+     * Test Master can access print certificates page
+     */
+    public function test_master_can_access_print_certificates_page(): void
+    {
+        $master = User::where('role', 'master')->first();
+
+        $response = $this->actingAs($master)
+            ->get(route('master.certificates.print'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Cetak Piagam / Sertifikat');
+        $response->assertSee('Muhammad Rayyan Al-Farisi');
+    }
 }

@@ -80,6 +80,12 @@
                 Laporan & Ekspor
             </a>
 
+            <a href="{{ route('master.certificates') }}" 
+               class="flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all {{ request()->routeIs('master.certificates*') ? 'bg-gradient-to-r from-purple-700 to-pink-700 text-white shadow-lg border border-purple-400/30' : 'text-purple-200/80 hover:bg-purple-800/50 hover:text-white' }}">
+                <svg class="w-5 h-5 mr-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Cetak Piagam / Sertifikat
+            </a>
+
             <div class="pt-3 border-t border-purple-800/50">
                 <a href="{{ route('home') }}" target="_blank"
                    class="flex items-center px-3.5 py-2 rounded-xl text-xs font-bold text-amber-300 hover:bg-amber-400/10 transition-all">
