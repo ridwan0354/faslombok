@@ -3,59 +3,65 @@
 @section('title', 'Cetak Sertifikat & Piagam Penghargaan - FAS Lombok 2026')
 
 @section('content')
-<div class="space-y-6" x-data="{
-    template: @json($template),
-    activeField: 'name',
-    sampleData: {
-        name: 'Muhammad Rayyan Al-Farisi',
-        award: 'JUARA 1',
-        competition: 'Adzan',
-        group: 'Ampenan',
-        number: '001/FAS-LBK/XII/2026'
-    },
-    isDragging: false,
-    dragField: null,
-    showUploadModal: false,
-    canvasWidth: 0,
-    startDrag(field, event) {
-        event.preventDefault();
-        this.isDragging = true;
-        this.dragField = field;
-        this.activeField = field;
-    },
-    onMouseMove(event) {
-        if (!this.isDragging || !this.dragField) return;
-        const canvas = this.$refs.certCanvas.getBoundingClientRect();
-        let clientX = event.clientX;
-        let clientY = event.clientY;
-        if (event.touches && event.touches[0]) {
-            clientX = event.touches[0].clientX;
-            clientY = event.touches[0].clientY;
+<script>
+function certEditor() {
+    return {
+        template: {!! json_encode($template) !!},
+        activeField: 'name',
+        sampleData: {
+            name: 'Muhammad Rayyan Al-Farisi',
+            award: 'JUARA 1',
+            competition: 'Adzan',
+            group: 'Ampenan',
+            number: '001/FAS-LBK/XII/2026'
+        },
+        isDragging: false,
+        dragField: null,
+        showUploadModal: false,
+        startDrag(field, event) {
+            event.preventDefault();
+            this.isDragging = true;
+            this.dragField = field;
+            this.activeField = field;
+        },
+        onMouseMove(event) {
+            if (!this.isDragging || !this.dragField) return;
+            const canvas = this.$refs.certCanvas.getBoundingClientRect();
+            let clientX = event.clientX;
+            let clientY = event.clientY;
+            if (event.touches && event.touches[0]) {
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            }
+            let x = ((clientX - canvas.left) / canvas.width) * 100;
+            let y = ((clientY - canvas.top) / canvas.height) * 100;
+            x = Math.max(3, Math.min(97, Math.round(x * 10) / 10));
+            y = Math.max(3, Math.min(97, Math.round(y * 10) / 10));
+            this.template.fields[this.dragField].x = x;
+            this.template.fields[this.dragField].y = y;
+        },
+        stopDrag() {
+            this.isDragging = false;
+            this.dragField = null;
+        },
+        setPreviewRecipient(r) {
+            this.sampleData.name = r.name;
+            this.sampleData.award = r.award;
+            this.sampleData.competition = r.competition;
+            this.sampleData.group = r.group;
+            this.sampleData.number = r.certificate_number;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        let x = ((clientX - canvas.left) / canvas.width) * 100;
-        let y = ((clientY - canvas.top) / canvas.height) * 100;
-        x = Math.max(3, Math.min(97, Math.round(x * 10) / 10));
-        y = Math.max(3, Math.min(97, Math.round(y * 10) / 10));
-        this.template.fields[this.dragField].x = x;
-        this.template.fields[this.dragField].y = y;
-    },
-    stopDrag() {
-        this.isDragging = false;
-        this.dragField = null;
-    },
-    setPreviewRecipient(r) {
-        this.sampleData.name = r.name;
-        this.sampleData.award = r.award;
-        this.sampleData.competition = r.competition;
-        this.sampleData.group = r.group;
-        this.sampleData.number = r.certificate_number;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-}"
-@mousemove="onMouseMove($event)"
-@mouseup="stopDrag()"
-@touchmove="onMouseMove($event)"
-@touchend="stopDrag()">
+    };
+}
+</script>
+
+<div class="space-y-6" 
+     x-data="certEditor()"
+     @mousemove="onMouseMove($event)"
+     @mouseup="stopDrag()"
+     @touchmove="onMouseMove($event)"
+     @touchend="stopDrag()">
 
     <!-- Header Section -->
     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -112,12 +118,13 @@
 
                 <!-- A4 Aspect Ratio Container (297 / 210 = 1.414) -->
                 <div class="w-full relative rounded-2xl overflow-hidden border-2 border-slate-300 shadow-md bg-slate-100 select-none cursor-crosshair"
-                     style="aspect-ratio: 297 / 210; width: 100%; min-height: 380px;"
+                     style="aspect-ratio: 297 / 210; width: 100%; min-height: 400px;"
                      x-ref="certCanvas">
 
-                    <!-- Background Image -->
+                    <!-- Background Image (Rendered with fallback src) -->
                     <img :src="template.background_image" 
-                         alt="Certificate Template" 
+                         src="{{ $template['background_image'] }}"
+                         alt="Template Piagam FAS 2026" 
                          class="w-full h-full object-cover pointer-events-none absolute inset-0">
 
                     <!-- Field 1: Nomor Sertifikat -->
