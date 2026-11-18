@@ -143,19 +143,26 @@ class FestivalSeeder extends Seeder
 
         // 5. Create Groups (Kelompok / TPQ)
         $groupsData = [
-            ['name' => 'TPQ Al-Ikhlas Ampenan', 'code' => 'AMP-01'],
-            ['name' => 'TPQ Al-Falah Mataram', 'code' => 'MTR-02'],
-            ['name' => 'TPQ Nurul Huda Cakranegara', 'code' => 'CKR-03'],
-            ['name' => 'TPQ Darul Ulum Gerung', 'code' => 'GRG-04'],
-            ['name' => 'TPQ Babul Jannah Praya', 'code' => 'PRY-05'],
+            ['name' => 'Ampenan', 'code' => 'AMP'],
+            ['name' => 'Mataram', 'code' => 'MTR'],
+            ['name' => 'Sandik', 'code' => 'SDK'],
+            ['name' => 'Pagutan', 'code' => 'PGT'],
+            ['name' => 'Prumnas', 'code' => 'PRM'],
+            ['name' => 'Cakranegara', 'code' => 'CKR'],
+            ['name' => 'Narmada', 'code' => 'NRM'],
+            ['name' => 'Selong', 'code' => 'SLG'],
+            ['name' => 'Praya', 'code' => 'PRY'],
         ];
 
         $groups = [];
+        $groupsMap = [];
         foreach ($groupsData as $grp) {
-            $groups[] = Group::firstOrCreate(
+            $g = Group::firstOrCreate(
                 ['event_id' => $event->id, 'name' => $grp['name']],
                 ['code' => $grp['code']]
             );
+            $groups[] = $g;
+            $groupsMap[$grp['name']] = $g;
         }
 
         // 6. Define 12 Competitions with initial Rubrics & Eligible Grades
@@ -444,49 +451,49 @@ class FestivalSeeder extends Seeder
         $participantsData = [
             [
                 'name' => 'Muhammad Rayyan Al-Farisi',
-                'group' => $groups[0], // Ampenan
+                'group' => $groupsMap['Ampenan'],
                 'grade' => $grades['KELAS_5'],
                 'gender' => 'L',
                 'comps' => ['Adzan', 'Dai Caberawit'],
             ],
             [
                 'name' => 'Ahmad Bilal Al-Habib',
-                'group' => $groups[1], // Mataram
+                'group' => $groupsMap['Mataram'],
                 'grade' => $grades['KELAS_5'],
                 'gender' => 'L',
                 'comps' => ['Adzan'],
             ],
             [
                 'name' => 'Fathir Azzam Robbani',
-                'group' => $groups[2], // Cakranegara
+                'group' => $groupsMap['Cakranegara'],
                 'grade' => $grades['KELAS_5'],
                 'gender' => 'L',
                 'comps' => ['Adzan'],
             ],
             [
                 'name' => 'Aisyah Putri Azzahra',
-                'group' => $groups[0], // Ampenan
+                'group' => $groupsMap['Ampenan'],
                 'grade' => $grades['KELAS_3'],
                 'gender' => 'P',
                 'comps' => ['Hafalan Surat Pendek'],
             ],
             [
                 'name' => 'Fatimah Khairunnisa',
-                'group' => $groups[1], // Mataram
+                'group' => $groupsMap['Mataram'],
                 'grade' => $grades['KELAS_3'],
                 'gender' => 'P',
                 'comps' => ['Hafalan Surat Pendek'],
             ],
             [
                 'name' => 'Khaira Lubna Salsabila',
-                'group' => $groups[3], // Gerung
+                'group' => $groupsMap['Sandik'],
                 'grade' => $grades['TK_B'],
                 'gender' => 'P',
                 'comps' => ['Mewarnai'],
             ],
             [
                 'name' => 'Syamil Al-Banna',
-                'group' => $groups[4], // Praya
+                'group' => $groupsMap['Praya'],
                 'grade' => $grades['KELAS_4'],
                 'gender' => 'L',
                 'comps' => ['Kaligrafi'],
@@ -535,7 +542,7 @@ class FestivalSeeder extends Seeder
         $team = Team::firstOrCreate(
             ['event_id' => $event->id, 'competition_id' => $teamComp->id, 'team_code' => 'TIM-YEL-01'],
             [
-                'group_id' => $groups[0]->id,
+                'group_id' => $groupsMap['Ampenan']->id,
                 'name' => 'Laskar 29 Ampenan Juara',
             ]
         );

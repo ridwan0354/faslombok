@@ -419,11 +419,11 @@
                 <span class="text-xs font-bold uppercase tracking-wider text-emerald-950 block">+ Tambah Kelompok / TPQ Baru</span>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <div class="sm:col-span-2">
-                        <input type="text" name="name" required placeholder="Nama Kelompok / TPQ (contoh: TPQ Al-Hidayah)" 
+                        <input type="text" name="name" required placeholder="Nama Kelompok / TPQ (contoh: Ampenan, Mataram)" 
                                class="w-full px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600">
                     </div>
                     <div>
-                        <input type="text" name="code" placeholder="Kode (misal: HDY)" 
+                        <input type="text" name="code" placeholder="Kode (misal: AMP)" 
                                class="w-full px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 uppercase">
                     </div>
                 </div>

@@ -393,7 +393,7 @@ class FestivalSystemTest extends TestCase
     public function test_master_cannot_delete_group_with_participants(): void
     {
         $master = User::where('role', 'master')->first();
-        $group = \App\Models\Group::where('name', 'TPQ Al-Falah Mataram')->first();
+        $group = \App\Models\Group::where('name', 'Mataram')->first();
 
         $response = $this->actingAs($master)
             ->delete(route('master.groups.destroy', $group->id));
