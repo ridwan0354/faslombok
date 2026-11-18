@@ -7,6 +7,7 @@
 function certEditor() {
     return {
         template: {!! json_encode($template) !!},
+        recipients: {!! json_encode($recipients) !!},
         activeField: 'name',
         sampleData: {
             name: 'Muhammad Rayyan Al-Farisi',
@@ -18,6 +19,7 @@ function certEditor() {
         isDragging: false,
         dragField: null,
         showUploadModal: false,
+        uploadedFileName: '',
         startDrag(field, event) {
             event.preventDefault();
             this.isDragging = true;
@@ -44,13 +46,19 @@ function certEditor() {
             this.isDragging = false;
             this.dragField = null;
         },
-        setPreviewRecipient(r) {
-            this.sampleData.name = r.name;
-            this.sampleData.award = r.award;
-            this.sampleData.competition = r.competition;
-            this.sampleData.group = r.group;
-            this.sampleData.number = r.certificate_number;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        selectRecipient(idx) {
+            const r = this.recipients[idx];
+            if (r) {
+                this.sampleData.name = r.name || '';
+                this.sampleData.award = r.award || '';
+                this.sampleData.competition = r.competition || '';
+                this.sampleData.group = r.group || '';
+                this.sampleData.number = r.certificate_number || '';
+                const canvasBox = document.getElementById('certCanvasContainer');
+                if (canvasBox) {
+                    canvasBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         }
     };
 }
@@ -58,10 +66,10 @@ function certEditor() {
 
 <div class="space-y-6" 
      x-data="certEditor()"
-     @mousemove="onMouseMove($event)"
-     @mouseup="stopDrag()"
-     @touchmove="onMouseMove($event)"
-     @touchend="stopDrag()">
+     @mousemove.window="onMouseMove($event)"
+     @mouseup.window="stopDrag()"
+     @touchmove.window="onMouseMove($event)"
+     @touchend.window="stopDrag()">
 
     <!-- Header Section -->
     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -81,12 +89,12 @@ function certEditor() {
         <div class="flex flex-wrap items-center gap-2.5">
             <button @click="showUploadModal = true" 
                     type="button"
-                    class="px-4 py-2.5 rounded-2xl bg-white border border-purple-200 text-purple-950 font-bold text-xs hover:bg-purple-50 transition-colors shadow-xs flex items-center space-x-2">
+                    class="px-4 py-2.5 rounded-2xl bg-white border border-purple-200 text-purple-950 font-bold text-xs hover:bg-purple-50 transition-colors shadow-xs flex items-center space-x-2 cursor-pointer">
                 <svg class="w-4 h-4 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <span>Ganti Gambar Background</span>
             </button>
 
-            <a :href="'{{ route('master.certificates.print') }}?competition_id={{ $selectedCompId }}&type={{ $recipientType }}&search={{ urlencode($search) }}'" 
+            <a href="{{ route('master.certificates.print', ['competition_id' => $selectedCompId, 'type' => $recipientType, 'search' => $search]) }}" 
                target="_blank"
                class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-purple-800 to-pink-700 hover:from-purple-900 hover:to-pink-800 text-white font-black text-xs shadow-md transition-all flex items-center space-x-2">
                 <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -99,7 +107,7 @@ function certEditor() {
     <div class="flex flex-col xl:flex-row gap-6 items-start w-full">
         
         <!-- Left: Visual A4 Canvas Preview (Takes all remaining width) -->
-        <div class="w-full xl:flex-1 min-w-0 space-y-4">
+        <div id="certCanvasContainer" class="w-full xl:flex-1 min-w-0 space-y-4">
             <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div class="flex items-center space-x-2">
@@ -109,7 +117,7 @@ function certEditor() {
                     <div class="flex items-center space-x-3">
                         <form action="{{ route('master.certificates.template.reset') }}" method="POST" onsubmit="return confirm('Kembalikan template ke desain contoh resmi FAS 2026?')" class="inline">
                             @csrf
-                            <button type="submit" class="text-xs font-bold text-rose-600 hover:text-rose-700 hover:underline">
+                            <button type="submit" class="text-xs font-bold text-rose-600 hover:text-rose-700 hover:underline cursor-pointer">
                                 Reset Template Bawaan
                             </button>
                         </form>
@@ -466,8 +474,8 @@ function certEditor() {
                         </td>
                         <td class="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
                             <button type="button" 
-                                    @click="setPreviewRecipient(@json($r))"
-                                    class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-purple-100 text-slate-700 hover:text-purple-900 font-bold text-xs transition-colors">
+                                    @click="selectRecipient({{ $idx }})"
+                                    class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-purple-100 text-slate-700 hover:text-purple-900 font-bold text-xs transition-colors cursor-pointer">
                                 Preview di Canvas ↑
                             </button>
                             <a href="{{ route('master.certificates.print', ['entry_id' => $r['entry_id'], 'participant_id' => $r['participant_id']]) }}" 
@@ -494,7 +502,7 @@ function certEditor() {
         <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4" @click.away="showUploadModal = false">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 class="text-base font-extrabold text-slate-900">Upload Gambar Background Sertifikat</h3>
-                <button @click="showUploadModal = false" class="text-slate-400 hover:text-slate-600 p-1">
+                <button type="button" @click="showUploadModal = false" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -505,16 +513,22 @@ function certEditor() {
                     <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <label class="block text-xs font-bold text-purple-900 cursor-pointer hover:underline mb-1">
                         <span>Pilih Gambar dari Komputer</span>
-                        <input type="file" name="background" required accept="image/jpeg,image/png,image/jpg" class="sr-only">
+                        <input type="file" name="background" required accept="image/jpeg,image/png,image/jpg" 
+                               @change="uploadedFileName = $event.target.files[0]?.name || ''"
+                               class="sr-only">
                     </label>
-                    <p class="text-[11px] text-slate-400">Format JPG atau PNG (Disarankan rasio A4 Landscape: 297mm × 210mm, min. 1754×1240 px, maks 10MB)</p>
+                    <div x-show="uploadedFileName" class="mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-bold flex items-center justify-center space-x-1.5">
+                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span x-text="uploadedFileName"></span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Format JPG atau PNG (Disarankan rasio A4 Landscape: 297mm × 210mm, min. 1754×1240 px, maks 10MB)</p>
                 </div>
 
                 <div class="flex items-center justify-end space-x-2 pt-2">
-                    <button type="button" @click="showUploadModal = false" class="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl">
+                    <button type="button" @click="showUploadModal = false" class="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl cursor-pointer">
                         Batal
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-xs">
+                    <button type="submit" class="px-4 py-2 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer">
                         Upload & Terapkan
                     </button>
                 </div>
