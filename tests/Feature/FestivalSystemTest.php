@@ -553,8 +553,7 @@ class FestivalSystemTest extends TestCase
             ->get(route('master.certificates'));
 
         $response->assertStatus(200);
-        $response->assertSee('Cetak Piagam / Sertifikat');
-        $response->assertSee('Visual Editor Posisi Teks');
+        $response->assertSee('Visual Kanvas Piagam');
         $response->assertSee('sample-sertifikat-a4.jpg');
     }
 

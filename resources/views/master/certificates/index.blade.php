@@ -16,7 +16,7 @@
     isDragging: false,
     dragField: null,
     showUploadModal: false,
-    isSaving: false,
+    canvasWidth: 0,
     startDrag(field, event) {
         event.preventDefault();
         this.isDragging = true;
@@ -34,8 +34,8 @@
         }
         let x = ((clientX - canvas.left) / canvas.width) * 100;
         let y = ((clientY - canvas.top) / canvas.height) * 100;
-        x = Math.max(5, Math.min(95, Math.round(x * 10) / 10));
-        y = Math.max(5, Math.min(95, Math.round(y * 10) / 10));
+        x = Math.max(3, Math.min(97, Math.round(x * 10) / 10));
+        y = Math.max(3, Math.min(97, Math.round(y * 10) / 10));
         this.template.fields[this.dragField].x = x;
         this.template.fields[this.dragField].y = y;
     },
@@ -57,67 +57,78 @@
 @touchmove="onMouseMove($event)"
 @touchend="stopDrag()">
 
-    <!-- Header & Action Bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <!-- Header Section -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-black text-purple-950 tracking-tight flex items-center gap-2">
-                <span>Cetak Piagam / Sertifikat</span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">Format Kertas A4</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-1">
-                Kustomisasi posisi teks penerima, juara, dan lomba langsung di atas gambar template sertifikat, lalu cetak satuan atau massal.
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1 rounded-full text-xs font-black bg-purple-100 text-purple-900 border border-purple-200 uppercase tracking-wider">
+                    Format A4 Landscape
+                </span>
+                <span class="text-xs text-slate-400 font-mono">297mm × 210mm</span>
+            </div>
+            <h1 class="text-2xl font-black text-purple-950 tracking-tight mt-1">Cetak Piagam & Sertifikat Penghargaan</h1>
+            <p class="text-xs text-slate-500 mt-1 max-w-2xl">
+                Sesuaikan letak nama, juara, dan lomba langsung di atas gambar template piagam. Anda dapat menggeser posisi teks secara bebas (drag & drop) lalu cetak langsung ke kertas A4.
             </p>
         </div>
-        <div class="flex flex-wrap items-center gap-2 self-start">
+
+        <div class="flex flex-wrap items-center gap-2.5">
             <button @click="showUploadModal = true" 
                     type="button"
-                    class="px-3.5 py-2 rounded-xl bg-white border border-purple-200 text-purple-900 font-bold text-xs hover:bg-purple-50 transition-colors shadow-xs flex items-center space-x-1.5">
+                    class="px-4 py-2.5 rounded-2xl bg-white border border-purple-200 text-purple-950 font-bold text-xs hover:bg-purple-50 transition-colors shadow-xs flex items-center space-x-2">
                 <svg class="w-4 h-4 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <span>Ganti Gambar Background</span>
             </button>
+
             <a :href="'{{ route('master.certificates.print') }}?competition_id={{ $selectedCompId }}&type={{ $recipientType }}&search={{ urlencode($search) }}'" 
                target="_blank"
-               class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-800 to-pink-700 text-white font-bold text-xs hover:from-purple-900 hover:to-pink-800 transition-colors shadow-sm flex items-center space-x-1.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                <span>Cetak Semua Sesuai Filter ({{ count($recipients) }} Piagam)</span>
+               class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-purple-800 to-pink-700 hover:from-purple-900 hover:to-pink-800 text-white font-black text-xs shadow-md transition-all flex items-center space-x-2">
+                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <span>Cetak Semua Piagam ({{ count($recipients) }} Lembar)</span>
             </a>
         </div>
     </div>
 
-    <!-- Main Workspace Grid: Canvas Preview (Left/Top) + Positioning Controls (Right) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <!-- Main Workspace: Canvas (Full Left) & Controls (Right) -->
+    <div class="flex flex-col xl:flex-row gap-6 items-start w-full">
         
-        <!-- Left: Visual A4 Canvas Preview -->
-        <div class="lg:col-span-8 space-y-3">
-            <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs space-y-3">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <!-- Left: Visual A4 Canvas Preview (Takes all remaining width) -->
+        <div class="w-full xl:flex-1 min-w-0 space-y-4">
+            <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div class="flex items-center space-x-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <h2 class="text-xs sm:text-sm font-extrabold text-slate-800">Visual Editor Posisi Teks (Drag & Drop Langsung)</h2>
+                        <h2 class="text-sm font-black text-slate-800">Visual Kanvas Piagam (Drag & Drop Langsung)</h2>
                     </div>
-                    <span class="text-[11px] text-slate-400 font-mono">A4 Landscape • 297mm × 210mm</span>
+                    <div class="flex items-center space-x-3">
+                        <form action="{{ route('master.certificates.template.reset') }}" method="POST" onsubmit="return confirm('Kembalikan template ke desain contoh resmi FAS 2026?')" class="inline">
+                            @csrf
+                            <button type="submit" class="text-xs font-bold text-rose-600 hover:text-rose-700 hover:underline">
+                                Reset Template Bawaan
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
-                <!-- Interactive A4 Canvas -->
-                <div class="relative w-full rounded-2xl overflow-hidden border-2 border-slate-300 shadow-inner bg-slate-900 select-none cursor-crosshair"
-                     style="aspect-ratio: 297 / 210;"
+                <!-- A4 Aspect Ratio Container (297 / 210 = 1.414) -->
+                <div class="w-full relative rounded-2xl overflow-hidden border-2 border-slate-300 shadow-md bg-slate-100 select-none cursor-crosshair"
+                     style="aspect-ratio: 297 / 210; width: 100%; min-height: 380px;"
                      x-ref="certCanvas">
 
-                    <!-- Background Image (Sample or User Uploaded) -->
+                    <!-- Background Image -->
                     <img :src="template.background_image" 
-                         alt="Certificate Background" 
+                         alt="Certificate Template" 
                          class="w-full h-full object-cover pointer-events-none absolute inset-0">
 
-                    <!-- Dynamic Draggable Text Overlays -->
-
-                    <!-- 1. Nomor Sertifikat -->
+                    <!-- Field 1: Nomor Sertifikat -->
                     <template x-if="template.fields.number && template.fields.number.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded transition-all"
+                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
                              :class="activeField === 'number' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.number.x}%; top: ${template.fields.number.y}%;`"
+                             :style="`left: ${template.fields.number.x}%; top: ${template.fields.number.y}%; z-index: ${activeField === 'number' ? 40 : 20};`"
                              @mousedown="startDrag('number', $event)"
-                             @touchstart="startDrag('number', $event)">
-                            <div :style="`font-size: ${template.fields.number.font_size * 0.7}px; font-family: ${template.fields.number.font_family}; font-weight: ${template.fields.number.font_weight}; color: ${template.fields.number.color}; text-align: ${template.fields.number.align};`"
+                             @touchstart="startDrag('number', $event)"
+                             @click="activeField = 'number'">
+                            <div :style="`font-size: clamp(8px, 1.1vw, ${template.fields.number.font_size}px); font-family: ${template.fields.number.font_family}; font-weight: ${template.fields.number.font_weight}; color: ${template.fields.number.color}; text-align: ${template.fields.number.align};`"
                                  class="whitespace-nowrap px-1.5 py-0.5 font-mono">
                                 <span x-text="template.fields.number.prefix"></span><span x-text="sampleData.number"></span>
                             </div>
@@ -127,15 +138,16 @@
                         </div>
                     </template>
 
-                    <!-- 2. Nama Penerima -->
+                    <!-- Field 2: Nama Penerima -->
                     <template x-if="template.fields.name && template.fields.name.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1.5 rounded transition-all"
+                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1.5 rounded-lg transition-all"
                              :class="activeField === 'name' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-lg' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.name.x}%; top: ${template.fields.name.y}%;`"
+                             :style="`left: ${template.fields.name.x}%; top: ${template.fields.name.y}%; z-index: ${activeField === 'name' ? 40 : 20};`"
                              @mousedown="startDrag('name', $event)"
-                             @touchstart="startDrag('name', $event)">
-                            <div :style="`font-size: ${template.fields.name.font_size * 0.7}px; font-family: ${template.fields.name.font_family}; font-weight: ${template.fields.name.font_weight}; color: ${template.fields.name.color}; text-align: ${template.fields.name.align};`"
-                                 class="whitespace-nowrap px-3 py-1 drop-shadow-sm">
+                             @touchstart="startDrag('name', $event)"
+                             @click="activeField = 'name'">
+                            <div :style="`font-size: clamp(14px, 2.3vw, ${template.fields.name.font_size}px); font-family: ${template.fields.name.font_family}; font-weight: ${template.fields.name.font_weight}; color: ${template.fields.name.color}; text-align: ${template.fields.name.align};`"
+                                 class="whitespace-nowrap px-3 py-0.5 drop-shadow-xs">
                                 <span x-text="template.fields.name.prefix"></span><span x-text="sampleData.name"></span>
                             </div>
                             <span class="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -144,31 +156,33 @@
                         </div>
                     </template>
 
-                    <!-- 3. Predikat / Juara -->
+                    <!-- Field 3: Predikat / Juara -->
                     <template x-if="template.fields.award && template.fields.award.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded transition-all"
+                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
                              :class="activeField === 'award' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.award.x}%; top: ${template.fields.award.y}%;`"
+                             :style="`left: ${template.fields.award.x}%; top: ${template.fields.award.y}%; z-index: ${activeField === 'award' ? 40 : 20};`"
                              @mousedown="startDrag('award', $event)"
-                             @touchstart="startDrag('award', $event)">
-                            <div :style="`font-size: ${template.fields.award.font_size * 0.7}px; font-family: ${template.fields.award.font_family}; font-weight: ${template.fields.award.font_weight}; color: ${template.fields.award.color}; text-align: ${template.fields.award.align};`"
-                                 class="whitespace-nowrap px-2 py-0.5 tracking-wider">
+                             @touchstart="startDrag('award', $event)"
+                             @click="activeField = 'award'">
+                            <div :style="`font-size: clamp(11px, 1.8vw, ${template.fields.award.font_size}px); font-family: ${template.fields.award.font_family}; font-weight: ${template.fields.award.font_weight}; color: ${template.fields.award.color}; text-align: ${template.fields.award.align};`"
+                                 class="whitespace-nowrap px-2 py-0.5 tracking-wider font-extrabold">
                                 <span x-text="template.fields.award.prefix"></span><span x-text="sampleData.award"></span>
                             </div>
                             <span class="absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Geser Juara / Predikat
+                                Geser Predikat/Juara
                             </span>
                         </div>
                     </template>
 
-                    <!-- 4. Cabang Lomba -->
+                    <!-- Field 4: Cabang Lomba -->
                     <template x-if="template.fields.competition && template.fields.competition.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded transition-all"
+                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
                              :class="activeField === 'competition' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.competition.x}%; top: ${template.fields.competition.y}%;`"
+                             :style="`left: ${template.fields.competition.x}%; top: ${template.fields.competition.y}%; z-index: ${activeField === 'competition' ? 40 : 20};`"
                              @mousedown="startDrag('competition', $event)"
-                             @touchstart="startDrag('competition', $event)">
-                            <div :style="`font-size: ${template.fields.competition.font_size * 0.7}px; font-family: ${template.fields.competition.font_family}; font-weight: ${template.fields.competition.font_weight}; color: ${template.fields.competition.color}; text-align: ${template.fields.competition.align};`"
+                             @touchstart="startDrag('competition', $event)"
+                             @click="activeField = 'competition'">
+                            <div :style="`font-size: clamp(10px, 1.4vw, ${template.fields.competition.font_size}px); font-family: ${template.fields.competition.font_family}; font-weight: ${template.fields.competition.font_weight}; color: ${template.fields.competition.color}; text-align: ${template.fields.competition.align};`"
                                  class="whitespace-nowrap px-2 py-0.5">
                                 <span x-text="template.fields.competition.prefix"></span><span x-text="sampleData.competition"></span>
                             </div>
@@ -178,77 +192,74 @@
                         </div>
                     </template>
 
-                    <!-- 5. Kelompok / TPQ -->
+                    <!-- Field 5: Kelompok / TPQ -->
                     <template x-if="template.fields.group && template.fields.group.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded transition-all"
+                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
                              :class="activeField === 'group' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.group.x}%; top: ${template.fields.group.y}%;`"
+                             :style="`left: ${template.fields.group.x}%; top: ${template.fields.group.y}%; z-index: ${activeField === 'group' ? 40 : 20};`"
                              @mousedown="startDrag('group', $event)"
-                             @touchstart="startDrag('group', $event)">
-                            <div :style="`font-size: ${template.fields.group.font_size * 0.7}px; font-family: ${template.fields.group.font_family}; font-weight: ${template.fields.group.font_weight}; color: ${template.fields.group.color}; text-align: ${template.fields.group.align};`"
+                             @touchstart="startDrag('group', $event)"
+                             @click="activeField = 'group'">
+                            <div :style="`font-size: clamp(9px, 1.2vw, ${template.fields.group.font_size}px); font-family: ${template.fields.group.font_family}; font-weight: ${template.fields.group.font_weight}; color: ${template.fields.group.color}; text-align: ${template.fields.group.align};`"
                                  class="whitespace-nowrap px-2 py-0.5">
                                 <span x-text="template.fields.group.prefix"></span><span x-text="sampleData.group"></span>
                             </div>
                             <span class="absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Geser Kelompok
+                                Geser Kelompok / TPQ
                             </span>
                         </div>
                     </template>
 
                 </div>
 
-                <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
-                    <span class="flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Tips: Klik dan tahan teks di atas untuk menggeser posisinya secara bebas.</span>
-                    </span>
-                    <form action="{{ route('master.certificates.template.reset') }}" method="POST" onsubmit="return confirm('Kembalikan template ke desain contoh bawaan?')">
-                        @csrf
-                        <button type="submit" class="text-rose-600 hover:text-rose-700 font-bold hover:underline">
-                            Reset ke Contoh Bawaan
-                        </button>
-                    </form>
+                <!-- Footer Hint -->
+                <div class="p-3 bg-purple-50/70 border border-purple-200 rounded-2xl flex items-center justify-between text-xs text-purple-950">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-purple-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Klik langsung pada teks di atas dan geser posisinya, atau atur koordinat X & Y di panel kanan.</span>
+                    </div>
+                    <span class="text-[11px] font-bold text-purple-700 font-mono">Status: Siap Cetak</span>
                 </div>
             </div>
         </div>
 
-        <!-- Right: Field Selector & Fine-Tune Controls -->
-        <div class="lg:col-span-4 space-y-4">
+        <!-- Right: Fixed Width Positioning & Style Controls -->
+        <div class="w-full xl:w-[380px] shrink-0 space-y-4">
             <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-4">
                 <div class="border-b border-slate-100 pb-3">
-                    <h3 class="text-sm font-black text-slate-900">Pengaturan Area Teks</h3>
-                    <p class="text-xs text-slate-500">Pilih komponen teks untuk menyesuaikan gaya & letak koordinat.</p>
+                    <h3 class="text-sm font-black text-slate-900">Pengaturan Letak & Gaya Teks</h3>
+                    <p class="text-xs text-slate-500">Pilih komponen di bawah untuk menyesuaikan posisi & font.</p>
                 </div>
 
-                <!-- Field Tabs -->
+                <!-- Field Selector Tabs -->
                 <div class="grid grid-cols-2 gap-1.5">
                     <button type="button" @click="activeField = 'name'" 
-                            :class="activeField === 'name' ? 'bg-purple-800 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
-                            class="px-2.5 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
+                            :class="activeField === 'name' ? 'bg-purple-900 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                            class="px-3 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
                         <span>Nama Peserta</span>
                         <span class="w-2 h-2 rounded-full" :class="template.fields.name.enabled ? 'bg-emerald-400' : 'bg-slate-400'"></span>
                     </button>
                     <button type="button" @click="activeField = 'award'" 
-                            :class="activeField === 'award' ? 'bg-purple-800 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
-                            class="px-2.5 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
+                            :class="activeField === 'award' ? 'bg-purple-900 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                            class="px-3 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
                         <span>Predikat / Juara</span>
                         <span class="w-2 h-2 rounded-full" :class="template.fields.award.enabled ? 'bg-emerald-400' : 'bg-slate-400'"></span>
                     </button>
                     <button type="button" @click="activeField = 'competition'" 
-                            :class="activeField === 'competition' ? 'bg-purple-800 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
-                            class="px-2.5 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
+                            :class="activeField === 'competition' ? 'bg-purple-900 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                            class="px-3 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
                         <span>Cabang Lomba</span>
                         <span class="w-2 h-2 rounded-full" :class="template.fields.competition.enabled ? 'bg-emerald-400' : 'bg-slate-400'"></span>
                     </button>
                     <button type="button" @click="activeField = 'group'" 
-                            :class="activeField === 'group' ? 'bg-purple-800 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
-                            class="px-2.5 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
+                            :class="activeField === 'group' ? 'bg-purple-900 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                            class="px-3 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
                         <span>Kelompok / TPQ</span>
                         <span class="w-2 h-2 rounded-full" :class="template.fields.group.enabled ? 'bg-emerald-400' : 'bg-slate-400'"></span>
                     </button>
                     <button type="button" @click="activeField = 'number'" 
-                            :class="activeField === 'number' ? 'bg-purple-800 text-white font-bold col-span-2' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 col-span-2'"
-                            class="px-2.5 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
+                            :class="activeField === 'number' ? 'bg-purple-900 text-white font-bold shadow-xs col-span-2' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 col-span-2'"
+                            class="px-3 py-2 rounded-xl text-xs transition-colors flex items-center justify-between">
                         <span>Nomor Sertifikat</span>
                         <span class="w-2 h-2 rounded-full" :class="template.fields.number.enabled ? 'bg-emerald-400' : 'bg-slate-400'"></span>
                     </button>
@@ -256,70 +267,70 @@
 
                 <!-- Active Field Controls Panel -->
                 <template x-if="template.fields[activeField]">
-                    <div class="space-y-3 pt-2 border-t border-slate-100">
+                    <div class="space-y-3.5 pt-3 border-t border-slate-100">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-700" x-text="template.fields[activeField].label"></span>
+                            <span class="text-xs font-black text-purple-950 uppercase tracking-wider" x-text="template.fields[activeField].label"></span>
                             <label class="inline-flex items-center cursor-pointer">
                                 <input type="checkbox" x-model="template.fields[activeField].enabled" class="sr-only peer">
                                 <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
-                                <span class="ml-2 text-xs font-medium text-slate-600">Aktif</span>
+                                <span class="ml-2 text-xs font-bold text-slate-700">Tampilkan</span>
                             </label>
                         </div>
 
-                        <!-- Prefix Input -->
+                        <!-- Prefix Text -->
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Teks Tambahan / Awalan (Prefix)</label>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Awalan Teks (Prefix)</label>
                             <input type="text" x-model="template.fields[activeField].prefix" 
-                                   class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
+                                   class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
                         </div>
 
-                        <!-- Coordinate Sliders -->
+                        <!-- X & Y Sliders -->
                         <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <div class="flex justify-between text-[11px] text-slate-500 mb-1">
+                            <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200">
+                                <div class="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
                                     <span>Posisi X</span>
-                                    <span class="font-mono font-bold" x-text="template.fields[activeField].x + '%'"></span>
+                                    <span class="font-mono text-purple-700" x-text="template.fields[activeField].x + '%'"></span>
                                 </div>
                                 <input type="range" min="5" max="95" step="0.5" x-model.number="template.fields[activeField].x" 
-                                       class="w-full accent-purple-600">
+                                       class="w-full accent-purple-700 cursor-pointer">
                             </div>
-                            <div>
-                                <div class="flex justify-between text-[11px] text-slate-500 mb-1">
+                            <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200">
+                                <div class="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
                                     <span>Posisi Y</span>
-                                    <span class="font-mono font-bold" x-text="template.fields[activeField].y + '%'"></span>
+                                    <span class="font-mono text-purple-700" x-text="template.fields[activeField].y + '%'"></span>
                                 </div>
                                 <input type="range" min="5" max="95" step="0.5" x-model.number="template.fields[activeField].y" 
-                                       class="w-full accent-purple-600">
+                                       class="w-full accent-purple-700 cursor-pointer">
                             </div>
                         </div>
 
                         <!-- Font Size & Color -->
                         <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <div class="flex justify-between text-[11px] text-slate-500 mb-1">
+                            <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200">
+                                <div class="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
                                     <span>Ukuran Font</span>
-                                    <span class="font-mono font-bold" x-text="template.fields[activeField].font_size + 'px'"></span>
+                                    <span class="font-mono text-purple-700" x-text="template.fields[activeField].font_size + 'px'"></span>
                                 </div>
                                 <input type="range" min="10" max="64" step="1" x-model.number="template.fields[activeField].font_size" 
-                                       class="w-full accent-purple-600">
+                                       class="w-full accent-purple-700 cursor-pointer">
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Warna Font</label>
+                            <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200">
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Warna Font</label>
                                 <div class="flex items-center space-x-2">
                                     <input type="color" x-model="template.fields[activeField].color" 
-                                           class="w-8 h-8 rounded-lg cursor-pointer border border-slate-200 p-0.5">
+                                           class="w-7 h-7 rounded-lg cursor-pointer border border-slate-300 p-0.5">
                                     <input type="text" x-model="template.fields[activeField].color" 
-                                           class="w-full px-2 py-1 text-xs font-mono uppercase bg-slate-50 border border-slate-300 rounded-lg">
+                                           class="w-full px-2 py-1 text-xs font-mono uppercase bg-white border border-slate-300 rounded-lg">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Font Style & Family -->
-                        <div class="grid grid-cols-2 gap-2 pt-1">
+                        <!-- Font Family & Weight -->
+                        <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Jenis Huruf</label>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Jenis Huruf</label>
                                 <select x-model="template.fields[activeField].font_family" 
-                                        class="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
+                                        class="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-medium">
                                     <option value="'Times New Roman', serif">Times New Roman (Serif)</option>
                                     <option value="'Georgia', serif">Georgia (Klasik)</option>
                                     <option value="'Arial', sans-serif">Arial (Modern)</option>
@@ -327,9 +338,9 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Ketebalan</label>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Ketebalan</label>
                                 <select x-model="template.fields[activeField].font_weight" 
-                                        class="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
+                                        class="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-medium">
                                     <option value="bold">Tebal (Bold)</option>
                                     <option value="normal">Normal</option>
                                 </select>
@@ -338,14 +349,13 @@
                     </div>
                 </template>
 
-                <!-- Save Template Button Form -->
-                <form action="{{ route('master.certificates.template.save') }}" method="POST" class="pt-2">
+                <!-- Save Form Button -->
+                <form action="{{ route('master.certificates.template.save') }}" method="POST" class="pt-3 border-t border-slate-100">
                     @csrf
                     <input type="hidden" name="template[background_image]" :value="template.background_image">
                     <input type="hidden" name="template[paper_size]" value="a4">
                     <input type="hidden" name="template[orientation]" value="landscape">
                     
-                    <!-- Hidden inputs for fields -->
                     <template x-for="(f, key) in template.fields" :key="key">
                         <div>
                             <input type="hidden" :name="`template[fields][${key}][label]`" :value="f.label">
@@ -362,7 +372,7 @@
                     </template>
 
                     <button type="submit" 
-                            class="w-full py-2.5 bg-purple-900 hover:bg-purple-950 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center space-x-1.5">
+                            class="w-full py-3 bg-purple-900 hover:bg-purple-950 text-white font-black text-xs rounded-2xl shadow-md transition-all flex items-center justify-center space-x-2">
                         <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         <span>Simpan Pengaturan Template & Area</span>
                     </button>
@@ -372,7 +382,7 @@
 
     </div>
 
-    <!-- Filter & Daftar Penerima Piagam -->
+    <!-- Filter & Table Recipients -->
     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-slate-100">
             <div>
@@ -395,7 +405,7 @@
                 <select name="type" onchange="this.form.submit()"
                         class="px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-medium">
                     <option value="all" {{ $recipientType === 'all' ? 'selected' : '' }}>Semua Penerima</option>
-                    <option value="winners" {{ $recipientType === 'winners' ? 'selected' : '' }}>Hanya Juara (1, 2, 3, Harapan)</option>
+                    <option value="winners" {{ $recipientType === 'winners' ? 'selected' : '' }}>Hanya Pemenang Juara</option>
                     <option value="participants" {{ $recipientType === 'participants' ? 'selected' : '' }}>Hanya Partisipasi</option>
                 </select>
 
