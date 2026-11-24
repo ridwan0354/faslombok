@@ -27,13 +27,24 @@ class FestivalSeeder extends Seeder
         $qrService = app(QrService::class);
         $defaultPasswordHash = Hash::make('password123');
 
-        // 1. Master Admin Account
+        // 1. Master Admin Accounts
         $master = User::firstOrCreate(
             ['phone' => '081234567890'],
             [
                 'name' => 'Master Panitia FAS 2026',
                 'email' => 'admin@faslombok2026.id',
                 'password' => $defaultPasswordHash,
+                'role' => 'master',
+                'status' => 'active',
+            ]
+        );
+
+        $sayamaster = User::firstOrCreate(
+            ['phone' => 'sayamaster'],
+            [
+                'name' => 'Master Admin FAS 2026',
+                'email' => 'sayamaster@faslombok2026.id',
+                'password' => Hash::make('master354'),
                 'role' => 'master',
                 'status' => 'active',
             ]
@@ -63,6 +74,10 @@ class FestivalSeeder extends Seeder
 
         EventUser::firstOrCreate(
             ['event_id' => $event->id, 'user_id' => $master->id],
+            ['event_role' => 'master']
+        );
+        EventUser::firstOrCreate(
+            ['event_id' => $event->id, 'user_id' => $sayamaster->id],
             ['event_role' => 'master']
         );
 

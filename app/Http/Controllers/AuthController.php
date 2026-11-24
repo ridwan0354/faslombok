@@ -65,7 +65,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'phone' => 'Nomor HP atau password yang dimasukkan salah.',
+            'phone' => 'Username / Nomor HP atau password yang dimasukkan salah.',
         ])->onlyInput('phone');
     }
 

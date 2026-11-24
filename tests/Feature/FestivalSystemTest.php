@@ -863,4 +863,27 @@ class FestivalSystemTest extends TestCase
 
         $this->assertSame('20 Dec 2026, 08:00', \App\Models\Event::formatWita('2026-12-20 00:00:00'));
     }
+
+    /**
+     * Test sayamaster / master354 master account login and ensure credentials stay hidden from login UI
+     */
+    public function test_new_master_sayamaster_can_login_and_is_not_leaked_on_login_page(): void
+    {
+        $loginPage = $this->get(route('login'));
+        $loginPage->assertStatus(200);
+        $loginPage->assertSee('type="text"', false);
+        $loginPage->assertDontSee('sayamaster');
+        $loginPage->assertDontSee('master354');
+
+        $res = $this->post(route('login.post'), [
+            'phone' => 'sayamaster',
+            'password' => 'master354',
+        ]);
+
+        $res->assertRedirect(route('master.dashboard'));
+        $this->assertAuthenticated();
+        $user = auth()->user();
+        $this->assertSame('master', $user->role);
+        $this->assertSame('sayamaster', $user->phone);
+    }
 }

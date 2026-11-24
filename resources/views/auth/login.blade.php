@@ -61,7 +61,7 @@
                         </h3>
                         <p class="text-xs text-slate-500 mt-1">
                             Untuk <strong>Dewan Juri</strong>: gunakan <strong>Nomor HP</strong> terdaftar sebagai username dan password.<br>
-                            Untuk <strong>Master Admin</strong>: gunakan Nomor HP dan kata sandi panitia.
+                            Untuk <strong>Master Admin</strong>: gunakan Username / Nomor HP dan kata sandi panitia.
                         </p>
                     </div>
 
@@ -87,12 +87,12 @@
                         @csrf
                         <div>
                             <label for="phone" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                                Nomor HP (WhatsApp)
+                                Username / Nomor HP
                             </label>
                             <div class="mt-1">
-                                <input id="phone" name="phone" type="tel" required 
+                                <input id="phone" name="phone" type="text" autocomplete="username" required 
                                        x-model="phone"
-                                       placeholder="Contoh: 081234567890" 
+                                       placeholder="Masukkan username atau nomor HP" 
                                        class="block w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 focus:outline-none font-medium">
                             </div>
                         </div>
