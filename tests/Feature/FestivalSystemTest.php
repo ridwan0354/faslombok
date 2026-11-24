@@ -724,4 +724,56 @@ class FestivalSystemTest extends TestCase
         $response->assertSessionHas('success');
         $this->assertDatabaseMissing('entries', ['id' => $entry->id]);
     }
+
+    /**
+     * Test judges log in using their phone number as both username and password
+     */
+    public function test_judge_can_login_with_phone_as_username_and_password(): void
+    {
+        // 1. Seeded judge logs in with phone as both username & password
+        $res1 = $this->post(route('login.post'), [
+            'phone' => '085200260025',
+            'password' => '085200260025',
+        ]);
+        $res1->assertRedirect(route('judge.dashboard'));
+        $this->assertAuthenticatedAs(User::where('phone', '085200260025')->first());
+
+        $this->post(route('logout'));
+
+        // 2. Master creates a judge leaving password blank -> defaults to normalized phone
+        $master = User::where('role', 'master')->first();
+        $this->actingAs($master)->post(route('master.judges.store'), [
+            'name' => 'Juri Baru HP',
+            'phone' => '+62 819-0711-2233',
+            'password' => '',
+        ])->assertRedirect(route('master.judges'));
+
+        $newJudge = User::where('phone', '081907112233')->first();
+        $this->assertNotNull($newJudge);
+
+        $this->post(route('logout'));
+
+        // New judge logs in using phone (even with +62 format)
+        $res2 = $this->post(route('login.post'), [
+            'phone' => '+6281907112233',
+            'password' => '081907112233',
+        ]);
+        $res2->assertRedirect(route('judge.dashboard'));
+
+        // 3. Master updates judge's phone and enables sync_password_phone -> new phone becomes new password
+        $this->actingAs($master)->put(route('master.judges.update', $newJudge->id), [
+            'name' => 'Juri Baru HP',
+            'phone' => '081907119999',
+            'sync_password_phone' => 1,
+            'status' => 'active',
+        ])->assertRedirect(route('master.judges'));
+
+        $this->post(route('logout'));
+
+        $res3 = $this->post(route('login.post'), [
+            'phone' => '081907119999',
+            'password' => '081907119999',
+        ]);
+        $res3->assertRedirect(route('judge.dashboard'));
+    }
 }

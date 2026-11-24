@@ -26,13 +26,27 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $phone = trim($credentials['phone']);
+        $phone = preg_replace('/[\s-]+/', '', trim($credentials['phone']));
         // Standardize phone format if needed (e.g. replace leading +62 with 0)
         if (str_starts_with($phone, '+62')) {
             $phone = '0' . substr($phone, 3);
         }
 
-        if (Auth::attempt(['phone' => $phone, 'password' => $credentials['password']], $request->boolean('remember'))) {
+        $passwordInput = $credentials['password'];
+        $authenticated = Auth::attempt(['phone' => $phone, 'password' => $passwordInput], $request->boolean('remember'));
+
+        // Also allow +62 or spaced phone entry when judges use phone as password
+        if (!$authenticated) {
+            $normalizedPw = preg_replace('/[\s-]+/', '', trim($passwordInput));
+            if (str_starts_with($normalizedPw, '+62')) {
+                $normalizedPw = '0' . substr($normalizedPw, 3);
+            }
+            if ($normalizedPw !== $passwordInput && $normalizedPw === $phone) {
+                $authenticated = Auth::attempt(['phone' => $phone, 'password' => $normalizedPw], $request->boolean('remember'));
+            }
+        }
+
+        if ($authenticated) {
             $user = Auth::user();
 
             if (!$user->isActive()) {

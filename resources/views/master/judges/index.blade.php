@@ -17,7 +17,9 @@ function judgesManager() {
             id: '',
             name: '',
             phone: '',
+            origPhone: '',
             password: '',
+            syncPasswordWithPhone: false,
             status: 'active'
         },
         openEditJudge(j) {
@@ -25,7 +27,9 @@ function judgesManager() {
                 id: j.id,
                 name: j.name,
                 phone: j.phone,
+                origPhone: j.phone,
                 password: '',
+                syncPasswordWithPhone: false,
                 status: j.status || 'active'
             };
             this.showEditJudgeModal = true;
@@ -49,7 +53,7 @@ function judgesManager() {
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-black text-purple-950 tracking-tight">Dewan Juri & Hak Akses ({{ $judges->count() }} Juri)</h1>
-            <p class="text-xs text-slate-500 mt-1">Kelola akun login juri (Nomor HP & Password), edit/hapus juri, dan atur penugasan per cabang lomba.</p>
+            <p class="text-xs text-slate-500 mt-1">Kelola akun login juri (<span class="font-semibold text-purple-900">Username & Password bawaan = Nomor HP masing-masing</span>), edit/hapus juri, dan atur penugasan per cabang lomba.</p>
         </div>
         <div class="flex items-center space-x-2">
             <button @click="showAddJudgeModal = true"
@@ -177,13 +181,14 @@ function judgesManager() {
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nomor HP (WhatsApp untuk Login)</label>
-                    <input type="tel" name="phone" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nomor HP (Username & Password Default)</label>
+                    <input type="tel" name="phone" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-mono">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Awal</label>
-                    <input type="password" name="password" required placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Kustom (Opsional)</label>
+                    <input type="password" name="password" placeholder="Kosongkan agar password otomatis sama dengan Nomor HP" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
+                    <p class="text-[11px] text-slate-400 mt-1">Jika dikosongkan, juri langsung bisa login dengan Username & Password = Nomor HP.</p>
                 </div>
 
                 <div class="pt-2 flex justify-end space-x-2">
@@ -214,11 +219,21 @@ function judgesManager() {
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nomor HP / ID Login</label>
-                    <input type="tel" name="phone" x-model="editJudge.phone" required class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-mono">
+                    <input type="tel" name="phone" x-model="editJudge.phone"
+                           @input="if (editJudge.phone !== editJudge.origPhone) editJudge.syncPasswordWithPhone = true"
+                           required class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-mono">
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Baru (Opsional)</label>
+                <div class="p-3 bg-purple-50/70 border border-purple-200 rounded-2xl space-y-2">
+                    <label class="flex items-center space-x-2 text-xs font-bold text-purple-950 cursor-pointer">
+                        <input type="checkbox" name="sync_password_phone" value="1" x-model="editJudge.syncPasswordWithPhone" class="rounded text-purple-700 focus:ring-purple-600">
+                        <span>Samakan password dengan Nomor HP di atas</span>
+                    </label>
+                    <p class="text-[11px] text-purple-700">Centang agar juri login memakai Nomor HP yang sama sebagai username & password.</p>
+                </div>
+
+                <div x-show="!editJudge.syncPasswordWithPhone">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Baru Kustom (Opsional)</label>
                     <input type="password" name="password" x-model="editJudge.password" placeholder="Kosongkan jika tidak ingin mengubah password" class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
                 </div>
 

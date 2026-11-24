@@ -655,20 +655,35 @@ class MasterController extends Controller
         return view('master.judges.index', compact('event', 'judges', 'competitions'));
     }
 
+    protected function normalizePhone(string $raw): string
+    {
+        $phone = preg_replace('/[\s-]+/', '', trim($raw));
+        if (str_starts_with($phone, '+62')) {
+            $phone = '0' . substr($phone, 3);
+        }
+        return $phone;
+    }
+
     public function storeJudge(Request $request)
     {
         $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
 
+        $normalizedPhone = $this->normalizePhone((string) $request->input('phone', ''));
+        $request->merge(['phone' => $normalizedPhone]);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'unique:users,phone'],
-            'password' => ['required', 'string', 'min:6'],
+            'password' => ['nullable', 'string', 'min:6'],
         ]);
+
+        // Jika password dikosongkan, gunakan Nomor HP sebagai username & password default
+        $rawPassword = !empty($data['password']) ? $data['password'] : $data['phone'];
 
         $judge = User::create([
             'name' => trim($data['name']),
-            'phone' => trim($data['phone']),
-            'password' => Hash::make($data['password']),
+            'phone' => $data['phone'],
+            'password' => Hash::make($rawPassword),
             'role' => 'judge',
             'status' => 'active',
         ]);
@@ -680,7 +695,7 @@ class MasterController extends Controller
             );
         }
 
-        return redirect()->route('master.judges')->with('success', "Akun juri '{$judge->name}' berhasil dibuat.");
+        return redirect()->route('master.judges')->with('success', "Akun juri '{$judge->name}' berhasil dibuat (Login & Password: {$judge->phone}).");
     }
 
     public function updateJudge(Request $request, User $judge)
@@ -688,6 +703,9 @@ class MasterController extends Controller
         if ($judge->role !== 'judge') {
             abort(403, 'Hanya akun juri yang dapat diubah di menu ini.');
         }
+
+        $normalizedPhone = $this->normalizePhone((string) $request->input('phone', ''));
+        $request->merge(['phone' => $normalizedPhone]);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -698,12 +716,14 @@ class MasterController extends Controller
 
         $updatePayload = [
             'name' => trim($data['name']),
-            'phone' => trim($data['phone']),
+            'phone' => $data['phone'],
             'status' => $data['status'],
         ];
 
         if (!empty($data['password'])) {
             $updatePayload['password'] = Hash::make($data['password']);
+        } elseif ($request->boolean('sync_password_phone')) {
+            $updatePayload['password'] = Hash::make($data['phone']);
         }
 
         $judge->update($updatePayload);

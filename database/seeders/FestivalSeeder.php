@@ -183,7 +183,7 @@ class FestivalSeeder extends Seeder
                 );
             }
 
-            // Create & Assign 3 Judges per Competition
+            // Create & Assign 3 Judges per Competition (Password default = Nomor HP masing-masing)
             foreach ($cData['judges'] as $judgeName) {
                 $phone = sprintf('08520026%04d', $judgeCounter++);
                 $judge = User::firstOrCreate(
@@ -191,7 +191,7 @@ class FestivalSeeder extends Seeder
                     [
                         'name' => $judgeName,
                         'email' => "juri{$phone}@faslombok2026.id",
-                        'password' => $defaultPasswordHash,
+                        'password' => Hash::make($phone),
                         'role' => 'judge',
                         'status' => 'active',
                     ]

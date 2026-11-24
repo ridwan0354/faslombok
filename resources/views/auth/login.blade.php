@@ -64,7 +64,8 @@
                             Masuk Panitia & Juri
                         </h3>
                         <p class="text-xs text-slate-500 mt-1">
-                            Gunakan nomor HP (WhatsApp) dan kata sandi yang telah didaftarkan oleh Master Admin.
+                            Untuk <strong>Dewan Juri</strong>: gunakan <strong>Nomor HP</strong> terdaftar sebagai username dan password.<br>
+                            Untuk <strong>Master Admin</strong>: gunakan Nomor HP dan kata sandi panitia.
                         </p>
                     </div>
 
@@ -138,17 +139,17 @@
                                 <span class="font-bold block text-[11px] text-purple-950">Master Admin</span>
                                 <span class="text-[10px] text-purple-700 font-mono">081234567890</span>
                             </button>
-                            <button type="button" @click="fillUser('085200260025', 'password123')"
+                            <button type="button" @click="fillUser('085200260025', '085200260025')"
                                     class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
                                 <span class="font-bold block text-[11px] text-slate-900">Bp. Munirullah (Juri Adzan)</span>
                                 <span class="text-[10px] text-slate-500 font-mono">085200260025</span>
                             </button>
-                            <button type="button" @click="fillUser('085200260001', 'password123')"
+                            <button type="button" @click="fillUser('085200260001', '085200260001')"
                                     class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
                                 <span class="font-bold block text-[11px] text-slate-900">Ibu Wida (Juri Doa TK)</span>
                                 <span class="text-[10px] text-slate-500 font-mono">085200260001</span>
                             </button>
-                            <button type="button" @click="fillUser('085200260037', 'password123')"
+                            <button type="button" @click="fillUser('085200260037', '085200260037')"
                                     class="p-2 text-left bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-xl transition-colors">
                                 <span class="font-bold block text-[11px] text-pink-950">Ibu Susi (Juri Mewarnai)</span>
                                 <span class="text-[10px] text-pink-700 font-mono">085200260037</span>
