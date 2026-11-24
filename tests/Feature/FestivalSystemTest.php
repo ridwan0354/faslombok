@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Competition;
 use App\Models\Entry;
 use App\Models\Event;
+use App\Models\Group;
 use App\Models\JudgeAssignment;
 use App\Models\Participant;
 use App\Models\Rubric;
@@ -345,7 +346,54 @@ class FestivalSystemTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Cetak Kartu & Badge QR Peserta');
+        $response->assertSee('--card-w: 90mm;', false);
+        $response->assertSee('--card-h: 55mm;', false);
         $response->assertSee('<svg', false);
+    }
+
+    /**
+     * Test print QR badges supports filtering by group and selecting name tag size preset
+     */
+    public function test_master_can_filter_print_qr_badges_by_group_and_size(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $event = Event::first();
+        $groups = Group::where('event_id', $event->id)->take(2)->get();
+        $groupA = $groups[0];
+        $groupB = $groups[1];
+
+        $participantA = Participant::where('group_id', $groupA->id)->first();
+        $participantB = Participant::where('group_id', $groupB->id)->first();
+        $comp = Competition::first();
+
+        $teamA = Team::create([
+            'event_id' => $event->id,
+            'competition_id' => $comp->id,
+            'group_id' => $groupA->id,
+            'team_code' => 'TIM-A-01',
+            'name' => 'Regu Khusus Grup A',
+        ]);
+        $teamB = Team::create([
+            'event_id' => $event->id,
+            'competition_id' => $comp->id,
+            'group_id' => $groupB->id,
+            'team_code' => 'TIM-B-01',
+            'name' => 'Regu Khusus Grup B',
+        ]);
+
+        $response = $this->actingAs($master)
+            ->get(route('master.print.qr', [
+                'group_id' => $groupA->id,
+                'size' => '95x60',
+            ]));
+
+        $response->assertStatus(200);
+        $response->assertSee('--card-w: 95mm;', false);
+        $response->assertSee('--card-h: 60mm;', false);
+        $response->assertSee($participantA->participant_code);
+        $response->assertSee($teamA->team_code);
+        $response->assertDontSee($participantB->participant_code);
+        $response->assertDontSee($teamB->team_code);
     }
 
     /**

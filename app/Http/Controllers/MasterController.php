@@ -596,16 +596,38 @@ class MasterController extends Controller
     {
         $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
 
+        $groups = Group::where('event_id', $event->id)
+            ->withCount(['participants' => function ($q) {
+                $q->where('active', true);
+            }])
+            ->orderBy('name')
+            ->get();
+
+        $selectedGroupId = $request->filled('group_id') ? (int) $request->input('group_id') : null;
+        $selectedGroup = $selectedGroupId ? $groups->firstWhere('id', $selectedGroupId) : null;
+        $selectedParticipantId = $request->filled('participant_id') ? (int) $request->input('participant_id') : null;
+
+        $sizePresets = [
+            '90x55' => ['label' => '9 × 5,5 cm (Name Tag Peniti • 8/A4)', 'w' => 90, 'h' => 55],
+            '95x60' => ['label' => '9,5 × 6 cm (Name Tag Sedang • 8/A4)', 'w' => 95, 'h' => 60],
+            '85x54' => ['label' => '8,5 × 5,4 cm (ID Card / KTP • 8/A4)', 'w' => 85, 'h' => 54],
+        ];
+        $selectedSize = array_key_exists((string) $request->input('size'), $sizePresets)
+            ? (string) $request->input('size')
+            : '90x55';
+
         $query = Participant::with(['group', 'gradeLevel', 'entries.competition'])
             ->where('event_id', $event->id)
-            ->where('active', true);
+            ->where('active', true)
+            ->orderBy('participant_code')
+            ->orderBy('name');
 
-        if ($request->filled('group_id')) {
-            $query->where('group_id', $request->input('group_id'));
+        if ($selectedGroupId) {
+            $query->where('group_id', $selectedGroupId);
         }
 
-        if ($request->filled('participant_id')) {
-            $query->where('id', $request->input('participant_id'));
+        if ($selectedParticipantId) {
+            $query->where('id', $selectedParticipantId);
         }
 
         $participants = $query->get()->map(function ($p) {
@@ -616,28 +638,48 @@ class MasterController extends Controller
                 'code' => $p->participant_code,
                 'group' => $p->group ? $p->group->name : '-',
                 'grade' => $p->gradeLevel ? $p->gradeLevel->name : '-',
-                'comps' => $p->entries->pluck('competition.name')->implode(', '),
+                'comps' => $p->entries->pluck('competition.name')->filter()->implode(', '),
                 'qr_svg' => $this->qrService->renderSvg($qrToken->token_plain, 140),
             ];
         });
 
-        // Also teams
-        $teams = Team::with(['group', 'competition', 'members'])->where('event_id', $event->id)->get()->map(function ($t) {
-            $qrToken = $this->qrService->getOrCreateForTeam($t);
-            return [
-                'type' => 'team',
-                'name' => $t->name,
-                'code' => $t->team_code,
-                'group' => $t->group ? $t->group->name : '-',
-                'grade' => 'Beregu',
-                'comps' => $t->competition ? $t->competition->name : '-',
-                'qr_svg' => $this->qrService->renderSvg($qrToken->token_plain, 140),
-            ];
-        });
+        // Teams: honor group filter and omit unrelated teams when printing a single participant
+        $teams = collect();
+        if (!$selectedParticipantId) {
+            $teamQuery = Team::with(['group', 'competition', 'members'])
+                ->where('event_id', $event->id)
+                ->orderBy('team_code');
 
-        $badges = $participants->concat($teams);
+            if ($selectedGroupId) {
+                $teamQuery->where('group_id', $selectedGroupId);
+            }
 
-        return view('master.print-qr', compact('event', 'badges'));
+            $teams = $teamQuery->get()->map(function ($t) {
+                $qrToken = $this->qrService->getOrCreateForTeam($t);
+                return [
+                    'type' => 'team',
+                    'name' => $t->name,
+                    'code' => $t->team_code,
+                    'group' => $t->group ? $t->group->name : '-',
+                    'grade' => 'Beregu',
+                    'comps' => $t->competition ? $t->competition->name : '-',
+                    'qr_svg' => $this->qrService->renderSvg($qrToken->token_plain, 140),
+                ];
+            });
+        }
+
+        $badges = $participants->concat($teams)->values();
+
+        return view('master.print-qr', compact(
+            'event',
+            'badges',
+            'groups',
+            'selectedGroupId',
+            'selectedGroup',
+            'selectedParticipantId',
+            'sizePresets',
+            'selectedSize'
+        ));
     }
 
     /* -------------------------------------------------------------
