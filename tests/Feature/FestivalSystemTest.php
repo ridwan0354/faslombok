@@ -33,15 +33,14 @@ class FestivalSystemTest extends TestCase
      */
     public function test_judge_with_adzan_permission_can_scan_and_resolve_adzan_entry(): void
     {
-        $judgeAhmad = User::where('phone', '081111111111')->first(); // Juri Adzan
-        $event = Event::first();
-        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $judgeAdzan = User::where('phone', '085200260025')->first(); // Bp. Munirullah (Sandik)
+        $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
 
-        // Peserta Adzan: Muhammad Rayyan Al-Farisi
-        $participant = Participant::where('name', 'Muhammad Rayyan Al-Farisi')->first();
+        // Peserta Adzan: Muhammad Al Fatih
+        $participant = Participant::where('name', 'Muhammad Al Fatih')->first();
         $qrToken = app(QrService::class)->getOrCreateForParticipant($participant);
 
-        $response = $this->actingAs($judgeAhmad)
+        $response = $this->actingAs($judgeAdzan)
             ->postJson(route('judge.resolve-qr'), [
                 'token' => $qrToken->token_plain,
             ]);
@@ -50,12 +49,11 @@ class FestivalSystemTest extends TestCase
         $data = $response->json();
 
         $this->assertEquals('success', $data['status']);
-        $this->assertEquals('Muhammad Rayyan Al-Farisi', $data['entity']['name']);
+        $this->assertEquals('Muhammad Al Fatih', $data['entity']['name']);
         $this->assertNotEmpty($data['entries']);
 
-        // Judge Ahmad is assigned to Adzan & Dai Caberawit. Both are entered by Rayyan.
         $compNames = collect($data['entries'])->pluck('competition_name')->toArray();
-        $this->assertContains('Adzan', $compNames);
+        $this->assertContains('Adzan (Kls 1–6)', $compNames);
     }
 
     /**
@@ -63,14 +61,13 @@ class FestivalSystemTest extends TestCase
      */
     public function test_judge_adzan_scanning_participant_who_only_joined_kaligrafi_is_safely_rejected(): void
     {
-        // Judge Fauzi only has Adzan & Hafalan Surat Pendek
-        $judgeFauzi = User::where('phone', '082222222222')->first();
+        $judgeAdzan = User::where('phone', '085200260025')->first();
 
-        // Syamil Al-Banna only joined Kaligrafi
-        $participant = Participant::where('name', 'Syamil Al-Banna')->first();
+        // Alesha Azzahra Alfathunnisa only joined Kaligrafi
+        $participant = Participant::where('name', 'Alesha Azzahra Alfathunnisa')->first();
         $qrToken = app(QrService::class)->getOrCreateForParticipant($participant);
 
-        $response = $this->actingAs($judgeFauzi)
+        $response = $this->actingAs($judgeAdzan)
             ->postJson(route('judge.resolve-qr'), [
                 'token' => $qrToken->token_plain,
             ]);
@@ -84,18 +81,25 @@ class FestivalSystemTest extends TestCase
     }
 
     /**
-     * UAT 3: Peserta ikut Adzan dan Dai => QR sama; juri hanya melihat lomba yang ditugaskan.
+     * UAT 3: Peserta ikut Adzan dan Da'i Cilik => QR sama; juri hanya melihat lomba yang ditugaskan.
      */
     public function test_participant_in_multiple_competitions_only_exposes_authorized_competitions_to_judge(): void
     {
-        // Judge Fauzi only has Adzan & Surat Pendek (NOT Dai Caberawit)
-        $judgeFauzi = User::where('phone', '082222222222')->first();
+        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $daiComp = Competition::where('name', "Da'i Cilik (Kls 1–6)")->first();
 
-        // Rayyan joins Adzan & Dai Caberawit
-        $participant = Participant::where('name', 'Muhammad Rayyan Al-Farisi')->first();
+        // Add Da'i Cilik entry to Muhammad Al Fatih
+        $participant = Participant::where('name', 'Muhammad Al Fatih')->first();
+        Entry::create([
+            'event_id' => $participant->event_id,
+            'competition_id' => $daiComp->id,
+            'participant_id' => $participant->id,
+            'queue_number' => 99,
+            'status' => 'registered',
+        ]);
         $qrToken = app(QrService::class)->getOrCreateForParticipant($participant);
 
-        $response = $this->actingAs($judgeFauzi)
+        $response = $this->actingAs($judgeAdzan)
             ->postJson(route('judge.resolve-qr'), [
                 'token' => $qrToken->token_plain,
             ]);
@@ -106,9 +110,8 @@ class FestivalSystemTest extends TestCase
         $this->assertEquals('success', $data['status']);
         $compNames = collect($data['entries'])->pluck('competition_name')->toArray();
 
-        // Must contain Adzan, but must NOT contain Dai Caberawit for Judge Fauzi
-        $this->assertContains('Adzan', $compNames);
-        $this->assertNotContains('Dai Caberawit', $compNames);
+        $this->assertContains('Adzan (Kls 1–6)', $compNames);
+        $this->assertNotContains("Da'i Cilik (Kls 1–6)", $compNames);
     }
 
     /**
@@ -116,18 +119,17 @@ class FestivalSystemTest extends TestCase
      */
     public function test_view_only_judge_cannot_submit_score(): void
     {
-        $judgeAhmad = User::where('phone', '081111111111')->first();
-        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
 
-        // Change judge Ahmad's assignment on Adzan to view-only (can_score = false)
-        $assignment = JudgeAssignment::where('user_id', $judgeAhmad->id)
+        $assignment = JudgeAssignment::where('user_id', $judgeAdzan->id)
             ->where('competition_id', $adzanComp->id)
             ->first();
         $assignment->update(['can_score' => false]);
 
         $entry = Entry::where('competition_id', $adzanComp->id)->first();
 
-        $response = $this->actingAs($judgeAhmad)
+        $response = $this->actingAs($judgeAdzan)
             ->post(route('judge.scoring.submit', $entry->id), [
                 'scores' => [],
             ]);
@@ -141,9 +143,8 @@ class FestivalSystemTest extends TestCase
     public function test_rubric_with_invalid_weight_is_rejected(): void
     {
         $master = User::where('role', 'master')->first();
-        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
 
-        // Try to update rubric with criteria totaling 95%
         $response = $this->actingAs($master)
             ->post(route('master.competitions.rubric.update', $adzanComp->id), [
                 'criteria' => [
@@ -156,13 +157,14 @@ class FestivalSystemTest extends TestCase
     }
 
     /**
-     * UAT 6: Dua juri menilai peserta yang sama => masing-masing tersimpan independen; nilai akhir total keduanya terakumulasi saat seluruh juri wajib selesai.
+     * UAT 6: Tiga juri menilai peserta yang sama => masing-masing tersimpan independen (termasuk nilai manual 50-100); nilai akhir terakumulasi.
      */
     public function test_two_judges_score_same_entry_independently_and_aggregate(): void
     {
-        $judgeAhmad = User::where('phone', '081111111111')->first();
-        $judgeFauzi = User::where('phone', '082222222222')->first();
-        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $judge1 = User::where('phone', '085200260025')->first();
+        $judge2 = User::where('phone', '085200260026')->first();
+        $judge3 = User::where('phone', '085200260027')->first();
+        $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
         $entry = Entry::where('competition_id', $adzanComp->id)->first();
 
         $rubric = $adzanComp->activeRubric;
@@ -171,35 +173,45 @@ class FestivalSystemTest extends TestCase
         $ratingCukup = $rubric->ratingOptions->firstWhere('label', 'Cukup'); // 75
 
         $scoringService = app(ScoringService::class);
-        $asAhmad = JudgeAssignment::where('user_id', $judgeAhmad->id)->where('competition_id', $adzanComp->id)->first();
-        $asFauzi = JudgeAssignment::where('user_id', $judgeFauzi->id)->where('competition_id', $adzanComp->id)->first();
+        $as1 = JudgeAssignment::where('user_id', $judge1->id)->where('competition_id', $adzanComp->id)->first();
+        $as2 = JudgeAssignment::where('user_id', $judge2->id)->where('competition_id', $adzanComp->id)->first();
+        $as3 = JudgeAssignment::where('user_id', $judge3->id)->where('competition_id', $adzanComp->id)->first();
 
-        // Juri Ahmad gives all Baik (100) -> single score = 100
-        $scoresAhmad = [];
+        // Juri 1 gives all Baik (100) -> 100
+        $scores1 = [];
         foreach ($criteria as $c) {
-            $scoresAhmad[$c->id] = ['rating_option_id' => $ratingBaik->id];
+            $scores1[$c->id] = ['rating_option_id' => $ratingBaik->id];
         }
-        $subAhmad = $scoringService->submitScore($entry, $asAhmad, $scoresAhmad, 'Penilaian Ahmad', $judgeAhmad);
-        $this->assertEquals(100.0, (float) $subAhmad->score_total);
+        $sub1 = $scoringService->submitScore($entry, $as1, $scores1, 'Penilaian Juri 1', $judge1);
+        $this->assertEquals(100.0, (float) $sub1->score_total);
 
-        // Before Fauzi grades, required_judges = 2, submitted = 1 -> incomplete
+        // Before all 3 judges submit -> incomplete
         $finalStatus1 = $scoringService->getFinalScore($entry);
         $this->assertFalse($finalStatus1['is_complete']);
+        $this->assertEquals(3, $finalStatus1['required_judges']);
         $this->assertEquals(1, $finalStatus1['submitted_judges']);
 
-        // Juri Fauzi gives all Cukup (75) -> single score = 75
-        $scoresFauzi = [];
+        // Juri 2 gives all Cukup (75) -> 75
+        $scores2 = [];
         foreach ($criteria as $c) {
-            $scoresFauzi[$c->id] = ['rating_option_id' => $ratingCukup->id];
+            $scores2[$c->id] = ['rating_option_id' => $ratingCukup->id];
         }
-        $subFauzi = $scoringService->submitScore($entry, $asFauzi, $scoresFauzi, 'Penilaian Fauzi', $judgeFauzi);
-        $this->assertEquals(75.0, (float) $subFauzi->score_total);
+        $sub2 = $scoringService->submitScore($entry, $as2, $scores2, 'Penilaian Juri 2', $judge2);
+        $this->assertEquals(75.0, (float) $sub2->score_total);
 
-        // Now both required judges have submitted -> complete, total = 100 + 75 = 175
-        $finalStatus2 = $scoringService->getFinalScore($entry);
-        $this->assertTrue($finalStatus2['is_complete']);
-        $this->assertEquals(2, $finalStatus2['submitted_judges']);
-        $this->assertEquals(175.0, (float) $finalStatus2['final_score']);
+        // Juri 3 inputs exact numeric value 88 (50-100 range) -> 88
+        $scores3 = [];
+        foreach ($criteria as $c) {
+            $scores3[$c->id] = ['rating_option_id' => '', 'numeric_value' => 88];
+        }
+        $sub3 = $scoringService->submitScore($entry, $as3, $scores3, 'Penilaian Juri 3', $judge3);
+        $this->assertEquals(88.0, (float) $sub3->score_total);
+
+        // All 3 required judges done -> 100 + 75 + 88 = 263
+        $finalStatus3 = $scoringService->getFinalScore($entry);
+        $this->assertTrue($finalStatus3['is_complete']);
+        $this->assertEquals(3, $finalStatus3['submitted_judges']);
+        $this->assertEquals(263.0, (float) $finalStatus3['final_score']);
     }
 
     /**
@@ -207,14 +219,13 @@ class FestivalSystemTest extends TestCase
      */
     public function test_score_updates_locked_when_competition_is_locked(): void
     {
-        $judgeAhmad = User::where('phone', '081111111111')->first();
-        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
         $entry = Entry::where('competition_id', $adzanComp->id)->first();
 
-        // Lock competition
         $adzanComp->update(['is_locked' => true, 'locked_at' => now()]);
 
-        $response = $this->actingAs($judgeAhmad)
+        $response = $this->actingAs($judgeAdzan)
             ->post(route('judge.scoring.submit', $entry->id), [
                 'scores' => [],
             ]);
@@ -223,15 +234,50 @@ class FestivalSystemTest extends TestCase
     }
 
     /**
-     * UAT 8: Tim Yel-Yel memiliki QR tim yang memunculkan identitas tim.
+     * UAT 8: QR beregu (jika Master membuat lomba tim baru) memunculkan identitas tim.
      */
     public function test_team_qr_resolves_team_entry(): void
     {
-        $judgeRidwan = User::where('phone', '084444444444')->first(); // Juri Yel-Yel
-        $team = Team::where('name', 'Laskar 29 Ampenan Juara')->first();
+        $event = Event::first();
+        $group = \App\Models\Group::first();
+        $judgeAdzan = User::where('phone', '085200260025')->first();
+
+        $teamComp = Competition::create([
+            'event_id' => $event->id,
+            'name' => 'Lomba Tim Khusus Uji Coba',
+            'format' => 'team',
+            'eligibility_rule' => 'Kelas 1–6',
+            'status' => 'ready',
+        ]);
+
+        JudgeAssignment::create([
+            'event_id' => $event->id,
+            'user_id' => $judgeAdzan->id,
+            'competition_id' => $teamComp->id,
+            'can_score' => true,
+            'active' => true,
+            'required_for_completion' => true,
+        ]);
+
+        $team = Team::create([
+            'event_id' => $event->id,
+            'competition_id' => $teamComp->id,
+            'group_id' => $group->id,
+            'team_code' => 'TIM-TEST-01',
+            'name' => 'Tim Uji Coba QR',
+        ]);
+
+        Entry::create([
+            'event_id' => $event->id,
+            'competition_id' => $teamComp->id,
+            'team_id' => $team->id,
+            'queue_number' => 1,
+            'status' => 'registered',
+        ]);
+
         $qrToken = app(QrService::class)->getOrCreateForTeam($team);
 
-        $response = $this->actingAs($judgeRidwan)
+        $response = $this->actingAs($judgeAdzan)
             ->postJson(route('judge.resolve-qr'), [
                 'token' => $qrToken->token_plain,
             ]);
@@ -241,7 +287,7 @@ class FestivalSystemTest extends TestCase
 
         $this->assertEquals('success', $data['status']);
         $this->assertEquals('team', $data['entity_type']);
-        $this->assertEquals('Laskar 29 Ampenan Juara', $data['entity']['name']);
+        $this->assertEquals('Tim Uji Coba QR', $data['entity']['name']);
     }
 
     /**
@@ -249,17 +295,14 @@ class FestivalSystemTest extends TestCase
      */
     public function test_public_results_only_available_after_publish(): void
     {
-        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
         $master = User::where('role', 'master')->first();
 
-        // Before publish: public detail gives 404
         $resBefore = $this->get(route('pengumuman.detail', $adzanComp->id));
         $resBefore->assertStatus(404);
 
-        // Master publishes
         app(RankingService::class)->publish($adzanComp, $master);
 
-        // After publish: 200 OK
         $resAfter = $this->get(route('pengumuman.detail', $adzanComp->id));
         $resAfter->assertStatus(200);
         $resAfter->assertSee($adzanComp->name);
@@ -274,8 +317,8 @@ class FestivalSystemTest extends TestCase
         $importService = app(ImportExportService::class);
 
         $csvContent = "nama,kelompok,kelas,jenis_kelamin,lomba\n"
-                    . "Zaidan Al-Ayyubi,TPQ Al-Ikhlas Ampenan,KELAS_1_6,L,Adzan\n"
-                    . "Maryam Sholihah,TPQ Al-Falah Mataram,KELAS_1_4,P,Baca Tilawati\n";
+                    . "Zaidan Al-Ayyubi,Cakra,KELAS_5,L,Adzan (Kls 1–6)\n"
+                    . "Maryam Sholihah,Perumnas,KELAS_3,P,Baca Tilawati Jilid 4–6 (Kls 3–4)\n";
 
         $rows = $importService->parseCsv($csvContent);
         $result = $importService->importParticipants($event, $rows);
@@ -285,6 +328,7 @@ class FestivalSystemTest extends TestCase
 
         $zaidan = Participant::where('name', 'Zaidan Al-Ayyubi')->first();
         $this->assertNotNull($zaidan);
+        $this->assertEquals('Cakranegara', $zaidan->group->name);
         $this->assertNotNull($zaidan->qrToken);
         $this->assertNotEmpty($zaidan->entries);
     }
@@ -310,12 +354,12 @@ class FestivalSystemTest extends TestCase
     public function test_master_can_update_participant(): void
     {
         $master = User::where('role', 'master')->first();
-        $participant = Participant::where('name', 'Muhammad Rayyan Al-Farisi')->first();
+        $participant = Participant::where('name', 'Muhammad Al Fatih')->first();
         $group = $participant->group;
 
         $response = $this->actingAs($master)
             ->put(route('master.participants.update', $participant->id), [
-                'name' => 'Muhammad Rayyan Al-Farisi (Updated)',
+                'name' => 'Muhammad Al Fatih (Updated)',
                 'group_id' => $group->id,
                 'gender' => 'L',
                 'active' => 1,
@@ -324,7 +368,7 @@ class FestivalSystemTest extends TestCase
         $response->assertRedirect(route('master.participants'));
         $this->assertDatabaseHas('participants', [
             'id' => $participant->id,
-            'name' => 'Muhammad Rayyan Al-Farisi (Updated)',
+            'name' => 'Muhammad Al Fatih (Updated)',
         ]);
     }
 
@@ -334,15 +378,15 @@ class FestivalSystemTest extends TestCase
     public function test_master_can_view_scores_monitoring_with_criteria_breakdown(): void
     {
         $master = User::where('role', 'master')->first();
-        $kaligrafi = Competition::where('name', 'Kaligrafi')->first();
+        $kaligrafi = Competition::where('name', 'Kaligrafi Alhamdulillah (Kls 1–6)')->first();
 
         $response = $this->actingAs($master)
             ->get(route('master.scores', ['competition_id' => $kaligrafi->id]));
 
         $response->assertStatus(200);
-        $response->assertSee('Kriteria Penilaian: Kaligrafi');
-        $response->assertSee('Kesesuaian dengan tema');
-        $response->assertSee('Kreativitas dan orisinalitas');
+        $response->assertSee('Kriteria Penilaian: Kaligrafi Alhamdulillah (Kls 1–6)');
+        $response->assertSee('Kesesuaian Tema');
+        $response->assertSee('Kreativitas');
     }
 
     /**
@@ -521,7 +565,7 @@ class FestivalSystemTest extends TestCase
     public function test_master_cannot_delete_competition_with_submitted_scores(): void
     {
         $master = User::where('role', 'master')->first();
-        $adzanComp = Competition::where('name', 'Adzan')->first();
+        $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
         $entry = Entry::where('competition_id', $adzanComp->id)->first();
         $assignment = JudgeAssignment::where('competition_id', $adzanComp->id)->first();
 
@@ -603,6 +647,81 @@ class FestivalSystemTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Cetak Piagam / Sertifikat');
-        $response->assertSee('Muhammad Rayyan Al-Farisi');
+        $response->assertSee('Muhammad Al Fatih');
+    }
+
+    /**
+     * Test official 2026 seeded data integrity (14 competitions, 42 judges, 208 participants, no Yel-Yel)
+     */
+    public function test_official_2026_seeded_dataset_integrity(): void
+    {
+        $this->assertEquals(14, Competition::count());
+        $this->assertEquals(42, User::where('role', 'judge')->count());
+        $this->assertEquals(208, Participant::count());
+        $this->assertEquals(208, Entry::count());
+        $this->assertEquals(0, Team::count());
+        $this->assertNull(Competition::where('name', 'like', '%Yel-Yel%')->first());
+
+        // Ambiguous entries preserved so Master can review/edit/delete
+        $this->assertDatabaseHas('participants', ['name' => 'Vina Aprilia Putri']);
+        $this->assertDatabaseHas('participants', ['name' => 'Lalu Rahadean (Partisipan)']);
+        $this->assertEquals(2, Participant::where('name', 'Venita Alexandria Bagus')->count());
+    }
+
+    /**
+     * Test Master can update and delete a judge, and cannot delete judge who submitted scores
+     */
+    public function test_master_can_update_and_delete_judge(): void
+    {
+        $master = User::where('role', 'master')->first();
+
+        // Create judge
+        $this->actingAs($master)->post(route('master.judges.store'), [
+            'name' => 'Ustadz Uji Coba',
+            'phone' => '089999888777',
+            'password' => 'secret123',
+        ])->assertRedirect(route('master.judges'));
+
+        $judge = User::where('phone', '089999888777')->first();
+        $this->assertNotNull($judge);
+
+        // Update judge
+        $this->actingAs($master)->put(route('master.judges.update', $judge->id), [
+            'name' => 'Ustadz Uji Coba (Diedit)',
+            'phone' => '089999888778',
+            'status' => 'inactive',
+        ])->assertRedirect(route('master.judges'));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $judge->id,
+            'name' => 'Ustadz Uji Coba (Diedit)',
+            'phone' => '089999888778',
+            'status' => 'inactive',
+        ]);
+
+        // Delete judge (no scores)
+        $this->actingAs($master)->delete(route('master.judges.destroy', $judge->id))
+            ->assertRedirect(route('master.judges'));
+        $this->assertDatabaseMissing('users', ['id' => $judge->id]);
+    }
+
+    /**
+     * Test Master can remove an unscored entry directly from competition detail
+     */
+    public function test_master_can_remove_entry_from_competition_detail(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $tilawati = Competition::where('name', 'Baca Tilawati Jilid 1–3 (Kls 1–2)')->first();
+        $vina = Participant::where('name', 'Vina Aprilia Putri')->first();
+        $entry = Entry::where('competition_id', $tilawati->id)->where('participant_id', $vina->id)->first();
+
+        $this->assertNotNull($entry);
+
+        $response = $this->actingAs($master)
+            ->delete(route('master.competitions.entries.destroy', [$tilawati->id, $entry->id]));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('entries', ['id' => $entry->id]);
     }
 }

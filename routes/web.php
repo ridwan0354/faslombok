@@ -37,6 +37,7 @@ Route::prefix('master')->name('master.')->middleware(['master'])->group(function
     Route::put('/lomba/{competition}', [MasterController::class, 'updateCompetition'])->name('competitions.update');
     Route::delete('/lomba/{competition}', [MasterController::class, 'destroyCompetition'])->name('competitions.destroy');
     Route::get('/lomba/{competition}', [MasterController::class, 'competitionDetail'])->name('competitions.detail');
+    Route::delete('/lomba/{competition}/peserta/{entry}', [MasterController::class, 'destroyEntry'])->name('competitions.entries.destroy');
     Route::post('/lomba/{competition}/rubrik', [MasterController::class, 'updateRubricCriteria'])->name('competitions.rubric.update');
     Route::post('/lomba/{competition}/lock', [MasterController::class, 'toggleLock'])->name('competitions.lock');
     Route::post('/lomba/{competition}/publish', [MasterController::class, 'publish'])->name('competitions.publish');
@@ -62,6 +63,8 @@ Route::prefix('master')->name('master.')->middleware(['master'])->group(function
     // Judges & Permissions
     Route::get('/juri', [MasterController::class, 'judges'])->name('judges');
     Route::post('/juri', [MasterController::class, 'storeJudge'])->name('judges.store');
+    Route::put('/juri/{judge}', [MasterController::class, 'updateJudge'])->name('judges.update');
+    Route::delete('/juri/{judge}', [MasterController::class, 'destroyJudge'])->name('judges.destroy');
     Route::post('/juri/assign', [MasterController::class, 'assignJudge'])->name('judges.assign');
     Route::delete('/juri/assign/{assignment}', [MasterController::class, 'revokeJudgeAssignment'])->name('judges.assign.revoke');
 

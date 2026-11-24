@@ -10,11 +10,11 @@ function certEditor() {
         recipients: {!! json_encode($recipients) !!},
         activeField: 'name',
         sampleData: {
-            name: 'Muhammad Rayyan Al-Farisi',
-            award: 'JUARA 1',
-            competition: 'Adzan',
-            group: 'Ampenan',
-            number: '001/FAS-LBK/XII/2026'
+            name: @json($recipients[0]['name'] ?? 'Muhammad Al Fatih'),
+            award: @json($recipients[0]['award'] ?? 'JUARA 1'),
+            competition: @json($recipients[0]['competition'] ?? 'Adzan (Kls 1–6)'),
+            group: @json($recipients[0]['group'] ?? 'Ampenan'),
+            number: @json($recipients[0]['certificate_number'] ?? '001/FAS-LBK/XII/2026')
         },
         isDragging: false,
         dragField: null,

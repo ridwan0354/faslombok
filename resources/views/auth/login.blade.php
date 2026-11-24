@@ -138,20 +138,20 @@
                                 <span class="font-bold block text-[11px] text-purple-950">Master Admin</span>
                                 <span class="text-[10px] text-purple-700 font-mono">081234567890</span>
                             </button>
-                            <button type="button" @click="fillUser('081111111111', 'password123')"
+                            <button type="button" @click="fillUser('085200260025', 'password123')"
                                     class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
-                                <span class="font-bold block text-[11px] text-slate-900">Ust. Ahmad (Juri Adzan)</span>
-                                <span class="text-[10px] text-slate-500 font-mono">081111111111</span>
+                                <span class="font-bold block text-[11px] text-slate-900">Bp. Munirullah (Juri Adzan)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">085200260025</span>
                             </button>
-                            <button type="button" @click="fillUser('082222222222', 'password123')"
+                            <button type="button" @click="fillUser('085200260001', 'password123')"
                                     class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
-                                <span class="font-bold block text-[11px] text-slate-900">Ust. Fauzi (Juri Adzan/Surat)</span>
-                                <span class="text-[10px] text-slate-500 font-mono">082222222222</span>
+                                <span class="font-bold block text-[11px] text-slate-900">Ibu Wida (Juri Doa TK)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">085200260001</span>
                             </button>
-                            <button type="button" @click="fillUser('083333333333', 'password123')"
+                            <button type="button" @click="fillUser('085200260037', 'password123')"
                                     class="p-2 text-left bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-xl transition-colors">
-                                <span class="font-bold block text-[11px] text-pink-950">Usth. Siti (Juri Mewarnai)</span>
-                                <span class="text-[10px] text-pink-700 font-mono">083333333333</span>
+                                <span class="font-bold block text-[11px] text-pink-950">Ibu Susi (Juri Mewarnai)</span>
+                                <span class="text-[10px] text-pink-700 font-mono">085200260037</span>
                             </button>
                         </div>
                     </div>

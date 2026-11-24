@@ -63,12 +63,12 @@
                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
                     @foreach($competitions as $comp)
                     @php
-                        $compJson = json_encode([
+                        $compPayload = [
                             'id' => $comp->id,
                             'name' => $comp->name,
                             'format' => $comp->format,
                             'grade_ids' => $comp->gradeLevels->pluck('id')->values()->all(),
-                        ]);
+                        ];
                     @endphp
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3.5 px-4 font-bold text-slate-900">
@@ -123,7 +123,7 @@
                         </td>
                         <td class="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
                             <button type="button" 
-                                    @click='openEdit({!! $compJson !!})'
+                                    @click="openEdit(@js($compPayload))"
                                     class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors">
                                 Edit Syarat
                             </button>
@@ -133,7 +133,8 @@
                             </a>
                             <form action="{{ route('master.competitions.destroy', $comp->id) }}" 
                                   method="POST" 
-                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus cabang lomba &quot;{{ addslashes($comp->name) }}&quot;?')" 
+                                  data-confirm="Apakah Anda yakin ingin menghapus cabang lomba &quot;{{ $comp->name }}&quot;?"
+                                  onsubmit="return confirm(this.dataset.confirm)" 
                                   class="inline-block">
                                 @csrf
                                 @method('DELETE')

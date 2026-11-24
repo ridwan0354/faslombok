@@ -207,13 +207,31 @@ class MasterController extends Controller
             'activeRubric.ratingOptions',
             'judgeAssignments.user',
             'entries.participant.group',
+            'entries.participant.gradeLevel',
             'entries.team.group',
+            'entries.scoreSubmissions',
             'awards',
         ]);
 
-        $availableJudges = User::where('role', 'judge')->where('status', 'active')->get();
+        $availableJudges = User::where('role', 'judge')->where('status', 'active')->orderBy('name')->get();
 
         return view('master.competitions.detail', compact('competition', 'availableJudges'));
+    }
+
+    public function destroyEntry(Competition $competition, Entry $entry)
+    {
+        if ($entry->competition_id !== $competition->id) {
+            abort(404);
+        }
+
+        $name = $entry->display_name;
+        if ($entry->scoreSubmissions()->exists()) {
+            return back()->with('error', "Gagal mengeluarkan: Peserta '{$name}' sudah memiliki nilai dari juri.");
+        }
+
+        $entry->delete();
+
+        return back()->with('success', "Peserta '{$name}' berhasil dikeluarkan dari lomba {$competition->name}.");
     }
 
     public function updateRubricCriteria(Request $request, Competition $competition)
@@ -337,7 +355,9 @@ class MasterController extends Controller
         ]);
 
         $nextCodeNum = Participant::where('event_id', $event->id)->count() + 1;
-        $code = sprintf('FAS-%s-%04d', $event->year, $nextCodeNum);
+        do {
+            $code = sprintf('FAS-%s-%04d', $event->year, $nextCodeNum++);
+        } while (Participant::where('event_id', $event->id)->where('participant_code', $code)->exists());
 
         $participant = Participant::create([
             'event_id' => $event->id,
@@ -628,29 +648,90 @@ class MasterController extends Controller
         $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
         $judges = User::where('role', 'judge')
             ->with(['judgeAssignments.competition'])
+            ->orderBy('name')
             ->get();
-        $competitions = Competition::where('event_id', $event->id)->get();
+        $competitions = Competition::where('event_id', $event->id)->orderBy('name')->get();
 
         return view('master.judges.index', compact('event', 'judges', 'competitions'));
     }
 
     public function storeJudge(Request $request)
     {
+        $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'unique:users,phone'],
             'password' => ['required', 'string', 'min:6'],
         ]);
 
-        User::create([
-            'name' => $data['name'],
+        $judge = User::create([
+            'name' => trim($data['name']),
             'phone' => trim($data['phone']),
             'password' => Hash::make($data['password']),
             'role' => 'judge',
             'status' => 'active',
         ]);
 
-        return redirect()->route('master.judges')->with('success', 'Akun juri baru berhasil dibuat.');
+        if ($event) {
+            \App\Models\EventUser::firstOrCreate(
+                ['event_id' => $event->id, 'user_id' => $judge->id],
+                ['event_role' => 'judge']
+            );
+        }
+
+        return redirect()->route('master.judges')->with('success', "Akun juri '{$judge->name}' berhasil dibuat.");
+    }
+
+    public function updateJudge(Request $request, User $judge)
+    {
+        if ($judge->role !== 'judge') {
+            abort(403, 'Hanya akun juri yang dapat diubah di menu ini.');
+        }
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'unique:users,phone,' . $judge->id],
+            'password' => ['nullable', 'string', 'min:6'],
+            'status' => ['required', 'in:active,inactive'],
+        ]);
+
+        $updatePayload = [
+            'name' => trim($data['name']),
+            'phone' => trim($data['phone']),
+            'status' => $data['status'],
+        ];
+
+        if (!empty($data['password'])) {
+            $updatePayload['password'] = Hash::make($data['password']);
+        }
+
+        $judge->update($updatePayload);
+
+        return redirect()->route('master.judges')->with('success', "Data juri '{$judge->name}' berhasil diperbarui.");
+    }
+
+    public function destroyJudge(User $judge)
+    {
+        if ($judge->role !== 'judge') {
+            abort(403, 'Hanya akun juri yang dapat dihapus di menu ini.');
+        }
+
+        $assignmentIds = $judge->judgeAssignments()->pluck('id');
+        $hasScores = ScoreSubmission::whereIn('assignment_id', $assignmentIds)->exists();
+
+        if ($hasScores) {
+            return redirect()->back()->with('error', "Gagal menghapus: Juri '{$judge->name}' sudah menginput nilai peserta. Anda bisa menonaktifkan akun melalui Edit Juri.");
+        }
+
+        $name = $judge->name;
+        DB::transaction(function () use ($judge) {
+            $judge->judgeAssignments()->delete();
+            $judge->eventUsers()->delete();
+            $judge->delete();
+        });
+
+        return redirect()->route('master.judges')->with('success', "Akun juri '{$name}' berhasil dihapus.");
     }
 
     public function assignJudge(Request $request)
@@ -999,7 +1080,7 @@ class MasterController extends Controller
                 }
 
                 $name = $row['name'] ?? '-';
-                $groupName = $row['group_name'] ?? '-';
+                $groupName = $row['group'] ?? $row['group_name'] ?? '-';
 
                 if ($search) {
                     $s = strtolower($search);

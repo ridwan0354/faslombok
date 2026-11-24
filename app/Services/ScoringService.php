@@ -39,11 +39,11 @@ class ScoringService
             $ratingOptionId = null;
             $comment = $data['comment'] ?? null;
 
-            if (isset($data['rating_option_id']) && $ratingOptions->has($data['rating_option_id'])) {
+            if (!empty($data['rating_option_id']) && $ratingOptions->has($data['rating_option_id'])) {
                 $option = $ratingOptions->get($data['rating_option_id']);
                 $ratingOptionId = $option->id;
                 $numericValue = (float) $option->numeric_value;
-            } elseif (isset($data['numeric_value'])) {
+            } elseif (isset($data['numeric_value']) && $data['numeric_value'] !== '') {
                 $numericValue = (float) $data['numeric_value'];
             }
 

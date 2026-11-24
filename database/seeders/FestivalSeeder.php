@@ -15,8 +15,6 @@ use App\Models\Participant;
 use App\Models\RatingOption;
 use App\Models\Rubric;
 use App\Models\RubricCriterion;
-use App\Models\Team;
-use App\Models\TeamMember;
 use App\Models\User;
 use App\Services\QrService;
 use Illuminate\Database\Seeder;
@@ -27,65 +25,21 @@ class FestivalSeeder extends Seeder
     public function run(): void
     {
         $qrService = app(QrService::class);
+        $defaultPasswordHash = Hash::make('password123');
 
-        // 1. Create Super/Master Admin
+        // 1. Master Admin Account
         $master = User::firstOrCreate(
             ['phone' => '081234567890'],
             [
                 'name' => 'Master Panitia FAS 2026',
                 'email' => 'admin@faslombok2026.id',
-                'password' => Hash::make('password123'),
+                'password' => $defaultPasswordHash,
                 'role' => 'master',
                 'status' => 'active',
             ]
         );
 
-        // 2. Create Judges
-        $judgeAhmad = User::firstOrCreate(
-            ['phone' => '081111111111'],
-            [
-                'name' => 'Ustadz Ahmad Fauzan, S.Pd.I',
-                'email' => 'ahmad@faslombok2026.id',
-                'password' => Hash::make('password123'),
-                'role' => 'judge',
-                'status' => 'active',
-            ]
-        );
-
-        $judgeFauzi = User::firstOrCreate(
-            ['phone' => '082222222222'],
-            [
-                'name' => 'Ustadz M. Fauzi, M.Ag',
-                'email' => 'fauzi@faslombok2026.id',
-                'password' => Hash::make('password123'),
-                'role' => 'judge',
-                'status' => 'active',
-            ]
-        );
-
-        $judgeSiti = User::firstOrCreate(
-            ['phone' => '083333333333'],
-            [
-                'name' => 'Ustadzah Siti Aminah, S.Pd',
-                'email' => 'siti@faslombok2026.id',
-                'password' => Hash::make('password123'),
-                'role' => 'judge',
-                'status' => 'active',
-            ]
-        );
-
-        $judgeRidwan = User::firstOrCreate(
-            ['phone' => '084444444444'],
-            [
-                'name' => 'Ustadz Ridwan Hakim, M.Pd',
-                'email' => 'ridwan@faslombok2026.id',
-                'password' => Hash::make('password123'),
-                'role' => 'judge',
-                'status' => 'active',
-            ]
-        );
-
-        // 3. Create Event
+        // 2. Active Event
         $event = Event::firstOrCreate(
             ['year' => 2026],
             [
@@ -101,26 +55,18 @@ class FestivalSeeder extends Seeder
             [
                 'enable_group_champion' => true,
                 'config_json' => [
-                    'theme' => 'emerald',
-                    'location' => 'Lombok Convention Center, Mataram',
-                ]
+                    'theme' => 'purple',
+                    'location' => 'Masjid Uswatun Hasanah - LDII Lombok',
+                ],
             ]
         );
 
-        // Attach master to event
         EventUser::firstOrCreate(
             ['event_id' => $event->id, 'user_id' => $master->id],
             ['event_role' => 'master']
         );
 
-        foreach ([$judgeAhmad, $judgeFauzi, $judgeSiti, $judgeRidwan] as $j) {
-            EventUser::firstOrCreate(
-                ['event_id' => $event->id, 'user_id' => $j->id],
-                ['event_role' => 'judge']
-            );
-        }
-
-        // 4. Create Grade Levels (Jenjang kelas satuan/murni agar mudah difilter per peserta)
+        // 3. Grade Levels (9 tingkat)
         $gradesData = [
             ['code' => 'PAUD', 'name' => 'PAUD', 'sort_order' => 1],
             ['code' => 'TK_A', 'name' => 'TK A', 'sort_order' => 2],
@@ -141,7 +87,7 @@ class FestivalSeeder extends Seeder
             );
         }
 
-        // 5. Create Groups (Kelompok / TPQ)
+        // 4. Groups / Kelompok / TPQ (9 official groups)
         $groupsData = [
             ['name' => 'Ampenan', 'code' => 'AMP'],
             ['name' => 'Mataram', 'code' => 'MTR'],
@@ -154,178 +100,21 @@ class FestivalSeeder extends Seeder
             ['name' => 'Praya', 'code' => 'PRY'],
         ];
 
-        $groups = [];
         $groupsMap = [];
         foreach ($groupsData as $grp) {
-            $g = Group::firstOrCreate(
+            $groupsMap[$grp['name']] = Group::firstOrCreate(
                 ['event_id' => $event->id, 'name' => $grp['name']],
                 ['code' => $grp['code']]
             );
-            $groups[] = $g;
-            $groupsMap[$grp['name']] = $g;
         }
 
-        // 6. Define 12 Competitions with initial Rubrics & Eligible Grades
-        $allSd = ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4', 'KELAS_5', 'KELAS_6'];
-        $competitionsConfig = [
-            [
-                'name' => 'Hafalan Dalil',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 5–6 SD/MI',
-                'grades' => ['KELAS_5', 'KELAS_6'],
-                'criteria' => [
-                    ['title' => 'Ketepatan dalil', 'weight_pct' => 35.0],
-                    ['title' => 'Kelancaran', 'weight_pct' => 30.0],
-                    ['title' => 'Fasih', 'weight_pct' => 20.0],
-                    ['title' => 'Adab', 'weight_pct' => 15.0],
-                ],
-            ],
-            [
-                'name' => 'Yel-Yel 29 Karakter Luhur',
-                'format' => 'team',
-                'eligibility_rule' => 'Kelas 1–6 SD/MI',
-                'grades' => $allSd,
-                'criteria' => [
-                    ['title' => 'Kesesuaian tema dan pesan karakter luhur', 'weight_pct' => 35.0],
-                    ['title' => 'Kreativitas dan keunikan yel-yel', 'weight_pct' => 25.0],
-                    ['title' => 'Kekompakan dan semangat tim', 'weight_pct' => 20.0],
-                    ['title' => 'Penampilan dan ekspresi', 'weight_pct' => 10.0],
-                    ['title' => 'Kostum dan properti', 'weight_pct' => 10.0],
-                ],
-            ],
-            [
-                'name' => 'Adzan',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6 SD/MI',
-                'grades' => $allSd,
-                'criteria' => [
-                    ['title' => 'Makhraj huruf dan tajwid', 'weight_pct' => 25.0],
-                    ['title' => 'Ketepatan lafaz', 'weight_pct' => 25.0],
-                    ['title' => 'Irama dan suara', 'weight_pct' => 20.0],
-                    ['title' => 'Kelancaran', 'weight_pct' => 15.0],
-                    ['title' => 'Adab dan penampilan', 'weight_pct' => 15.0],
-                ],
-            ],
-            [
-                'name' => 'Baca Tilawati',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–4 SD/MI',
-                'grades' => ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4'],
-                'criteria' => [
-                    ['title' => 'Makhrodz huruf', 'weight_pct' => 30.0],
-                    ['title' => 'Kelancaran', 'weight_pct' => 25.0],
-                    ['title' => 'Fasih', 'weight_pct' => 20.0],
-                    ['title' => 'Irama dan keindahan suara', 'weight_pct' => 15.0],
-                    ['title' => 'Adab membaca tilawati', 'weight_pct' => 10.0],
-                ],
-            ],
-            [
-                'name' => 'Hafalan Doa',
-                'format' => 'individual',
-                'eligibility_rule' => 'TK A–B, Kelas 1–2 SD/MI',
-                'grades' => ['TK_A', 'TK_B', 'KELAS_1', 'KELAS_2'],
-                'criteria' => [
-                    ['title' => 'Ketepatan hafalan', 'weight_pct' => 40.0],
-                    ['title' => 'Kelancaran', 'weight_pct' => 30.0],
-                    ['title' => 'Kefasihan', 'weight_pct' => 20.0],
-                    ['title' => 'Adab dan sikap', 'weight_pct' => 10.0],
-                ],
-            ],
-            [
-                'name' => 'Mewarnai',
-                'format' => 'individual',
-                'eligibility_rule' => 'PAUD, TK A–B',
-                'grades' => ['PAUD', 'TK_A', 'TK_B'],
-                'criteria' => [
-                    ['title' => 'Kerapian', 'weight_pct' => 20.0],
-                    ['title' => 'Harmoni warna', 'weight_pct' => 25.0],
-                    ['title' => 'Kreativitas', 'weight_pct' => 25.0],
-                    ['title' => 'Komposisi warna', 'weight_pct' => 20.0],
-                    ['title' => 'Kebersihan', 'weight_pct' => 10.0],
-                ],
-            ],
-            [
-                'name' => 'Kaligrafi',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6 SD/MI',
-                'grades' => $allSd,
-                'criteria' => [
-                    ['title' => 'Kesesuaian dengan tema', 'weight_pct' => 15.0],
-                    ['title' => 'Kreativitas dan orisinalitas', 'weight_pct' => 15.0],
-                    ['title' => 'Komposisi', 'weight_pct' => 15.0],
-                    ['title' => 'Teknik menggambar', 'weight_pct' => 15.0],
-                    ['title' => 'Pewarnaan', 'weight_pct' => 15.0],
-                    ['title' => 'Kerapian', 'weight_pct' => 10.0],
-                    ['title' => 'Estetika', 'weight_pct' => 10.0],
-                    ['title' => 'Pesan yang disampaikan melalui gambar', 'weight_pct' => 5.0],
-                ],
-            ],
-            [
-                'name' => 'Baca Al-Qur’an beserta Tajwid',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 5–6 SD/MI',
-                'grades' => ['KELAS_5', 'KELAS_6'],
-                'criteria' => [
-                    ['title' => 'Tajwid', 'weight_pct' => 30.0],
-                    ['title' => 'Makhrodz huruf', 'weight_pct' => 20.0],
-                    ['title' => 'Kelancaran', 'weight_pct' => 15.0],
-                    ['title' => 'Fasih', 'weight_pct' => 15.0],
-                    ['title' => 'Irama dan keindahan suara', 'weight_pct' => 10.0],
-                    ['title' => 'Adab membaca Al Qur’an', 'weight_pct' => 10.0],
-                ],
-            ],
-            [
-                'name' => 'Dai Caberawit',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6 SD/MI',
-                'grades' => $allSd,
-                'criteria' => [
-                    ['title' => 'Penyampaian (Kelancaran, artikulasi, intonasi, ekspresi)', 'weight_pct' => 40.0],
-                    ['title' => 'Materi (Kesesuaian 29 karakter luhur, kedalaman isi)', 'weight_pct' => 35.0],
-                    ['title' => 'Dalil-dalil (Ketepatan dalil Al-Qur’an & hadis, penjelasan makna)', 'weight_pct' => 25.0],
-                ],
-            ],
-            [
-                'name' => 'Hafalan Surat Pendek',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–4 SD/MI',
-                'grades' => ['KELAS_1', 'KELAS_2', 'KELAS_3', 'KELAS_4'],
-                'criteria' => [
-                    ['title' => 'Ketepatan dan kelancaran hafalan', 'weight_pct' => 35.0],
-                    ['title' => 'Ketepatan tajwid dan makharijul huruf', 'weight_pct' => 30.0],
-                    ['title' => 'Kefasihan dalam membaca', 'weight_pct' => 20.0],
-                    ['title' => 'Adab dan sikap saat membacakan hafalan', 'weight_pct' => 15.0],
-                ],
-            ],
-            [
-                'name' => 'Hafalan Asmaul Husna',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 4–6 SD/MI',
-                'grades' => ['KELAS_4', 'KELAS_5', 'KELAS_6'],
-                'criteria' => [
-                    ['title' => 'Ketepatan hafalan Asmaul Husna', 'weight_pct' => 25.0],
-                    ['title' => 'Kelancaran dan kefasihan', 'weight_pct' => 25.0],
-                    ['title' => 'Ketepatan urutan Asmaul Husna', 'weight_pct' => 20.0],
-                    ['title' => 'Ketepatan pelafalan', 'weight_pct' => 15.0],
-                    ['title' => 'Adab dan sikap saat membawakan hafalan', 'weight_pct' => 15.0],
-                ],
-            ],
-            [
-                'name' => 'Baca Tulis Pegon',
-                'format' => 'individual',
-                'eligibility_rule' => 'Kelas 1–6 SD/MI',
-                'grades' => $allSd,
-                'criteria' => [
-                    ['title' => 'Ketepatan membaca dan menulis Pegon sesuai kaidah yang benar', 'weight_pct' => 30.0],
-                    ['title' => 'Kelancaran, kefasihan, dan ketepatan pelafalan saat membaca', 'weight_pct' => 25.0],
-                    ['title' => 'Ketepatan penggunaan huruf dan penulisan kata Pegon', 'weight_pct' => 20.0],
-                    ['title' => 'Kelengkapan bacaan dan tulisan sesuai buku materi kelas', 'weight_pct' => 15.0],
-                    ['title' => 'Kerapian, kejelasan, dan kebersihan hasil tulisan', 'weight_pct' => 10.0],
-                ],
-            ],
-        ];
+        // 5. Load Official 2026 Competitions, Judges & Participants (14 Competitions, No Yel-Yel)
+        $datasetPath = database_path('seeders/data/official_2026_competitions.json');
+        $competitionsConfig = json_decode(file_get_contents($datasetPath), true);
 
-        $createdComps = [];
+        $judgeCounter = 1;
+        $participantCounter = Participant::where('event_id', $event->id)->count() + 1;
+
         foreach ($competitionsConfig as $cData) {
             $comp = Competition::firstOrCreate(
                 ['event_id' => $event->id, 'name' => $cData['name']],
@@ -346,19 +135,18 @@ class FestivalSeeder extends Seeder
             }
             $comp->gradeLevels()->sync($gradeIds);
 
-            // Create Rubric
+            // Rubric v1
             $rubric = Rubric::firstOrCreate(
                 ['competition_id' => $comp->id, 'version' => 1],
                 ['status' => 'active']
             );
 
-            // Rating Options: Baik (100), Cukup (75), Kurang (50)
+            // Quick Rating Options: Baik (100), Cukup (75), Kurang (50) — judges can also input 50-100 manually
             $options = [
                 ['label' => 'Baik', 'numeric_value' => 100.0, 'sort_order' => 1],
                 ['label' => 'Cukup', 'numeric_value' => 75.0, 'sort_order' => 2],
                 ['label' => 'Kurang', 'numeric_value' => 50.0, 'sort_order' => 3],
             ];
-
             foreach ($options as $opt) {
                 RatingOption::firstOrCreate(
                     ['rubric_id' => $rubric->id, 'label' => $opt['label']],
@@ -379,7 +167,7 @@ class FestivalSeeder extends Seeder
                 ]);
             }
 
-            // Standard Awards for each competition
+            // Standard Awards
             $awards = [
                 ['rank_position' => 1, 'rank_label' => 'Juara 1', 'points_for_group' => 10],
                 ['rank_position' => 2, 'rank_label' => 'Juara 2', 'points_for_group' => 7],
@@ -388,182 +176,90 @@ class FestivalSeeder extends Seeder
                 ['rank_position' => 5, 'rank_label' => 'Juara Harapan 2', 'points_for_group' => 2],
                 ['rank_position' => 6, 'rank_label' => 'Juara Harapan 3', 'points_for_group' => 1],
             ];
-
             foreach ($awards as $aw) {
                 CompetitionAward::firstOrCreate(
                     ['competition_id' => $comp->id, 'rank_position' => $aw['rank_position']],
+                    ['rank_label' => $aw['rank_label'], 'points_for_group' => $aw['points_for_group']]
+                );
+            }
+
+            // Create & Assign 3 Judges per Competition
+            foreach ($cData['judges'] as $judgeName) {
+                $phone = sprintf('08520026%04d', $judgeCounter++);
+                $judge = User::firstOrCreate(
+                    ['phone' => $phone],
                     [
-                        'rank_label' => $aw['rank_label'],
-                        'points_for_group' => $aw['points_for_group'],
+                        'name' => $judgeName,
+                        'email' => "juri{$phone}@faslombok2026.id",
+                        'password' => $defaultPasswordHash,
+                        'role' => 'judge',
+                        'status' => 'active',
+                    ]
+                );
+
+                EventUser::firstOrCreate(
+                    ['event_id' => $event->id, 'user_id' => $judge->id],
+                    ['event_role' => 'judge']
+                );
+
+                JudgeAssignment::firstOrCreate(
+                    [
+                        'event_id' => $event->id,
+                        'user_id' => $judge->id,
+                        'competition_id' => $comp->id,
+                    ],
+                    [
+                        'can_view_participants' => true,
+                        'can_view_scores' => true,
+                        'can_view_peer_scores' => true,
+                        'can_score' => true,
+                        'active' => true,
+                        'required_for_completion' => true,
                     ]
                 );
             }
 
-            $createdComps[$cData['name']] = $comp;
-        }
+            // Create Participants & Competition Entries
+            $queueNumber = Entry::where('competition_id', $comp->id)->count() + 1;
+            foreach ($cData['participants'] as $pData) {
+                $group = $groupsMap[$pData['group']] ?? Group::firstOrCreate(
+                    ['event_id' => $event->id, 'name' => $pData['group']],
+                    ['code' => strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $pData['group']), 0, 4))]
+                );
+                $grade = $grades[$pData['grade']] ?? null;
 
-        // 7. Assign Judges to Competitions
-        // Judge Ahmad: Adzan, Dai Caberawit
-        // Judge Fauzi: Adzan, Hafalan Surat Pendek
-        // Judge Siti: Mewarnai, Kaligrafi
-        // Judge Ridwan: Yel-Yel 29 Karakter Luhur
+                $participant = Participant::where('event_id', $event->id)
+                    ->where('group_id', $group->id)
+                    ->where('name', $pData['name'])
+                    ->first();
 
-        $assignments = [
-            // Adzan has 2 required judges: Ahmad & Fauzi
-            ['judge' => $judgeAhmad, 'comp' => $createdComps['Adzan'], 'peer' => true, 'req' => true],
-            ['judge' => $judgeFauzi, 'comp' => $createdComps['Adzan'], 'peer' => true, 'req' => true],
+                if (!$participant) {
+                    do {
+                        $code = sprintf('FAS-%s-%04d', $event->year, $participantCounter++);
+                    } while (Participant::where('event_id', $event->id)->where('participant_code', $code)->exists());
 
-            // Dai Caberawit: Ahmad
-            ['judge' => $judgeAhmad, 'comp' => $createdComps['Dai Caberawit'], 'peer' => false, 'req' => true],
+                    $participant = Participant::create([
+                        'event_id' => $event->id,
+                        'group_id' => $group->id,
+                        'grade_id' => $grade?->id,
+                        'participant_code' => $code,
+                        'name' => $pData['name'],
+                        'gender' => $pData['gender'] ?? 'L',
+                        'active' => true,
+                    ]);
 
-            // Hafalan Surat Pendek: Fauzi
-            ['judge' => $judgeFauzi, 'comp' => $createdComps['Hafalan Surat Pendek'], 'peer' => false, 'req' => true],
-
-            // Mewarnai: Siti
-            ['judge' => $judgeSiti, 'comp' => $createdComps['Mewarnai'], 'peer' => false, 'req' => true],
-
-            // Kaligrafi: Siti
-            ['judge' => $judgeSiti, 'comp' => $createdComps['Kaligrafi'], 'peer' => false, 'req' => true],
-
-            // Yel-Yel 29 Karakter Luhur: Ridwan
-            ['judge' => $judgeRidwan, 'comp' => $createdComps['Yel-Yel 29 Karakter Luhur'], 'peer' => false, 'req' => true],
-        ];
-
-        foreach ($assignments as $as) {
-            JudgeAssignment::firstOrCreate(
-                [
-                    'event_id' => $event->id,
-                    'user_id' => $as['judge']->id,
-                    'competition_id' => $as['comp']->id,
-                ],
-                [
-                    'can_view_participants' => true,
-                    'can_view_scores' => true,
-                    'can_view_peer_scores' => $as['peer'],
-                    'can_score' => true,
-                    'active' => true,
-                    'required_for_completion' => $as['req'],
-                ]
-            );
-        }
-
-        // 8. Sample Participants
-        $participantsData = [
-            [
-                'name' => 'Muhammad Rayyan Al-Farisi',
-                'group' => $groupsMap['Ampenan'],
-                'grade' => $grades['KELAS_5'],
-                'gender' => 'L',
-                'comps' => ['Adzan', 'Dai Caberawit'],
-            ],
-            [
-                'name' => 'Ahmad Bilal Al-Habib',
-                'group' => $groupsMap['Mataram'],
-                'grade' => $grades['KELAS_5'],
-                'gender' => 'L',
-                'comps' => ['Adzan'],
-            ],
-            [
-                'name' => 'Fathir Azzam Robbani',
-                'group' => $groupsMap['Cakranegara'],
-                'grade' => $grades['KELAS_5'],
-                'gender' => 'L',
-                'comps' => ['Adzan'],
-            ],
-            [
-                'name' => 'Aisyah Putri Azzahra',
-                'group' => $groupsMap['Ampenan'],
-                'grade' => $grades['KELAS_3'],
-                'gender' => 'P',
-                'comps' => ['Hafalan Surat Pendek'],
-            ],
-            [
-                'name' => 'Fatimah Khairunnisa',
-                'group' => $groupsMap['Mataram'],
-                'grade' => $grades['KELAS_3'],
-                'gender' => 'P',
-                'comps' => ['Hafalan Surat Pendek'],
-            ],
-            [
-                'name' => 'Khaira Lubna Salsabila',
-                'group' => $groupsMap['Sandik'],
-                'grade' => $grades['TK_B'],
-                'gender' => 'P',
-                'comps' => ['Mewarnai'],
-            ],
-            [
-                'name' => 'Syamil Al-Banna',
-                'group' => $groupsMap['Praya'],
-                'grade' => $grades['KELAS_4'],
-                'gender' => 'L',
-                'comps' => ['Kaligrafi'],
-            ],
-        ];
-
-        $pCount = 1;
-        $createdParticipants = [];
-        foreach ($participantsData as $pData) {
-            $code = sprintf('FAS-%s-%04d', $event->year, $pCount++);
-            $p = Participant::firstOrCreate(
-                ['event_id' => $event->id, 'name' => $pData['name']],
-                [
-                    'group_id' => $pData['group']->id,
-                    'grade_id' => $pData['grade']->id,
-                    'participant_code' => $code,
-                    'gender' => $pData['gender'],
-                    'active' => true,
-                ]
-            );
-
-            // Generate QR Token
-            $qrService->getOrCreateForParticipant($p);
-
-            // Create individual entries
-            foreach ($pData['comps'] as $cName) {
-                if (isset($createdComps[$cName])) {
-                    $comp = $createdComps[$cName];
-                    $queue = Entry::where('competition_id', $comp->id)->count() + 1;
-                    Entry::firstOrCreate(
-                        ['competition_id' => $comp->id, 'participant_id' => $p->id],
-                        [
-                            'event_id' => $event->id,
-                            'queue_number' => $queue,
-                            'status' => 'registered',
-                        ]
-                    );
+                    $qrService->getOrCreateForParticipant($participant);
                 }
+
+                Entry::firstOrCreate(
+                    ['competition_id' => $comp->id, 'participant_id' => $participant->id],
+                    [
+                        'event_id' => $event->id,
+                        'queue_number' => $queueNumber++,
+                        'status' => 'registered',
+                    ]
+                );
             }
-
-            $createdParticipants[] = $p;
         }
-
-        // 9. Sample Team for Yel-Yel 29 Karakter Luhur
-        $teamComp = $createdComps['Yel-Yel 29 Karakter Luhur'];
-        $team = Team::firstOrCreate(
-            ['event_id' => $event->id, 'competition_id' => $teamComp->id, 'team_code' => 'TIM-YEL-01'],
-            [
-                'group_id' => $groupsMap['Ampenan']->id,
-                'name' => 'Laskar 29 Ampenan Juara',
-            ]
-        );
-
-        // Add some members to team
-        TeamMember::firstOrCreate(
-            ['team_id' => $team->id, 'participant_id' => $createdParticipants[0]->id],
-            ['membership_status' => 'active']
-        );
-
-        // Generate QR for team
-        $qrService->getOrCreateForTeam($team);
-
-        // Create Team Entry
-        Entry::firstOrCreate(
-            ['competition_id' => $teamComp->id, 'team_id' => $team->id],
-            [
-                'event_id' => $event->id,
-                'queue_number' => 1,
-                'status' => 'registered',
-            ]
-        );
     }
 }

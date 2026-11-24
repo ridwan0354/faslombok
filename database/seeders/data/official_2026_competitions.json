@@ -1,0 +1,1744 @@
+[
+  {
+    "name": "Hafalan Do'a Harian (TK A & B)",
+    "format": "individual",
+    "eligibility_rule": "TK A & B",
+    "grades": [
+      "TK_A",
+      "TK_B"
+    ],
+    "criteria": [
+      {
+        "title": "Ketepatan Hafalan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kefasihan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Ibu Wida (Ampenan)",
+      "Ibu Nana (Sandik)",
+      "Ibu Silvia (Ampenan)"
+    ],
+    "participants": [
+      {
+        "name": "Nirmala Nur Hafidzah",
+        "group": "Praya",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Utari Hamida Hariyanti",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Pusaka Khoirul Asadulloh",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Assiyfa Ainul Qolby",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Fayola Mecca Kurniawan",
+        "group": "Cakranegara",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Bilal Firdaus",
+        "group": "Praya",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Huwaida Zahia Sakhi",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Giandra Saheel Arnafa",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Sheza Almahyra Hasanuddin",
+        "group": "Cakranegara",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Alvian Rafansa Suryadi",
+        "group": "Praya",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Nandhira Putri Azulfa",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Almahyra Reyna Putri Utomo",
+        "group": "Pagutan",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Ayra Hafshah Mahabbah",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Azka Maudya Qolbi",
+        "group": "Cakranegara",
+        "grade": "TK_A",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Baca Tilawati Jilid 1–3 (Kls 1–2)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 1–2 SD/MI",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2"
+    ],
+    "criteria": [
+      {
+        "title": "Makhraj",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Irama & Keindahan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Ibu Ayu (Selong)",
+      "Mba Icha (Cakranegara)",
+      "Ibu Eli (Prumnas)"
+    ],
+    "participants": [
+      {
+        "name": "Umar Rosyid Setiawan",
+        "group": "Selong",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Lalu Rahadean (Partisipan)",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Ahmad Algory Arfandi",
+        "group": "Cakranegara",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Chelyn Afreen Althafia",
+        "group": "Mataram",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Jenahara Kheswari Hibatillah",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Aimar Benzema",
+        "group": "Narmada",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "N. Fahira Salsabila Rahman",
+        "group": "Selong",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Alisha Ikhrasya Zahra Sabrina",
+        "group": "Ampenan",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Baiq Halwa",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Nauren Alesya Putri",
+        "group": "Cakranegara",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Aisya Putri Melati",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Wening Ratri Widywrini",
+        "group": "Ampenan",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Fadila Nurrohmah",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Aria Saputra",
+        "group": "Narmada",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Clarisa Tsabitaputry",
+        "group": "Pagutan",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Putra Saba Maulana Rinjani",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Azraf Ghozi Alfarizi",
+        "group": "Cakranegara",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Haliza Zakkiya Putri",
+        "group": "Narmada",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Keenan Athaya Zayne",
+        "group": "Prumnas",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Dede Meysha Azena",
+        "group": "Ampenan",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Vina Aprilia Putri",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Baca Tilawati Jilid 4–6 (Kls 3–4)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 3–4 SD/MI",
+    "grades": [
+      "KELAS_3",
+      "KELAS_4"
+    ],
+    "criteria": [
+      {
+        "title": "Makhraj",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Irama & Keindahan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. Agus (Mataram)",
+      "Bp. Hadi (Prumnas)",
+      "Ibu Hani (Sandik)"
+    ],
+    "participants": [
+      {
+        "name": "Raina Salbila Jannah",
+        "group": "Cakranegara",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Harumi Senja Yafsakhillah",
+        "group": "Sandik",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Al Faris",
+        "group": "Ampenan",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Risky Akvin",
+        "group": "Praya",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Alghina Wiren Wijaya",
+        "group": "Pagutan",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Zafran Rafarinsah",
+        "group": "Prumnas",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Nisa Adibah Shakila",
+        "group": "Sandik",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Aisyah Nur Zahira",
+        "group": "Selong",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Sabila Rahma Aqnia",
+        "group": "Mataram",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Sahrul Huda",
+        "group": "Praya",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Haidar Damara Huzam Sada",
+        "group": "Ampenan",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Fatkhan Tanju Huda",
+        "group": "Selong",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Mifta Sabilur Rosyid",
+        "group": "Ampenan",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Helena Putri",
+        "group": "Narmada",
+        "grade": "KELAS_3",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Hafalan Do'a Harian (Kls 1–2)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 1–2 SD/MI",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2"
+    ],
+    "criteria": [
+      {
+        "title": "Ketepatan Hafalan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kefasihan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Ibu Diah (Cakranegara)",
+      "Ibu Anik (Sandik)",
+      "Ibu Widia (Mataram)"
+    ],
+    "participants": [
+      {
+        "name": "Nadhira Alfathunisa",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Fathan Izza Mahendra",
+        "group": "Mataram",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Baiq Aiza Fariza",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Byantara Nadhif Al Baikhaky",
+        "group": "Prumnas",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Hanum Khoirul Azzahra",
+        "group": "Selong",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Kanza Forta Hayatul Hikam",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Hafizh Radeva Alfjr",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Azzura Vania Azizia",
+        "group": "Mataram",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Andara Mehri Erinka Shani",
+        "group": "Prumnas",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Baiq Kiara Anadhita Aslam",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Abimanyu Galih S",
+        "group": "Selong",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Hanifa Naurotul Azizah",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Prigel Azkia Kurniawan",
+        "group": "Cakranegara",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Sulthon Khasani",
+        "group": "Narmada",
+        "grade": "KELAS_1",
+        "gender": "L"
+      }
+    ]
+  },
+  {
+    "name": "Hafalan Surat Pendek (Kls 1–2)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 1–2 SD/MI",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2"
+    ],
+    "criteria": [
+      {
+        "title": "Ketepatan Tajwid & Makhraj",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kefasihan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Ibu Citra (Praya)",
+      "Ibu Andini (Mataram)",
+      "Ibu Charin (Sandik)"
+    ],
+    "participants": [
+      {
+        "name": "Cendayam Maharani",
+        "group": "Mataram",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Ammar Zaydan Al Haqi",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Cantika Ratu Hewi",
+        "group": "Pagutan",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Mikaila Shofia Mahira",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Azka Putri Febrilian",
+        "group": "Selong",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Rinjani Rama Aprilio Sya’ban",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Ismail Alfarizi",
+        "group": "Cakranegara",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Pradipta Fahri Widiyanto",
+        "group": "Selong",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Eliza Permata",
+        "group": "Praya",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Azam Zein Haq",
+        "group": "Ampenan",
+        "grade": "KELAS_1",
+        "gender": "L"
+      },
+      {
+        "name": "Hanania Aira Azzahwa",
+        "group": "Sandik",
+        "grade": "KELAS_1",
+        "gender": "P"
+      },
+      {
+        "name": "Aslam Athabarani",
+        "group": "Cakranegara",
+        "grade": "KELAS_1",
+        "gender": "L"
+      }
+    ]
+  },
+  {
+    "name": "Hafalan Surat Pendek (Kls 3–4)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 3–4 SD/MI",
+    "grades": [
+      "KELAS_3",
+      "KELAS_4"
+    ],
+    "criteria": [
+      {
+        "title": "Ketepatan Tajwid & Makhraj",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kefasihan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Ibu Yeni (Selong)",
+      "Ibu Nurma (Cakranegara)",
+      "Ibu Ifa Hanifa (Mataram)"
+    ],
+    "participants": [
+      {
+        "name": "Nagita Andalusia Bagus",
+        "group": "Pagutan",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Rafasya Dzikri Hamadan",
+        "group": "Ampenan",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Ainun Adiba Kusumah",
+        "group": "Prumnas",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Radika Ahmad Arifin",
+        "group": "Ampenan",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Maryam Najma Yumaira Hawa",
+        "group": "Sandik",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Bhara Abizar Alfarizqi",
+        "group": "Mataram",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Qaisara Hana Janant",
+        "group": "Ampenan",
+        "grade": "KELAS_3",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Hafalan Asma'ul Husna (Kls 4–6)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 4–6 SD/MI",
+    "grades": [
+      "KELAS_4",
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Ketepatan Pelafalan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Ketepatan Urutan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. Alwan Wijaya (Ampenan)",
+      "Bp. Dayat (Mataram)",
+      "Bp. Muhammad Habib (Selong)"
+    ],
+    "participants": [
+      {
+        "name": "Rohil Aulia Husna",
+        "group": "Praya",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Mugi Auliyanisa",
+        "group": "Pagutan",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Sista Millanefisa Putri",
+        "group": "Selong",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Ashalina Rahma Rumaiza",
+        "group": "Mataram",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Dita Yutina Zulfa",
+        "group": "Praya",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Maryam Karimah",
+        "group": "Sandik",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Alfina Tiara Romadona",
+        "group": "Selong",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Diva Julianda",
+        "group": "Praya",
+        "grade": "KELAS_4",
+        "gender": "P"
+      },
+      {
+        "name": "Keynara Jasmine Sabilarosyad",
+        "group": "Sandik",
+        "grade": "KELAS_4",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Baca Tulis Pegon (Kls 1–6 / Kls 5–6)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 1–6 SD/MI (Form: Kls 1–6 | Excel: Kls 5–6)",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2",
+      "KELAS_3",
+      "KELAS_4",
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Ketepatan Penulisan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran Membaca",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kerapian Tulisan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. Saiful Khulud (Praya)",
+      "Bp. Taufiq (Ampenan)",
+      "Bp. Sholeh (Ampenan)"
+    ],
+    "participants": [
+      {
+        "name": "Radhitya Sigit Pratama",
+        "group": "Cakranegara",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Fara Devana Sobron Jamilah",
+        "group": "Sandik",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Pradipta Fadlan Arifin",
+        "group": "Ampenan",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Alika Nisa Febriana",
+        "group": "Selong",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Bunga Rojabia",
+        "group": "Mataram",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Fadli Syahidun",
+        "group": "Cakranegara",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Athallah Hamizan",
+        "group": "Praya",
+        "grade": "KELAS_5",
+        "gender": "L"
+      }
+    ]
+  },
+  {
+    "name": "Adzan (Kls 1–6)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 1–6 SD/MI",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2",
+      "KELAS_3",
+      "KELAS_4",
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Ketepatan Lafadz, Makhraj & Tajwid",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kelancaran",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Irama dan Suara",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. Munirullah (Sandik)",
+      "Bp. Hamzah (Cakranegara)",
+      "Bp. Rifa’i"
+    ],
+    "participants": [
+      {
+        "name": "Ahmad Shifaurijal",
+        "group": "Praya",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Habib Abdurrahman",
+        "group": "Mataram",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Furqon Islahuddin",
+        "group": "Selong",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Ahmad Al Azzazi Syaher",
+        "group": "Prumnas",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Al Fatih",
+        "group": "Ampenan",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Alif Azhari",
+        "group": "Sandik",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Bilal Zahri Al Baihaqi",
+        "group": "Cakranegara",
+        "grade": "KELAS_3",
+        "gender": "L"
+      }
+    ]
+  },
+  {
+    "name": "Da'i Cilik (Kls 1–6)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 1–6 SD/MI",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2",
+      "KELAS_3",
+      "KELAS_4",
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Kesesuaian Tema",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Penguasaan Panggung",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Ketepatan & Kesesuaian Dalil",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Artikulasi & Ekspresi",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. H. Hendrayana (Sandik)",
+      "Bp. Mudofir",
+      "Bp. H. Mujari (Sandik)"
+    ],
+    "participants": [
+      {
+        "name": "Lion Hafes Rosidy",
+        "group": "Sandik",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Alimah Nur Azizah",
+        "group": "Selong",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Dean Afsheen Myesha",
+        "group": "Mataram",
+        "grade": "KELAS_3",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Kaligrafi Alhamdulillah (Kls 1–6)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 1–6 SD/MI",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2",
+      "KELAS_3",
+      "KELAS_4",
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Kesesuaian Tema",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kreativitas",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kerapian",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Estetika",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. Abdul Rahman (Praya)",
+      "Ibu Ikrimah (Mataram)",
+      "Ibu Arum (Ampenan)"
+    ],
+    "participants": [
+      {
+        "name": "Alesha Azzahra Alfathunnisa",
+        "group": "Mataram",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Annisa Mahira Triawarsa",
+        "group": "Selong",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Fairuz Naufalin Maritsa",
+        "group": "Prumnas",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Rubeina Ayunindya Haraha",
+        "group": "Pagutan",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Riskia Sahlatun Nisa",
+        "group": "Narmada",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Afdan Khairusabit",
+        "group": "Mataram",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Baiq Reihana Aulia",
+        "group": "Sandik",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Zahwa Haura Ramdhani",
+        "group": "Cakranegara",
+        "grade": "KELAS_3",
+        "gender": "P"
+      },
+      {
+        "name": "Azmi Al Hafidzi",
+        "group": "Mataram",
+        "grade": "KELAS_3",
+        "gender": "L"
+      },
+      {
+        "name": "Kanaya Zareen Ayudia",
+        "group": "Sandik",
+        "grade": "KELAS_3",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Baca Al-Qur'an & Tajwid (Kls 5–6)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 5–6 SD/MI",
+    "grades": [
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Kelancaran & Kefasihan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Irama & Keindahan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Ketepatan Tajwid",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. Ahmad Muzani",
+      "Ibu Amanda (Ampenan)",
+      "Ibu Nita (Sandik)"
+    ],
+    "participants": [
+      {
+        "name": "Muhammad Arjuna Apriyansyah",
+        "group": "Cakranegara",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Rumaisha Kanza Kharira",
+        "group": "Sandik",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Zulfa Malihatun Najwa",
+        "group": "Selong",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Venita Alexandria Bagus",
+        "group": "Pagutan",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Anita Shifaunnisa",
+        "group": "Praya",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Habibah Khoirun Najwa",
+        "group": "Selong",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Zahira Kayisahrin",
+        "group": "Prumnas",
+        "grade": "KELAS_5",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Mewarnai (PAUD, TK A & B)",
+    "format": "individual",
+    "eligibility_rule": "PAUD, TK A & B",
+    "grades": [
+      "PAUD",
+      "TK_A",
+      "TK_B"
+    ],
+    "criteria": [
+      {
+        "title": "Kerapian",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kreativitas",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Komposisi Warna",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Kebersihan",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Ibu Susi (Praya)",
+      "Ibu Dila (Sandik)",
+      "Ibu Maslihah (Prumnas)"
+    ],
+    "participants": [
+      {
+        "name": "Arsyla Husna Putri Melati",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Mecca Azzahra Queensha Bella",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Maryam Nakia Aurora Ramadhani",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Maryam Aleeta Alexandria",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Segara Biru",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Aresa Paras Naimatu Soleha",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Davin Syawal Alfarezy",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Jericho Ahmad Abdillah",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Hanan Ibrahim",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Aliyya Az Zahra",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Salim Mulahelah",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Syaira Aryulanda Rengganis",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Tatjana Inara Florenti",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Fataya Maryam",
+        "group": "Sandik",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Raden Zio Arrasy",
+        "group": "Pagutan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Raden Elzein Askara Sauqi",
+        "group": "Pagutan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Raden Keenan Ahmad",
+        "group": "Pagutan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Musa Iskandariyah Bagus",
+        "group": "Pagutan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Safeya Lutfana Shanum",
+        "group": "Pagutan",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Ayuna Silvana Azizah",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Mufidatul Aulia",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Kirana Prameswari",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Mahardika Syauqi Izzuddin",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Azka Rangga Purnama",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Arsya Rangga Purnama",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Nayanika Eunoia Arunika",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Binar Aruna Khanzabbya",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Kholifa Firdaus",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Cantika Khoirunnisa",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Kesatria Paramarta",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Felinta Agish Maheswari Dayana",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Kanaya Ramadhani Sofyan",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Zalina Mecca Madina",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Alsaki Bhara Wiradika",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Nayra Cahya Ningsih",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Ezra Niskala N.",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Gavin Zavier Ahtar",
+        "group": "Mataram",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Alexei Asshauqi Mukhtar Alfakhri",
+        "group": "Prumnas",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Jaisy Husnu Mufiz Alhasaniy",
+        "group": "Prumnas",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Fahreza Dwi Ardana",
+        "group": "Prumnas",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Jasmine Almahyra Putri",
+        "group": "Prumnas",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Daffa Wardhana",
+        "group": "Prumnas",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Mohammad Atta Faris Hidayatullah",
+        "group": "Prumnas",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Aisha Nadhira Bunga Ranum",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Romzan Akyas Kabir",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Farzan Akhtar Mirza",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Azra Gidda Farsya",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Alesha Maezhura Shezani",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Callista Zahra",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Ghania Almahyra",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Ikhrasya Raffasya (TKB)",
+        "group": "Ampenan",
+        "grade": "TK_B",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Ikhrasya Rayyanza (TKA)",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Izsyan Galih Abdurahman",
+        "group": "Ampenan",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Aqila Agnia Aurynnisa",
+        "group": "Praya",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Ahsan Ziyad Ramadhan",
+        "group": "Praya",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Kholid Sabilillah",
+        "group": "Praya",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Adzan Dzuhuri Sabilillah",
+        "group": "Praya",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Zayyid Fawaz Arrazid",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Alifia Nur Adzkiya",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Falisha Nabila Huda",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Humaira Habiba Hanun",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Reyshaka Manggala Alfarizqy",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Aprily Aurora Rafifa",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Zafara Luluk Syauqiya",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Rumaisyah Almira Shanum",
+        "group": "Selong",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Lintang Zanzabila",
+        "group": "Cakranegara",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Atharazka Sigit Ramadhan",
+        "group": "Cakranegara",
+        "grade": "TK_A",
+        "gender": "L"
+      },
+      {
+        "name": "Qonita Amelia Wirmala",
+        "group": "Narmada",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Yasmin Kamila",
+        "group": "Narmada",
+        "grade": "TK_A",
+        "gender": "P"
+      },
+      {
+        "name": "Hanna Aulia Putri",
+        "group": "Narmada",
+        "grade": "TK_A",
+        "gender": "P"
+      }
+    ]
+  },
+  {
+    "name": "Dalil-Dalil (Kls 5–6)",
+    "format": "individual",
+    "eligibility_rule": "Kelas 5–6 SD/MI",
+    "grades": [
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Kelancaran & Kefasihan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Irama & Keindahan",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Ketepatan Tajwid",
+        "weight_pct": 25.0
+      },
+      {
+        "title": "Adab & Sikap",
+        "weight_pct": 25.0
+      }
+    ],
+    "judges": [
+      "Bp. Amiril (Prumnas)",
+      "Bp Aris Susanto (Ampenan)",
+      "Bp Sodiqin (Praya)"
+    ],
+    "participants": [
+      {
+        "name": "Amira Khanza Rosyida",
+        "group": "Cakranegara",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Dirgam Al Haidar",
+        "group": "Sandik",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Ubaydillah Alfarizy",
+        "group": "Mataram",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Niswatin Sidqia Alkindi",
+        "group": "Praya",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Venita Alexandria Bagus",
+        "group": "Prumnas",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Digdaya Erlangga Ganesha Abiasih",
+        "group": "Selong",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Shofia Fazura",
+        "group": "Narmada",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Lasna Roudhotul Jannas Alkindi",
+        "group": "Praya",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Lutfya Mugi Khairunnisa",
+        "group": "Pagutan",
+        "grade": "KELAS_5",
+        "gender": "P"
+      },
+      {
+        "name": "Muhammad Galif Suradi",
+        "group": "Mataram",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Ozil Arsenaditya Lesmana",
+        "group": "Selong",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Jasi Adnan Yuzarsif",
+        "group": "Selong",
+        "grade": "KELAS_5",
+        "gender": "L"
+      },
+      {
+        "name": "Muhammad Ammar Asyraf",
+        "group": "Ampenan",
+        "grade": "KELAS_5",
+        "gender": "L"
+      }
+    ]
+  }
+]

@@ -205,5 +205,73 @@
             </form>
         </div>
     </div>
+
+    <!-- Registered Entries List -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="text-base font-bold text-slate-900">Daftar Peserta Terdaftar ({{ $competition->entries->count() }} Entri)</h3>
+                <p class="text-xs text-slate-500">Anda dapat mengeluarkan peserta dari cabang lomba ini atau mengedit datanya di halaman Peserta.</p>
+            </div>
+            <a href="{{ route('master.participants', ['competition_id' => $competition->id]) }}"
+               class="px-3.5 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold text-xs border border-purple-200 transition-colors self-start">
+                Edit di Menu Peserta →
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                    <tr>
+                        <th class="py-2.5 px-3">No. Urut</th>
+                        <th class="py-2.5 px-3">Nama Peserta</th>
+                        <th class="py-2.5 px-3">Kelompok / TPQ</th>
+                        <th class="py-2.5 px-3">Kelas</th>
+                        <th class="py-2.5 px-3 text-center">Status Nilai</th>
+                        <th class="py-2.5 px-3 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($competition->entries->sortBy('queue_number') as $ent)
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-2.5 px-3 font-mono font-bold text-slate-500">#{{ $ent->queue_number ?? '-' }}</td>
+                        <td class="py-2.5 px-3 font-bold text-slate-900">
+                            {{ $ent->display_name }}
+                            <span class="block text-[10px] font-mono text-slate-400 font-normal">{{ $ent->entity_code }}</span>
+                        </td>
+                        <td class="py-2.5 px-3 text-slate-700">{{ $ent->group ? $ent->group->name : '-' }}</td>
+                        <td class="py-2.5 px-3 text-slate-600">{{ $ent->participant && $ent->participant->gradeLevel ? $ent->participant->gradeLevel->name : '-' }}</td>
+                        <td class="py-2.5 px-3 text-center">
+                            @if($ent->scoreSubmissions->isNotEmpty())
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    {{ $ent->scoreSubmissions->count() }} Nilai Masuk
+                                </span>
+                            @else
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-500">
+                                    Belum Dinilai
+                                </span>
+                            @endif
+                        </td>
+                        <td class="py-2.5 px-3 text-right">
+                            <form action="{{ route('master.competitions.entries.destroy', [$competition->id, $ent->id]) }}" method="POST"
+                                  data-confirm="Keluarkan peserta {{ $ent->display_name }} dari lomba {{ $competition->name }}?"
+                                  onsubmit="return confirm(this.dataset.confirm)" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] border border-rose-200 transition-colors">
+                                    Keluarkan
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="py-6 text-center text-slate-400">Belum ada peserta terdaftar pada lomba ini.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 @endsection

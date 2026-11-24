@@ -154,7 +154,7 @@
                         <td class="py-3.5 px-4 text-center font-mono">
                             @if($sc)
                                 <button type="button" 
-                                        @click="openDetail('{{ addslashes($row['name']) }}', '{{ addslashes($row['code']) }}', '{{ addslashes($row['group']) }}', {{ json_encode($sc) }})"
+                                        @click="openDetail(@js($row['name']), @js($row['code']), @js($row['group']), @js($sc))"
                                         class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-extrabold {{ $sc['status'] === 'submitted' ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300' : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300' }} transition-colors shadow-2xs group"
                                         title="Klik untuk melihat rincian kriteria penilaian">
                                     <span>{{ number_format($sc['score_total'], 1) }}</span>

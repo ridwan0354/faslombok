@@ -24,11 +24,11 @@
             rating_option_id: {{ $initialOpt ? $initialOpt : 'null' }},
             numeric_value: {{ $initialVal ? $initialVal : 'null' }},
             weight_pct: {{ (float) $criterion->weight_pct }},
-            comment: '{{ $item ? addslashes($item->comment) : '' }}'
+            comment: @js($item ? ($item->comment ?? '') : '')
         },
         @endforeach
     },
-    notes: '{{ $existingSubmission ? addslashes($existingSubmission->notes) : '' }}',
+    notes: @js($existingSubmission ? ($existingSubmission->notes ?? '') : ''),
     actionType: 'submit',
     isLocked: {{ $competition->is_locked ? 'true' : 'false' }},
 
@@ -36,6 +36,23 @@
         if (!{{ $canEdit ? 'true' : 'false' }}) return;
         this.scores[criterionId].rating_option_id = optionId;
         this.scores[criterionId].numeric_value = val;
+    },
+
+    setNumericValue(criterionId, rawVal) {
+        if (!{{ $canEdit ? 'true' : 'false' }}) return;
+        this.scores[criterionId].rating_option_id = null;
+        if (rawVal === '' || rawVal === null) {
+            this.scores[criterionId].numeric_value = null;
+            return;
+        }
+        let num = parseFloat(rawVal);
+        if (isNaN(num)) {
+            this.scores[criterionId].numeric_value = null;
+            return;
+        }
+        if (num < 50) num = 50;
+        if (num > 100) num = 100;
+        this.scores[criterionId].numeric_value = num;
     },
 
     get totalScore() {
@@ -68,8 +85,8 @@
                 entry_id: {{ $entry->id }},
                 scores: this.scores,
                 notes: this.notes,
-                entry_name: '{{ addslashes($entry->display_name) }}',
-                competition_name: '{{ addslashes($competition->name) }}',
+                entry_name: @js($entry->display_name),
+                competition_name: @js($competition->name),
                 timestamp: new Date().toISOString()
             });
             alert('Perangkat Anda sedang offline. Penilaian telah disimpan sebagai draft lokal dan akan otomatis disinkronkan saat koneksi internet pulih.');
@@ -196,9 +213,26 @@
                     @endforeach
                 </div>
 
+                <!-- Custom Numeric Score Slider & Input (Min 50 - Max 100 sesuai Form Juri) -->
+                <div class="pt-1 flex items-center space-x-3 bg-slate-50 px-3 py-2 rounded-2xl border border-slate-200">
+                    <span class="text-[11px] font-bold text-slate-600 shrink-0">Nilai (50–100):</span>
+                    <input type="range" min="50" max="100" step="1"
+                           :value="scores['{{ $criterion->id }}'].numeric_value ?? 75"
+                           @input="setNumericValue('{{ $criterion->id }}', $event.target.value)"
+                           :disabled="!{{ $canEdit ? 'true' : 'false' }}"
+                           class="flex-1 accent-purple-700 cursor-pointer disabled:opacity-60">
+                    <input type="number" min="50" max="100" step="1"
+                           :value="scores['{{ $criterion->id }}'].numeric_value"
+                           @input="scores['{{ $criterion->id }}'].rating_option_id = null; scores['{{ $criterion->id }}'].numeric_value = $event.target.value !== '' ? parseFloat($event.target.value) : null"
+                           @blur="setNumericValue('{{ $criterion->id }}', $event.target.value)"
+                           :disabled="!{{ $canEdit ? 'true' : 'false' }}"
+                           placeholder="50-100"
+                           class="w-16 px-2 py-1 text-xs font-mono font-bold text-center bg-white border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600">
+                </div>
+
                 <!-- Hidden inputs for form submit -->
-                <input type="hidden" name="scores[{{ $criterion->id }}][rating_option_id]" :value="scores['{{ $criterion->id }}'].rating_option_id">
-                <input type="hidden" name="scores[{{ $criterion->id }}][numeric_value]" :value="scores['{{ $criterion->id }}'].numeric_value">
+                <input type="hidden" name="scores[{{ $criterion->id }}][rating_option_id]" :value="scores['{{ $criterion->id }}'].rating_option_id ?? ''">
+                <input type="hidden" name="scores[{{ $criterion->id }}][numeric_value]" :value="scores['{{ $criterion->id }}'].numeric_value ?? ''">
 
                 <!-- Optional Comment per criterion -->
                 <div class="pt-1">

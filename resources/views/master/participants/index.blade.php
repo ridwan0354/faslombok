@@ -9,6 +9,8 @@
     showEditModal: false,
     showGroupsModal: false,
     showGradesModal: false,
+    showAllCompsAdd: false,
+    showAllCompsEdit: false,
     allCompetitions: {{ json_encode($competitions->map(fn($c) => [
         'id' => $c->id,
         'name' => $c->name,
@@ -17,6 +19,7 @@
     selectedGradeId: '',
     selectedCompIds: [],
     get filteredCompetitionsAdd() {
+        if (this.showAllCompsAdd) return this.allCompetitions;
         if (!this.selectedGradeId) return [];
         const gid = parseInt(this.selectedGradeId);
         return this.allCompetitions.filter(c => c.grade_ids.length === 0 || c.grade_ids.includes(gid));
@@ -31,16 +34,18 @@
         competitions: []
     },
     get filteredCompetitionsEdit() {
-        if (!this.editData.grade_id) return this.allCompetitions;
+        if (this.showAllCompsEdit || !this.editData.grade_id) return this.allCompetitions;
         const gid = parseInt(this.editData.grade_id);
         return this.allCompetitions.filter(c => c.grade_ids.length === 0 || c.grade_ids.includes(gid) || this.editData.competitions.includes(c.id));
     },
     openAdd() {
         this.selectedGradeId = '';
         this.selectedCompIds = [];
+        this.showAllCompsAdd = false;
         this.showAddModal = true;
     },
     openEdit(p) {
+        this.showAllCompsEdit = false;
         this.editData = {
             id: p.id,
             name: p.name,
@@ -89,17 +94,25 @@
     </div>
 
     <!-- Filter & Search Bar -->
-    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
-        <form action="{{ route('master.participants') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-2">
+        <form action="{{ route('master.participants') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
             <div class="sm:col-span-2">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama atau kode peserta..." 
                        class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 focus:outline-none">
             </div>
             <div>
                 <select name="group_id" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
-                    <option value="">Semua Kelompok / TPQ</option>
+                    <option value="">Semua Kelompok ({{ count($groups) }})</option>
                     @foreach($groups as $grp)
                         <option value="{{ $grp->id }}" {{ request('group_id') == $grp->id ? 'selected' : '' }}>{{ $grp->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <select name="competition_id" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
+                    <option value="">Semua Cabang Lomba</option>
+                    @foreach($competitions as $comp)
+                        <option value="{{ $comp->id }}" {{ request('competition_id') == $comp->id ? 'selected' : '' }}>{{ $comp->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -112,6 +125,9 @@
                 </a>
             </div>
         </form>
+        <div class="text-[11px] text-slate-500 font-medium px-1">
+            Menampilkan <span class="font-bold text-slate-800">{{ $participants->total() }}</span> peserta terdaftar.
+        </div>
     </div>
 
     <!-- Participants Table -->
@@ -175,7 +191,7 @@
                         <td class="py-3.5 px-4 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end space-x-1.5">
                                 <button type="button" 
-                                        @click="openEdit({{ json_encode([
+                                        @click="openEdit(@js([
                                             'id' => $p->id,
                                             'name' => $p->name,
                                             'group_id' => $p->group_id,
@@ -183,12 +199,12 @@
                                             'gender' => $p->gender,
                                             'active' => $p->active,
                                             'entries' => $p->entries->map(fn($e) => ['competition_id' => $e->competition_id]),
-                                        ]) }})"
+                                        ]))"
                                         class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200 transition-colors flex items-center space-x-1">
                                     <svg class="w-3.5 h-3.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     <span>Edit</span>
                                 </button>
-                                <form action="{{ route('master.participants.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus peserta {{ $p->name }}?')" class="inline">
+                                <form action="{{ route('master.participants.destroy', $p->id) }}" method="POST" data-confirm="Apakah Anda yakin ingin menghapus peserta {{ $p->name }}?" onsubmit="return confirm(this.dataset.confirm)" class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors" title="Hapus">
@@ -273,17 +289,18 @@
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Pilih Cabang Lomba Diikuti</label>
-                        <template x-if="selectedGradeId && filteredCompetitionsAdd.length > 0">
-                            <span class="text-[11px] text-emerald-700 font-semibold" x-text="'(' + filteredCompetitionsAdd.length + ' lomba memenuhi syarat)'"></span>
-                        </template>
+                        <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-purple-700 cursor-pointer">
+                            <input type="checkbox" x-model="showAllCompsAdd" class="rounded text-purple-600 focus:ring-purple-500">
+                            <span>Tampilkan semua lomba</span>
+                        </label>
                     </div>
                     <div class="space-y-1.5 max-h-48 overflow-y-auto p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                        <template x-if="!selectedGradeId">
+                        <template x-if="!selectedGradeId && !showAllCompsAdd">
                             <p class="text-xs text-slate-400 italic py-2 text-center">
-                                Silakan pilih Tingkat Kelas di atas terlebih dahulu untuk menampilkan cabang lomba yang berhak diikuti santri.
+                                Silakan pilih Tingkat Kelas di atas terlebih dahulu, atau centang "Tampilkan semua lomba".
                             </p>
                         </template>
-                        <template x-if="selectedGradeId && filteredCompetitionsAdd.length === 0">
+                        <template x-if="selectedGradeId && !showAllCompsAdd && filteredCompetitionsAdd.length === 0">
                             <p class="text-xs text-amber-600 font-medium py-2 text-center">
                                 Belum ada cabang lomba individu yang dibuka untuk tingkat kelas ini.
                             </p>
@@ -365,9 +382,10 @@
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Pilih Cabang Lomba Diikuti</label>
-                        <template x-if="editData.grade_id">
-                            <span class="text-[11px] text-emerald-700 font-semibold" x-text="'(' + filteredCompetitionsEdit.length + ' lomba tersedia)'"></span>
-                        </template>
+                        <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-purple-700 cursor-pointer">
+                            <input type="checkbox" x-model="showAllCompsEdit" class="rounded text-purple-600 focus:ring-purple-500">
+                            <span>Tampilkan semua lomba</span>
+                        </label>
                     </div>
                     <div class="space-y-1.5 max-h-48 overflow-y-auto p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
                         <template x-for="c in filteredCompetitionsEdit" :key="c.id">
@@ -444,7 +462,7 @@
                             <span class="font-bold text-slate-900 block">{{ $grp->name }}</span>
                             <span class="text-[11px] text-slate-400 font-mono">{{ $grp->code }} • {{ $grp->participants->count() }} Peserta</span>
                         </div>
-                        <form action="{{ route('master.groups.destroy', $grp->id) }}" method="POST" onsubmit="return confirm('Hapus kelompok {{ $grp->name }}?')" class="inline">
+                        <form action="{{ route('master.groups.destroy', $grp->id) }}" method="POST" data-confirm="Hapus kelompok {{ $grp->name }}?" onsubmit="return confirm(this.dataset.confirm)" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors" title="Hapus">
@@ -510,7 +528,7 @@
                             <span class="font-bold text-slate-900 block">{{ $gr->name }}</span>
                             <span class="text-[11px] text-slate-400 font-mono">{{ $gr->code }} • Urutan #{{ $gr->sort_order }}</span>
                         </div>
-                        <form action="{{ route('master.grade-levels.destroy', $gr->id) }}" method="POST" onsubmit="return confirm('Hapus tingkat kelas {{ $gr->name }}?')" class="inline">
+                        <form action="{{ route('master.grade-levels.destroy', $gr->id) }}" method="POST" data-confirm="Hapus tingkat kelas {{ $gr->name }}?" onsubmit="return confirm(this.dataset.confirm)" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors" title="Hapus">

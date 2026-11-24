@@ -92,8 +92,18 @@ class ImportExportService
                     $groupName = 'Umum';
                 }
 
-                // Find or create group
+                // Normalize common aliases for groups
                 $groupKey = strtolower($groupName);
+                $groupAliases = [
+                    'cakra' => 'cakranegara',
+                    'perumnas' => 'prumnas',
+                    'perum' => 'prumnas',
+                ];
+                if (isset($groupAliases[$groupKey]) && $groups->has($groupAliases[$groupKey])) {
+                    $groupKey = $groupAliases[$groupKey];
+                }
+
+                // Find or create group
                 if (!$groups->has($groupKey)) {
                     $newGroup = Group::create([
                         'event_id' => $event->id,
@@ -121,7 +131,9 @@ class ImportExportService
                     $updatedCount++;
                 } else {
                     $nextCodeNum = Participant::where('event_id', $event->id)->count() + 1;
-                    $code = sprintf('FAS-%s-%04d', $event->year, $nextCodeNum);
+                    do {
+                        $code = sprintf('FAS-%s-%04d', $event->year, $nextCodeNum++);
+                    } while (Participant::where('event_id', $event->id)->where('participant_code', $code)->exists());
 
                     $participant = Participant::create([
                         'event_id' => $event->id,
