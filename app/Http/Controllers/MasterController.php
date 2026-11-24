@@ -869,7 +869,7 @@ class MasterController extends Controller
                             'score_total' => (float) $sub->score_total,
                             'status' => $sub->status,
                             'notes' => $sub->notes,
-                            'submitted_at' => $sub->submitted_at ? $sub->submitted_at->setTimezone('Asia/Makassar')->format('d M Y, H:i') . ' WITA' : null,
+                            'submitted_at' => ($submittedWita = \App\Models\Event::formatWita($sub->submitted_at)) ? $submittedWita . ' WITA' : null,
                             'items' => $sub->items->map(function ($it) {
                                 return [
                                     'title' => $it->criterion ? $it->criterion->title : '-',

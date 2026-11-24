@@ -792,4 +792,27 @@ class FestivalSystemTest extends TestCase
         $response->assertSee('https://faslombok.galipatsistem.com', false);
         $this->assertTrue(request()->isSecure());
     }
+
+    /**
+     * Test event date is 20 Desember 2026, location is Lombok, and no Asia/Makassar text is exposed
+     */
+    public function test_event_date_location_and_wita_lombok_timezone_labels(): void
+    {
+        $home = $this->get(route('home'));
+        $home->assertStatus(200);
+        $home->assertSee('20 Desember 2026');
+        $home->assertSee('Masjid Uswatun Hasanah ~ LDII Lombok');
+        $home->assertSee('WITA (Lombok)');
+        $home->assertDontSee('Asia/Makassar');
+        $home->assertDontSee('Makassar');
+
+        $master = User::where('role', 'master')->first();
+        $masterDash = $this->actingAs($master)->get(route('master.dashboard'));
+        $masterDash->assertStatus(200);
+        $masterDash->assertSee('WITA (Lombok)');
+        $masterDash->assertDontSee('Asia/Makassar');
+        $masterDash->assertDontSee('Makassar');
+
+        $this->assertSame('20 Dec 2026, 08:00', \App\Models\Event::formatWita('2026-12-20 00:00:00'));
+    }
 }

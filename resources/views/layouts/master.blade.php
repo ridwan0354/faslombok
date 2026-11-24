@@ -130,7 +130,7 @@
 
             <div class="flex items-center space-x-4">
                 <div class="text-xs text-slate-500 hidden md:block">
-                    <span class="font-medium text-slate-700">Zona Waktu:</span> WITA (Asia/Makassar)
+                    <span class="font-medium text-slate-700">Zona Waktu:</span> WITA (Lombok)
                 </div>
                 <div class="h-4 w-px bg-slate-200 hidden md:block"></div>
                 <div class="flex items-center space-x-2">

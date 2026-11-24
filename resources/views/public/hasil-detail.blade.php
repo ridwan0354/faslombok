@@ -26,7 +26,7 @@
             </span>
             <h1 class="text-2xl sm:text-4xl font-black tracking-tight">{{ $competition->name }}</h1>
             <p class="text-xs sm:text-sm text-purple-200 mt-2">
-                Dipublikasikan pada: {{ \Carbon\Carbon::parse($publication->published_at)->setTimezone('Asia/Makassar')->format('d M Y, H:i') }} WITA (Versi {{ $publication->version }})
+                Dipublikasikan pada: {{ \App\Models\Event::formatWita($publication->published_at) }} WITA (Versi {{ $publication->version }})
             </p>
         </div>
     </div>

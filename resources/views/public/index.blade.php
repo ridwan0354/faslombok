@@ -84,7 +84,7 @@
                                 </div>
                                 <div>
                                     <span class="text-[10px] text-purple-200 block uppercase font-bold">Tanggal</span>
-                                    <span class="font-bold text-white">Desember 2026</span>
+                                    <span class="font-bold text-white">20 Desember 2026</span>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2.5">
@@ -102,7 +102,7 @@
                                 </div>
                                 <div>
                                     <span class="text-[10px] text-purple-200 block uppercase font-bold">Lokasi</span>
-                                    <span class="font-bold text-white">Masjid Uswatun Hasanah ~ LDII</span>
+                                    <span class="font-bold text-white">Masjid Uswatun Hasanah ~ LDII Lombok</span>
                                 </div>
                             </div>
                         </div>
@@ -250,7 +250,7 @@
             <h4 class="font-black text-base text-white">Festival Anak Sholeh & Bazar Remaja Lombok 2026</h4>
             <p class="text-amber-300 font-medium italic">"Membangun Karakter, Menumbuhkan Teladan, Mewujudkan Generasi Masa Depan"</p>
             <p class="text-purple-300">Diselenggarakan oleh LDII (Lembaga Dakwah Islam Indonesia) & PPG SAK JAGAT RAYA Lombok</p>
-            <p class="pt-2 text-[11px] text-purple-400">Masjid Uswatun Hasanah • Waktu Acara: WITA (Asia/Makassar)</p>
+            <p class="pt-2 text-[11px] text-purple-400">Masjid Uswatun Hasanah, Lombok • 20 Desember 2026 • Waktu Acara: WITA (Lombok)</p>
         </div>
     </footer>
 </div>

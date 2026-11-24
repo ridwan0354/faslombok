@@ -151,7 +151,7 @@
                 <div class="p-2.5 rounded-xl bg-white border border-indigo-100 flex items-center justify-between text-xs">
                     <div>
                         <span class="font-bold text-slate-800">{{ $ps->assignment->user->name }}</span>
-                        <span class="text-[10px] text-slate-400 block">{{ $ps->submitted_at ? $ps->submitted_at->setTimezone('Asia/Makassar')->format('H:i WITA') : '-' }}</span>
+                        <span class="text-[10px] text-slate-400 block">{{ ($peerTime = \App\Models\Event::formatWita($ps->submitted_at, 'H:i')) ? $peerTime . ' WITA' : '-' }}</span>
                     </div>
                     <span class="font-mono font-black text-indigo-700 text-sm">
                         {{ number_format($ps->score_total, 1) }}

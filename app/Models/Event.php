@@ -9,6 +9,18 @@ class Event extends Model
 {
     use HasFactory;
 
+    /** Offset waktu standar WITA untuk wilayah Lombok (UTC+8). */
+    public const WITA_TIMEZONE = '+08:00';
+
+    public static function formatWita(mixed $datetime, string $format = 'd M Y, H:i'): ?string
+    {
+        if (!$datetime) {
+            return null;
+        }
+
+        return \Carbon\Carbon::parse($datetime)->setTimezone(self::WITA_TIMEZONE)->format($format);
+    }
+
     protected $fillable = [
         'name',
         'year',

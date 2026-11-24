@@ -44,8 +44,8 @@ class FestivalSeeder extends Seeder
             ['year' => 2026],
             [
                 'name' => 'Festival Anak Sholeh Lombok 2026',
-                'start_at' => '2026-11-20 08:00:00',
-                'end_at' => '2026-11-22 17:00:00',
+                'start_at' => '2026-12-20 08:00:00',
+                'end_at' => '2026-12-20 17:00:00',
                 'status' => 'active',
             ]
         );

@@ -146,7 +146,7 @@
                     </div>
                 </div>
                 <span class="text-[11px] text-slate-400 font-mono">
-                    {{ $log->created_at ? $log->created_at->setTimezone('Asia/Makassar')->format('d M H:i WITA') : '-' }}
+                    {{ ($auditTime = \App\Models\Event::formatWita($log->created_at, 'd M H:i')) ? $auditTime . ' WITA' : '-' }}
                 </span>
             </div>
             @empty
