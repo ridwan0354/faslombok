@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
         $middleware->alias([
             'master' => \App\Http\Middleware\MasterOnly::class,
             'judge' => \App\Http\Middleware\JudgeOnly::class,

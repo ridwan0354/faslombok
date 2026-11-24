@@ -1023,8 +1023,10 @@ class MasterController extends Controller
         ]);
 
         $file = $request->file('background');
+        $uploadDir = public_path('uploads/certificates');
+        \Illuminate\Support\Facades\File::ensureDirectoryExists($uploadDir);
         $filename = 'cert_bg_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('uploads/certificates'), $filename);
+        $file->move($uploadDir, $filename);
 
         $bgUrl = '/uploads/certificates/' . $filename;
 

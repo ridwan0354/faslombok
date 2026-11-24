@@ -776,4 +776,20 @@ class FestivalSystemTest extends TestCase
         ]);
         $res3->assertRedirect(route('judge.dashboard'));
     }
+
+    /**
+     * Test Cloudflare Flexible SSL (HTTP origin with X-Forwarded-Proto: https) works without mixed content or redirect loop
+     */
+    public function test_cloudflare_flexible_ssl_proxy_headers_produce_https_urls(): void
+    {
+        $response = $this->get('http://faslombok.galipatsistem.com/login', [
+            'X-Forwarded-Proto' => 'https',
+            'X-Forwarded-Host' => 'faslombok.galipatsistem.com',
+            'X-Forwarded-Port' => '443',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertSee('https://faslombok.galipatsistem.com', false);
+        $this->assertTrue(request()->isSecure());
+    }
 }
