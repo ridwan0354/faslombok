@@ -886,4 +886,60 @@ class FestivalSystemTest extends TestCase
         $this->assertSame('master', $user->role);
         $this->assertSame('sayamaster', $user->phone);
     }
+
+    /**
+     * Test all GET pages (public, master, judge) including /juara-umum render cleanly with HTTP 200
+     */
+    public function test_all_public_master_and_judge_pages_render_without_server_error(): void
+    {
+        $event = Event::first();
+        $comp = Competition::first();
+        $entry = Entry::where('competition_id', $comp->id)->first();
+        $master = User::where('phone', 'sayamaster')->first();
+        $assignment = JudgeAssignment::where('competition_id', $comp->id)->first();
+        $judge = $assignment->user;
+
+        // Public pages (before any competition is published)
+        foreach ([
+            route('home'),
+            route('pengumuman'),
+            route('juara-umum'),
+            route('login'),
+        ] as $url) {
+            $this->get($url)->assertStatus(200);
+        }
+
+        // Verify groups show on /juara-umum
+        $group = Group::where('event_id', $event->id)->orderBy('name')->first();
+        $this->get(route('juara-umum'))
+            ->assertStatus(200)
+            ->assertSee($group->name);
+
+        // Master pages
+        foreach ([
+            route('master.dashboard'),
+            route('master.competitions'),
+            route('master.competitions.detail', $comp),
+            route('master.participants'),
+            route('master.print.qr'),
+            route('master.judges'),
+            route('master.queue', ['competition_id' => $comp->id]),
+            route('master.scores', ['competition_id' => $comp->id]),
+            route('master.reports'),
+            route('master.certificates'),
+            route('master.certificates.print'),
+        ] as $url) {
+            $this->actingAs($master)->get($url)->assertStatus(200);
+        }
+
+        // Judge pages
+        foreach ([
+            route('judge.dashboard'),
+            route('judge.scanner'),
+            route('judge.competition.entries', $comp),
+            route('judge.scoring.form', $entry),
+        ] as $url) {
+            $this->actingAs($judge)->get($url)->assertStatus(200);
+        }
+    }
 }

@@ -79,7 +79,7 @@
                                 @endif
                             </td>
                             <td class="py-3.5 px-4 font-extrabold text-purple-950">
-                                {{ $row['group_name'] }}
+                                {{ $row['group']?->name ?? '-' }}
                             </td>
                             <td class="py-3.5 px-4 text-center font-mono font-bold text-amber-600">
                                 {{ $row['gold_count'] }}
@@ -91,7 +91,7 @@
                                 {{ $row['bronze_count'] }}
                             </td>
                             <td class="py-3.5 px-4 text-center font-mono text-slate-500">
-                                {{ $row['harapan_count'] }}
+                                {{ $row['other_awards_count'] }}
                             </td>
                             <td class="py-3.5 px-4 text-right font-mono font-black text-base text-purple-950">
                                 {{ $row['total_points'] }} Pts
