@@ -67,6 +67,12 @@ fi
 PHP_VER="$("$PHP_BIN" -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')"
 echo "[OK] Menggunakan PHP ${PHP_VER} (${PHP_BIN})"
 
+# Ensure `php` resolves to selected PHP >= 8.3 inside this script ONLY (leaves global PHP untouched)
+TMP_SHIM_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_SHIM_DIR"' EXIT
+ln -sf "$PHP_BIN" "${TMP_SHIM_DIR}/php"
+export PATH="${TMP_SHIM_DIR}:${PATH}"
+
 # Ensure required PHP extensions for the selected PHP version on apt-based systems
 if command -v apt-get >/dev/null 2>&1 && [[ "$PHP_BIN" == /usr/bin/php* ]]; then
     MISSING_PKGS=()
@@ -98,31 +104,52 @@ if [ -z "$COMPOSER_BIN" ]; then
     COMPOSER_BIN="/usr/local/bin/composer"
 fi
 
-NEED_NODE=0
-if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
-    NEED_NODE=1
-else
-    NODE_MAJOR="$(node -v | sed 's/v//' | cut -d. -f1)"
-    if [ "${NODE_MAJOR:-0}" -lt 18 ]; then
-        NEED_NODE=1
-    fi
+if [ -x /opt/faslombok-node/bin/node ] && [ -x /opt/faslombok-node/bin/npm ]; then
+    export PATH="/opt/faslombok-node/bin:${PATH}"
 fi
 
-if [ "$NEED_NODE" -eq 1 ]; then
-    echo "[2/6] Menginstal Node.js 20 LTS untuk build frontend Vite..."
-    if command -v apt-get >/dev/null 2>&1; then
-        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-        apt-get install -y nodejs
-    else
-        echo "[ERROR] Node.js >= 18 diperlukan untuk build Vite."
+node_meets_vite_req() {
+    command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1 || return 1
+    local ver major minor
+    ver="$(node -v 2>/dev/null | sed 's/^v//')"
+    major="${ver%%.*}"
+    minor="$(echo "$ver" | cut -d. -f2)"
+    if [ "${major:-0}" -ge 22 ]; then
+        return 0
+    elif [ "${major:-0}" -eq 20 ] && [ "${minor:-0}" -ge 19 ]; then
+        return 0
+    fi
+    return 1
+}
+
+if ! node_meets_vite_req; then
+    echo "[2/6] Menginstal Node.js 22 LTS terisolasi di /opt/faslombok-node (aman bagi proyek lain)..."
+    case "$(uname -m)" in
+        x86_64|amd64) NODE_ARCH="x64" ;;
+        aarch64|arm64) NODE_ARCH="arm64" ;;
+        *)
+            echo "[ERROR] Arsitektur $(uname -m) tidak didukung otomatis untuk Node.js biner. Silakan install Node >= 20.19 atau >= 22.12."
+            exit 1
+            ;;
+    esac
+    NODE_TAR="$(curl -fsSL https://nodejs.org/dist/latest-v22.x/SHASUMS256.txt | awk -v suffix="-linux-${NODE_ARCH}.tar.gz" 'index($2, suffix) && substr($2, length($2)-length(suffix)+1) == suffix {print $2; exit}')"
+    if [ -z "$NODE_TAR" ]; then
+        echo "[ERROR] Gagal menentukan paket Node.js 22 dari nodejs.org."
         exit 1
     fi
+    rm -rf /opt/faslombok-node
+    mkdir -p /opt/faslombok-node
+    curl -fsSL "https://nodejs.org/dist/latest-v22.x/${NODE_TAR}" | tar -xz --strip-components=1 -C /opt/faslombok-node
+    export PATH="/opt/faslombok-node/bin:${PATH}"
 fi
+echo "[OK] Menggunakan Node $(node -v) ($(command -v node))"
 
 # ------------------------------------------------------------------------------
 # 3. Configure .env safely (preserves existing APP_KEY/settings on update)
 # ------------------------------------------------------------------------------
-echo "[3/6] Menyiapkan konfigurasi .env..."
+echo "[3/6] Menyiapkan direktori & konfigurasi .env..."
+mkdir -p database storage/framework/{cache,sessions,views} storage/logs bootstrap/cache public/uploads/certificates
+
 if [ ! -f .env ]; then
     cp .env.example .env
 fi
@@ -146,16 +173,21 @@ set_env "DB_CONNECTION" "sqlite"
 set_env "SESSION_DRIVER" "database"
 set_env "SESSION_SECURE_COOKIE" "false"
 
+# ------------------------------------------------------------------------------
+# 4. Install Dependencies, Generate APP_KEY & Build Frontend Assets
+# ------------------------------------------------------------------------------
+echo "[4/6] Menginstal dependensi PHP, APP_KEY & membangun aset Vite..."
+git config --global --add safe.directory "$APP_DIR" >/dev/null 2>&1 || true
+if head -n 1 "$COMPOSER_BIN" 2>/dev/null | grep -qiE "sh$|bash$"; then
+    COMPOSER_ALLOW_SUPERUSER=1 "$COMPOSER_BIN" install --no-dev --optimize-autoloader --no-interaction
+else
+    COMPOSER_ALLOW_SUPERUSER=1 "$PHP_BIN" "$COMPOSER_BIN" install --no-dev --optimize-autoloader --no-interaction
+fi
+
 if grep -qE "^APP_KEY=$" .env || ! grep -qE "^APP_KEY=base64:" .env; then
     "$PHP_BIN" artisan key:generate --force
 fi
 
-# ------------------------------------------------------------------------------
-# 4. Install Dependencies & Build Frontend Assets
-# ------------------------------------------------------------------------------
-echo "[4/6] Menginstal dependensi PHP & membangun aset Vite..."
-git config --global --add safe.directory "$APP_DIR" >/dev/null 2>&1 || true
-COMPOSER_ALLOW_SUPERUSER=1 "$PHP_BIN" "$COMPOSER_BIN" install --no-dev --optimize-autoloader --no-interaction
 npm ci --no-audit --no-fund || npm install --no-audit --no-fund
 npm run build
 
