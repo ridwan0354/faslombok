@@ -6,11 +6,7 @@
 <div class="min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-pink-950 flex flex-col justify-center py-8 sm:px-6 lg:px-8 px-4" 
      x-data="{
         phone: '{{ old('phone', '') }}',
-        password: '',
-        fillUser(p, pw) {
-            this.phone = p;
-            this.password = pw;
-        }
+        password: ''
      }">
     <div class="max-w-4xl w-full mx-auto">
         <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-2 border-amber-300/40 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
@@ -54,7 +50,7 @@
             </div>
 
             <!-- Right Column: Login Form -->
-            <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between">
+            <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center">
                 <div>
                     <div class="mb-6">
                         <span class="text-xs font-extrabold uppercase tracking-wider text-pink-700 block">
@@ -127,38 +123,9 @@
                             </button>
                         </div>
                     </form>
-
-                    <!-- Quick Demo Accounts Filler -->
-                    <div class="mt-6 pt-5 border-t border-slate-100">
-                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider text-center mb-2">
-                            Pintasan Akun Uji Coba Cepat (Klik untuk Mengisi)
-                        </p>
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <button type="button" @click="fillUser('081234567890', 'password123')"
-                                    class="p-2 text-left bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl transition-colors">
-                                <span class="font-bold block text-[11px] text-purple-950">Master Admin</span>
-                                <span class="text-[10px] text-purple-700 font-mono">081234567890</span>
-                            </button>
-                            <button type="button" @click="fillUser('085200260025', '085200260025')"
-                                    class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
-                                <span class="font-bold block text-[11px] text-slate-900">Bp. Munirullah (Juri Adzan)</span>
-                                <span class="text-[10px] text-slate-500 font-mono">085200260025</span>
-                            </button>
-                            <button type="button" @click="fillUser('085200260001', '085200260001')"
-                                    class="p-2 text-left bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">
-                                <span class="font-bold block text-[11px] text-slate-900">Ibu Wida (Juri Doa TK)</span>
-                                <span class="text-[10px] text-slate-500 font-mono">085200260001</span>
-                            </button>
-                            <button type="button" @click="fillUser('085200260037', '085200260037')"
-                                    class="p-2 text-left bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-xl transition-colors">
-                                <span class="font-bold block text-[11px] text-pink-950">Ibu Susi (Juri Mewarnai)</span>
-                                <span class="text-[10px] text-pink-700 font-mono">085200260037</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="mt-6 text-center">
+                <div class="mt-8 pt-5 border-t border-slate-100 text-center">
                     <a href="{{ route('home') }}" class="text-xs font-bold text-pink-700 hover:text-pink-800">
                         ← Kembali ke Halaman Publik
                     </a>
