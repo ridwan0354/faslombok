@@ -987,4 +987,75 @@ class FestivalSystemTest extends TestCase
             $this->actingAs($judge)->get($url)->assertStatus(200);
         }
     }
+
+    /**
+     * Test Master judges page renders Salin Link Akses, syncs password on phone change,
+     * and one-click judge magic login link authenticates cleanly and revokes when updated/disabled
+     */
+    public function test_judge_phone_password_sync_and_magic_access_link(): void
+    {
+        $master = User::where('role', 'master')->first();
+        $judge = User::where('name', 'Bp. Waluyo (Praya)')->first();
+        $this->assertNotNull($judge);
+
+        // 1. Judges page includes Salin Link Akses button and signed link for this judge
+        $oldMagicUrl = $judge->judgeMagicLoginUrl();
+        $page = $this->actingAs($master)->get(route('master.judges'));
+        $page->assertStatus(200);
+        $page->assertSee('Salin Link Akses');
+        $page->assertSee($judge->name);
+
+        // 2. Visiting signed magic login URL as guest logs the judge straight into /juri
+        $this->post(route('logout'));
+        $this->get($oldMagicUrl)->assertRedirect(route('judge.dashboard'));
+        $this->assertAuthenticatedAs($judge);
+
+        // 3. Updating judge phone with sync_password_phone=1 updates password & invalidates old link
+        $this->actingAs($master)->put(route('master.judges.update', $judge->id), [
+            'name' => $judge->name,
+            'phone' => '081907001122',
+            'sync_password_phone' => '1',
+            'status' => 'active',
+        ])->assertRedirect(route('master.judges'));
+
+        $judge->refresh();
+        $this->assertSame('081907001122', $judge->phone);
+
+        // Manual login with new phone as both username and password succeeds
+        $this->post(route('logout'));
+        $this->post(route('login.post'), [
+            'phone' => '081907001122',
+            'password' => '081907001122',
+        ])->assertRedirect(route('judge.dashboard'));
+        $this->assertAuthenticatedAs($judge);
+
+        // Old magic URL is automatically invalidated
+        $this->post(route('logout'));
+        $this->get($oldMagicUrl)->assertRedirect(route('login'));
+        $this->assertGuest();
+
+        // Tampered signature is rejected with 403
+        $this->get(route('judge.magic-login', ['judge' => $judge->id, 'k' => $judge->judgeAccessKey(), 'signature' => 'invalid']))
+            ->assertStatus(403);
+
+        // New magic URL logs judge in cleanly
+        $newMagicUrl = $judge->judgeMagicLoginUrl();
+        $this->get($newMagicUrl)->assertRedirect(route('judge.dashboard'));
+        $this->assertAuthenticatedAs($judge);
+
+        // Master cannot be logged in via judge magic link
+        $this->post(route('logout'));
+        $fakeMasterLink = \Illuminate\Support\Facades\URL::signedRoute('judge.magic-login', [
+            'judge' => $master->id,
+            'k' => $master->judgeAccessKey(),
+        ]);
+        $this->get($fakeMasterLink)->assertStatus(403);
+        $this->assertGuest();
+
+        // Inactive judge cannot log in via magic link
+        $judge->update(['status' => 'inactive']);
+        $inactiveUrl = $judge->judgeMagicLoginUrl();
+        $this->get($inactiveUrl)->assertRedirect(route('login'));
+        $this->assertGuest();
+    }
 }

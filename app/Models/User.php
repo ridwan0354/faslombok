@@ -68,4 +68,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(ScoreAuditLog::class, 'actor_id');
     }
+
+    /**
+     * Derive a per-user verification key tied to current credentials for signed judge access links.
+     */
+    public function judgeAccessKey(): string
+    {
+        return substr(
+            hash_hmac('sha256', $this->id . '|' . $this->phone . '|' . $this->password, (string) config('app.key')),
+            0,
+            16
+        );
+    }
+
+    /**
+     * Build a signed auto-login URL so the judge can open the portal in one tap.
+     */
+    public function judgeMagicLoginUrl(): string
+    {
+        return \Illuminate\Support\Facades\URL::signedRoute('judge.magic-login', [
+            'judge' => $this->id,
+            'k' => $this->judgeAccessKey(),
+        ]);
+    }
 }

@@ -13,6 +13,32 @@ function judgesManager() {
         selectedJudgeName: '',
         searchQuery: '',
         filterCompId: '',
+        copiedJudgeId: null,
+        async copyAccessMessage(judgeId, message) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(message);
+                } else {
+                    const ta = document.createElement('textarea');
+                    ta.value = message;
+                    ta.setAttribute('readonly', '');
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                }
+                this.copiedJudgeId = judgeId;
+                setTimeout(() => {
+                    if (this.copiedJudgeId === judgeId) {
+                        this.copiedJudgeId = null;
+                    }
+                }, 2500);
+            } catch (e) {
+                window.prompt('Salin pesan akses juri berikut secara manual:', message);
+            }
+        },
         editJudge: {
             id: '',
             name: '',
@@ -87,6 +113,23 @@ function judgesManager() {
         @foreach($judges as $j)
         @php
             $compIds = $j->judgeAssignments->pluck('competition_id')->values()->all();
+            $compNames = $j->judgeAssignments
+                ->map(fn($ja) => $ja->competition?->name)
+                ->filter()
+                ->implode(', ');
+            $magicUrl = $j->judgeMagicLoginUrl();
+            $loginUrl = route('login');
+            $accessMessage = "Assalamu'alaikum Wr. Wb.\n"
+                . "Berikut akses Portal Penilaian Dewan Juri *Festival Anak Sholeh & Bazar Remaja Lombok 2026* (20 Desember 2026):\n\n"
+                . "Nama Juri : {$j->name}\n"
+                . "Cabang Lomba : " . ($compNames ?: 'Belum ditugaskan') . "\n\n"
+                . "*Link Masuk Otomatis (Klik langsung masuk tanpa login):*\n"
+                . "{$magicUrl}\n\n"
+                . "*Akses Login Manual:*\n"
+                . "Link Login : {$loginUrl}\n"
+                . "Username : {$j->phone}\n"
+                . "Password : {$j->phone} (sesuai No. HP / password yang diatur panitia)\n\n"
+                . "Terima kasih & selamat bertugas.";
             $judgePayload = [
                 'id' => $j->id,
                 'name' => $j->name,
@@ -141,6 +184,14 @@ function judgesManager() {
             </div>
 
             <div class="mt-4 pt-3 border-t border-slate-100 space-y-2">
+                <button type="button"
+                        @click="copyAccessMessage({{ $j->id }}, @js($accessMessage))"
+                        :class="copiedJudgeId === {{ $j->id }} ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'"
+                        class="w-full py-2 font-bold text-xs rounded-xl border transition-colors flex items-center justify-center space-x-1.5">
+                    <svg x-show="copiedJudgeId !== {{ $j->id }}" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    <svg x-show="copiedJudgeId === {{ $j->id }}" x-cloak class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span x-text="copiedJudgeId === {{ $j->id }} ? 'Link & Pesan Akses Tersalin!' : 'Salin Link Akses'"></span>
+                </button>
                 <button type="button" @click="openAssignModal('{{ $j->id }}', @js($j->name))"
                         class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors">
                     + Tugaskan ke Lomba
@@ -221,6 +272,7 @@ function judgesManager() {
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nomor HP / ID Login</label>
                     <input type="tel" name="phone" x-model="editJudge.phone"
                            @input="if (editJudge.phone !== editJudge.origPhone) editJudge.syncPasswordWithPhone = true"
+                           @change="if (editJudge.phone !== editJudge.origPhone) editJudge.syncPasswordWithPhone = true"
                            required class="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-mono">
                 </div>
 
@@ -229,7 +281,7 @@ function judgesManager() {
                         <input type="checkbox" name="sync_password_phone" value="1" x-model="editJudge.syncPasswordWithPhone" class="rounded text-purple-700 focus:ring-purple-600">
                         <span>Samakan password dengan Nomor HP di atas</span>
                     </label>
-                    <p class="text-[11px] text-purple-700">Centang agar juri login memakai Nomor HP yang sama sebagai username & password.</p>
+                    <p class="text-[11px] text-purple-700">Saat Nomor HP diganti, opsi ini otomatis tercentang agar password ikut berubah ke Nomor HP baru.</p>
                 </div>
 
                 <div x-show="!editJudge.syncPasswordWithPhone">

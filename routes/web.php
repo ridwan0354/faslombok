@@ -16,6 +16,7 @@ Route::get('/juara-umum', [PublicController::class, 'juaraUmum'])->name('juara-u
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/akses-juri/{judge}', [AuthController::class, 'magicJudgeLogin'])->name('judge.magic-login');
 
 // Judge Portal (Mobile-First)
 Route::prefix('juri')->name('judge.')->middleware(['judge'])->group(function () {

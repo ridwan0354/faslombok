@@ -852,15 +852,22 @@ class MasterController extends Controller
             'status' => $data['status'],
         ];
 
+        $syncedToPhone = false;
         if (!empty($data['password'])) {
             $updatePayload['password'] = Hash::make($data['password']);
         } elseif ($request->boolean('sync_password_phone')) {
             $updatePayload['password'] = Hash::make($data['phone']);
+            $syncedToPhone = true;
         }
 
         $judge->update($updatePayload);
 
-        return redirect()->route('master.judges')->with('success', "Data juri '{$judge->name}' berhasil diperbarui.");
+        $msg = "Data juri '{$judge->name}' berhasil diperbarui.";
+        if ($syncedToPhone) {
+            $msg .= " Password otomatis disamakan dengan Nomor HP ({$judge->phone}).";
+        }
+
+        return redirect()->route('master.judges')->with('success', $msg);
     }
 
     public function destroyJudge(User $judge)

@@ -77,4 +77,29 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Anda telah berhasil logout.');
     }
+
+    /**
+     * One-click signed auto-login link for assigned judges.
+     */
+    public function magicJudgeLogin(Request $request, User $judge)
+    {
+        if (!$request->hasValidSignature() || !$judge->isJudge()) {
+            abort(403, 'Link akses juri tidak valid.');
+        }
+
+        if (!hash_equals($judge->judgeAccessKey(), (string) $request->query('k', ''))) {
+            return redirect()->route('login')->with('error', 'Link akses juri sudah diperbarui oleh panitia. Silakan minta link akses terbaru atau login manual dengan Nomor HP Anda.');
+        }
+
+        if (!$judge->isActive()) {
+            return redirect()->route('login')->with('error', 'Akun juri Anda sedang dinonaktifkan oleh panitia.');
+        }
+
+        Auth::login($judge, true);
+        $judge->update(['last_login_at' => now()]);
+        $request->session()->regenerate();
+
+        return redirect()->route('judge.dashboard')
+            ->with('success', "Selamat datang, {$judge->name}. Anda masuk sebagai Dewan Juri.");
+    }
 }
