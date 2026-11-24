@@ -66,6 +66,7 @@ class JudgeController extends Controller
     public function scoringForm(Entry $entry)
     {
         $user = Auth::user();
+        $entry->loadMissing(['team.group', 'team.members', 'participant.group', 'participant.gradeLevel']);
         $competition = $entry->competition;
 
         // Check assignment permissions

@@ -18,6 +18,7 @@
     ])->values()->all()) }},
     selectedGradeId: '',
     selectedCompIds: [],
+    selectedTeamCompIds: [],
     get filteredCompetitionsAdd() {
         if (this.showAllCompsAdd) return this.allCompetitions;
         if (!this.selectedGradeId) return [];
@@ -31,7 +32,8 @@
         grade_id: '',
         gender: 'L',
         active: true,
-        competitions: []
+        competitions: [],
+        team_competitions: []
     },
     get filteredCompetitionsEdit() {
         if (this.showAllCompsEdit || !this.editData.grade_id) return this.allCompetitions;
@@ -41,6 +43,7 @@
     openAdd() {
         this.selectedGradeId = '';
         this.selectedCompIds = [];
+        this.selectedTeamCompIds = [];
         this.showAllCompsAdd = false;
         this.showAddModal = true;
     },
@@ -53,7 +56,8 @@
             grade_id: p.grade_id ? String(p.grade_id) : '',
             gender: p.gender || 'L',
             active: p.active ? true : false,
-            competitions: p.entries ? p.entries.map(e => e.competition_id) : []
+            competitions: p.entries ? p.entries.map(e => e.competition_id) : [],
+            team_competitions: p.team_comp_ids ? p.team_comp_ids : []
         };
         this.showEditModal = true;
     }
@@ -111,7 +115,7 @@
             <div>
                 <select name="competition_id" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-1 focus:ring-emerald-600 font-medium">
                     <option value="">Semua Cabang Lomba</option>
-                    @foreach($competitions as $comp)
+                    @foreach($filterCompetitions as $comp)
                         <option value="{{ $comp->id }}" {{ request('competition_id') == $comp->id ? 'selected' : '' }}>{{ $comp->name }}</option>
                     @endforeach
                 </select>
@@ -168,13 +172,21 @@
                         </td>
                         <td class="py-3.5 px-4">
                             <div class="flex flex-wrap gap-1">
-                                @forelse($p->entries as $entry)
+                                @foreach($p->entries as $entry)
                                     <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                                         {{ $entry->competition->name }}
                                     </span>
-                                @empty
+                                @endforeach
+                                @foreach($p->teams as $team)
+                                    @if($team->competition)
+                                        <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-purple-50 text-purple-800 border border-purple-200">
+                                            {{ $team->competition->name }} (Tim)
+                                        </span>
+                                    @endif
+                                @endforeach
+                                @if($p->entries->isEmpty() && $p->teams->isEmpty())
                                     <span class="text-slate-400 text-xs">Belum ada lomba</span>
-                                @endforelse
+                                @endif
                             </div>
                         </td>
                         <td class="py-3.5 px-4 text-center">
@@ -199,6 +211,7 @@
                                             'gender' => $p->gender,
                                             'active' => $p->active,
                                             'entries' => $p->entries->map(fn($e) => ['competition_id' => $e->competition_id]),
+                                            'team_comp_ids' => $p->teams->pluck('competition_id')->filter()->values()->all(),
                                         ]))"
                                         class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200 transition-colors flex items-center space-x-1">
                                     <svg class="w-3.5 h-3.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -314,6 +327,20 @@
                     </div>
                 </div>
 
+                @if($teamCompetitions->isNotEmpty())
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Lomba Beregu / Tim Kelompok</label>
+                    <div class="space-y-1 p-2.5 bg-purple-50/70 border border-purple-200 rounded-xl text-xs">
+                        @foreach($teamCompetitions as $tc)
+                        <label class="flex items-center space-x-2 py-1 px-1.5 rounded-lg hover:bg-white cursor-pointer transition-colors">
+                            <input type="checkbox" name="team_competitions[]" value="{{ $tc->id }}" x-model="selectedTeamCompIds" class="rounded text-purple-600 focus:ring-purple-500">
+                            <span class="text-purple-950 font-semibold">{{ $tc->name }} (Gabung Tim Kelompok)</span>
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <div class="pt-2 flex justify-end space-x-2">
                     <button type="button" @click="showAddModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
                     <button type="submit" class="px-5 py-2 bg-gradient-to-r from-purple-800 to-pink-700 hover:from-purple-900 hover:to-pink-800 text-white text-xs font-bold rounded-xl shadow-xs">Simpan Peserta</button>
@@ -402,6 +429,26 @@
                         </template>
                     </div>
                 </div>
+
+                @if($teamCompetitions->isNotEmpty())
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Lomba Beregu / Tim Kelompok</label>
+                    <div class="space-y-1 p-2.5 bg-purple-50/70 border border-purple-200 rounded-xl text-xs">
+                        @foreach($teamCompetitions as $tc)
+                        <label class="flex items-center space-x-2 py-1 px-1.5 rounded-lg hover:bg-white cursor-pointer transition-colors">
+                            <input type="checkbox" name="team_competitions[]" value="{{ $tc->id }}" :checked="editData.team_competitions.includes({{ $tc->id }})" @change="
+                                if ($event.target.checked) {
+                                    if (!editData.team_competitions.includes({{ $tc->id }})) editData.team_competitions.push({{ $tc->id }});
+                                } else {
+                                    editData.team_competitions = editData.team_competitions.filter(id => id !== {{ $tc->id }});
+                                }
+                            " class="rounded text-purple-600 focus:ring-purple-500">
+                            <span class="text-purple-950 font-semibold">{{ $tc->name }} (Gabung Tim Kelompok)</span>
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
 
                 <div>
                     <label class="flex items-center space-x-2 text-xs text-slate-700 font-medium">

@@ -59,6 +59,11 @@
                         <p class="text-xs text-slate-500 mt-0.5 font-medium">
                             {{ $entry->entity_code }} • {{ $entry->group ? $entry->group->name : '-' }}
                         </p>
+                        @if($entry->team && $entry->team->members->isNotEmpty())
+                            <p class="text-[11px] text-purple-700 mt-0.5 leading-snug">
+                                Anggota ({{ $entry->team->members->count() }}): {{ $entry->team->members->pluck('name')->implode(', ') }}
+                            </p>
+                        @endif
                     </div>
                 </div>
 

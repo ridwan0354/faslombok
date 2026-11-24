@@ -15,6 +15,8 @@ use App\Models\Participant;
 use App\Models\RatingOption;
 use App\Models\Rubric;
 use App\Models\RubricCriterion;
+use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\User;
 use App\Services\QrService;
 use Illuminate\Database\Seeder;
@@ -123,7 +125,7 @@ class FestivalSeeder extends Seeder
             );
         }
 
-        // 5. Load Official 2026 Competitions, Judges & Participants (14 Competitions, No Yel-Yel)
+        // 5. Load Official 2026 Competitions, Judges, Participants & Teams (15 Competitions incl. Yel-Yel)
         $datasetPath = database_path('seeders/data/official_2026_competitions.json');
         $competitionsConfig = json_decode(file_get_contents($datasetPath), true);
 
@@ -131,150 +133,255 @@ class FestivalSeeder extends Seeder
         $participantCounter = Participant::where('event_id', $event->id)->count() + 1;
 
         foreach ($competitionsConfig as $cData) {
-            $comp = Competition::firstOrCreate(
-                ['event_id' => $event->id, 'name' => $cData['name']],
-                [
-                    'format' => $cData['format'],
-                    'eligibility_rule' => $cData['eligibility_rule'],
-                    'status' => 'ready',
-                    'is_locked' => false,
-                ]
+            static::seedCompetitionFromConfig(
+                $event,
+                $cData,
+                $qrService,
+                $grades,
+                $groupsMap,
+                $judgeCounter,
+                $participantCounter
             );
+        }
+    }
 
-            // Sync eligible grade levels
-            $gradeIds = [];
-            foreach ($cData['grades'] as $gCode) {
-                if (isset($grades[$gCode])) {
-                    $gradeIds[] = $grades[$gCode]->id;
-                }
+    /**
+     * Seed a single competition, its rubric, awards, judges, individual entries, and team entries idempotently.
+     */
+    public static function seedCompetitionFromConfig(
+        Event $event,
+        array $cData,
+        QrService $qrService,
+        array $grades,
+        array $groupsMap,
+        int &$judgeCounter,
+        int &$participantCounter
+    ): Competition {
+        $comp = Competition::firstOrCreate(
+            ['event_id' => $event->id, 'name' => $cData['name']],
+            [
+                'format' => $cData['format'],
+                'eligibility_rule' => $cData['eligibility_rule'],
+                'status' => 'ready',
+                'is_locked' => false,
+            ]
+        );
+
+        // Sync eligible grade levels
+        $gradeIds = [];
+        foreach ($cData['grades'] as $gCode) {
+            if (isset($grades[$gCode])) {
+                $gradeIds[] = $grades[$gCode]->id;
             }
-            $comp->gradeLevels()->sync($gradeIds);
+        }
+        $comp->gradeLevels()->sync($gradeIds);
 
-            // Rubric v1
-            $rubric = Rubric::firstOrCreate(
-                ['competition_id' => $comp->id, 'version' => 1],
-                ['status' => 'active']
+        // Rubric v1
+        $rubric = Rubric::firstOrCreate(
+            ['competition_id' => $comp->id, 'version' => 1],
+            ['status' => 'active']
+        );
+
+        // Quick Rating Options: Baik (100), Cukup (75), Kurang (50) — judges can also input 50-100 manually
+        $options = [
+            ['label' => 'Baik', 'numeric_value' => 100.0, 'sort_order' => 1],
+            ['label' => 'Cukup', 'numeric_value' => 75.0, 'sort_order' => 2],
+            ['label' => 'Kurang', 'numeric_value' => 50.0, 'sort_order' => 3],
+        ];
+        foreach ($options as $opt) {
+            RatingOption::firstOrCreate(
+                ['rubric_id' => $rubric->id, 'label' => $opt['label']],
+                ['numeric_value' => $opt['numeric_value'], 'sort_order' => $opt['sort_order']]
             );
+        }
 
-            // Quick Rating Options: Baik (100), Cukup (75), Kurang (50) — judges can also input 50-100 manually
-            $options = [
-                ['label' => 'Baik', 'numeric_value' => 100.0, 'sort_order' => 1],
-                ['label' => 'Cukup', 'numeric_value' => 75.0, 'sort_order' => 2],
-                ['label' => 'Kurang', 'numeric_value' => 50.0, 'sort_order' => 3],
-            ];
-            foreach ($options as $opt) {
-                RatingOption::firstOrCreate(
-                    ['rubric_id' => $rubric->id, 'label' => $opt['label']],
-                    ['numeric_value' => $opt['numeric_value'], 'sort_order' => $opt['sort_order']]
-                );
-            }
+        // Criteria
+        RubricCriterion::where('rubric_id', $rubric->id)->delete();
+        $sort = 1;
+        foreach ($cData['criteria'] as $crit) {
+            RubricCriterion::create([
+                'rubric_id' => $rubric->id,
+                'title' => $crit['title'],
+                'weight_pct' => $crit['weight_pct'],
+                'sort_order' => $sort++,
+                'required' => true,
+            ]);
+        }
 
-            // Criteria
-            RubricCriterion::where('rubric_id', $rubric->id)->delete();
-            $sort = 1;
-            foreach ($cData['criteria'] as $crit) {
-                RubricCriterion::create([
-                    'rubric_id' => $rubric->id,
-                    'title' => $crit['title'],
-                    'weight_pct' => $crit['weight_pct'],
-                    'sort_order' => $sort++,
-                    'required' => true,
+        // Standard Awards
+        $awards = [
+            ['rank_position' => 1, 'rank_label' => 'Juara 1', 'points_for_group' => 10],
+            ['rank_position' => 2, 'rank_label' => 'Juara 2', 'points_for_group' => 7],
+            ['rank_position' => 3, 'rank_label' => 'Juara 3', 'points_for_group' => 5],
+            ['rank_position' => 4, 'rank_label' => 'Juara Harapan 1', 'points_for_group' => 3],
+            ['rank_position' => 5, 'rank_label' => 'Juara Harapan 2', 'points_for_group' => 2],
+            ['rank_position' => 6, 'rank_label' => 'Juara Harapan 3', 'points_for_group' => 1],
+        ];
+        foreach ($awards as $aw) {
+            CompetitionAward::firstOrCreate(
+                ['competition_id' => $comp->id, 'rank_position' => $aw['rank_position']],
+                ['rank_label' => $aw['rank_label'], 'points_for_group' => $aw['points_for_group']]
+            );
+        }
+
+        // Create & Assign 3 Judges per Competition (Password default = Nomor HP masing-masing)
+        foreach ($cData['judges'] as $judgeName) {
+            $judge = User::where('role', 'judge')->where('name', $judgeName)->first();
+            if (!$judge) {
+                do {
+                    $phone = sprintf('08520026%04d', $judgeCounter++);
+                } while (User::where('phone', $phone)->exists());
+
+                $judge = User::create([
+                    'name' => $judgeName,
+                    'phone' => $phone,
+                    'email' => "juri{$phone}@faslombok2026.id",
+                    'password' => Hash::make($phone),
+                    'role' => 'judge',
+                    'status' => 'active',
                 ]);
             }
 
-            // Standard Awards
-            $awards = [
-                ['rank_position' => 1, 'rank_label' => 'Juara 1', 'points_for_group' => 10],
-                ['rank_position' => 2, 'rank_label' => 'Juara 2', 'points_for_group' => 7],
-                ['rank_position' => 3, 'rank_label' => 'Juara 3', 'points_for_group' => 5],
-                ['rank_position' => 4, 'rank_label' => 'Juara Harapan 1', 'points_for_group' => 3],
-                ['rank_position' => 5, 'rank_label' => 'Juara Harapan 2', 'points_for_group' => 2],
-                ['rank_position' => 6, 'rank_label' => 'Juara Harapan 3', 'points_for_group' => 1],
-            ];
-            foreach ($awards as $aw) {
-                CompetitionAward::firstOrCreate(
-                    ['competition_id' => $comp->id, 'rank_position' => $aw['rank_position']],
-                    ['rank_label' => $aw['rank_label'], 'points_for_group' => $aw['points_for_group']]
-                );
-            }
+            EventUser::firstOrCreate(
+                ['event_id' => $event->id, 'user_id' => $judge->id],
+                ['event_role' => 'judge']
+            );
 
-            // Create & Assign 3 Judges per Competition (Password default = Nomor HP masing-masing)
-            foreach ($cData['judges'] as $judgeName) {
-                $phone = sprintf('08520026%04d', $judgeCounter++);
-                $judge = User::firstOrCreate(
-                    ['phone' => $phone],
-                    [
-                        'name' => $judgeName,
-                        'email' => "juri{$phone}@faslombok2026.id",
-                        'password' => Hash::make($phone),
-                        'role' => 'judge',
-                        'status' => 'active',
-                    ]
-                );
-
-                EventUser::firstOrCreate(
-                    ['event_id' => $event->id, 'user_id' => $judge->id],
-                    ['event_role' => 'judge']
-                );
-
-                JudgeAssignment::firstOrCreate(
-                    [
-                        'event_id' => $event->id,
-                        'user_id' => $judge->id,
-                        'competition_id' => $comp->id,
-                    ],
-                    [
-                        'can_view_participants' => true,
-                        'can_view_scores' => true,
-                        'can_view_peer_scores' => true,
-                        'can_score' => true,
-                        'active' => true,
-                        'required_for_completion' => true,
-                    ]
-                );
-            }
-
-            // Create Participants & Competition Entries
-            $queueNumber = Entry::where('competition_id', $comp->id)->count() + 1;
-            foreach ($cData['participants'] as $pData) {
-                $group = $groupsMap[$pData['group']] ?? Group::firstOrCreate(
-                    ['event_id' => $event->id, 'name' => $pData['group']],
-                    ['code' => strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $pData['group']), 0, 4))]
-                );
-                $grade = $grades[$pData['grade']] ?? null;
-
-                $participant = Participant::where('event_id', $event->id)
-                    ->where('group_id', $group->id)
-                    ->where('name', $pData['name'])
-                    ->first();
-
-                if (!$participant) {
-                    do {
-                        $code = sprintf('FAS-%s-%04d', $event->year, $participantCounter++);
-                    } while (Participant::where('event_id', $event->id)->where('participant_code', $code)->exists());
-
-                    $participant = Participant::create([
-                        'event_id' => $event->id,
-                        'group_id' => $group->id,
-                        'grade_id' => $grade?->id,
-                        'participant_code' => $code,
-                        'name' => $pData['name'],
-                        'gender' => $pData['gender'] ?? 'L',
-                        'active' => true,
-                    ]);
-
-                    $qrService->getOrCreateForParticipant($participant);
-                }
-
-                Entry::firstOrCreate(
-                    ['competition_id' => $comp->id, 'participant_id' => $participant->id],
-                    [
-                        'event_id' => $event->id,
-                        'queue_number' => $queueNumber++,
-                        'status' => 'registered',
-                    ]
-                );
-            }
+            JudgeAssignment::firstOrCreate(
+                [
+                    'event_id' => $event->id,
+                    'user_id' => $judge->id,
+                    'competition_id' => $comp->id,
+                ],
+                [
+                    'can_view_participants' => true,
+                    'can_view_scores' => true,
+                    'can_view_peer_scores' => true,
+                    'can_score' => true,
+                    'active' => true,
+                    'required_for_completion' => true,
+                ]
+            );
         }
+
+        $queueNumber = Entry::where('competition_id', $comp->id)->count() + 1;
+
+        // Seed Individual Participants & Entries
+        foreach ($cData['participants'] ?? [] as $pData) {
+            $participant = static::findOrCreateParticipant(
+                $event,
+                $pData,
+                $groupsMap,
+                $grades,
+                $qrService,
+                $participantCounter
+            );
+
+            Entry::firstOrCreate(
+                ['competition_id' => $comp->id, 'participant_id' => $participant->id],
+                [
+                    'event_id' => $event->id,
+                    'queue_number' => $queueNumber++,
+                    'status' => 'registered',
+                ]
+            );
+        }
+
+        // Seed Teams, Team Members & Team Entries (e.g., Yel-Yel Kls 1-6)
+        foreach ($cData['teams'] ?? [] as $tData) {
+            $group = static::resolveGroup($event, $tData['group'], $groupsMap);
+
+            $team = Team::firstOrCreate(
+                [
+                    'event_id' => $event->id,
+                    'competition_id' => $comp->id,
+                    'team_code' => $tData['team_code'],
+                ],
+                [
+                    'group_id' => $group->id,
+                    'name' => $tData['name'],
+                ]
+            );
+
+            $qrService->getOrCreateForTeam($team);
+
+            foreach ($tData['members'] ?? [] as $mData) {
+                $memberPayload = is_array($mData) ? $mData : ['name' => $mData];
+                $memberPayload['group'] = $memberPayload['group'] ?? $group->name;
+                $participant = static::findOrCreateParticipant(
+                    $event,
+                    $memberPayload,
+                    $groupsMap,
+                    $grades,
+                    $qrService,
+                    $participantCounter
+                );
+
+                TeamMember::firstOrCreate(
+                    ['team_id' => $team->id, 'participant_id' => $participant->id],
+                    ['membership_status' => 'active']
+                );
+            }
+
+            Entry::firstOrCreate(
+                ['competition_id' => $comp->id, 'team_id' => $team->id],
+                [
+                    'event_id' => $event->id,
+                    'queue_number' => $queueNumber++,
+                    'status' => 'registered',
+                ]
+            );
+        }
+
+        return $comp;
+    }
+
+    protected static function resolveGroup(Event $event, string $groupName, array &$groupsMap): Group
+    {
+        if (isset($groupsMap[$groupName])) {
+            return $groupsMap[$groupName];
+        }
+
+        return $groupsMap[$groupName] = Group::firstOrCreate(
+            ['event_id' => $event->id, 'name' => $groupName],
+            ['code' => strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $groupName), 0, 4))]
+        );
+    }
+
+    protected static function findOrCreateParticipant(
+        Event $event,
+        array $pData,
+        array &$groupsMap,
+        array $grades,
+        QrService $qrService,
+        int &$participantCounter
+    ): Participant {
+        $group = static::resolveGroup($event, $pData['group'], $groupsMap);
+        $grade = isset($pData['grade']) ? ($grades[$pData['grade']] ?? null) : null;
+
+        $participant = Participant::where('event_id', $event->id)
+            ->where('group_id', $group->id)
+            ->where('name', $pData['name'])
+            ->first();
+
+        if (!$participant) {
+            do {
+                $code = sprintf('FAS-%s-%04d', $event->year, $participantCounter++);
+            } while (Participant::where('event_id', $event->id)->where('participant_code', $code)->exists());
+
+            $participant = Participant::create([
+                'event_id' => $event->id,
+                'group_id' => $group->id,
+                'grade_id' => $grade?->id,
+                'participant_code' => $code,
+                'name' => $pData['name'],
+                'gender' => $pData['gender'] ?? 'L',
+                'active' => true,
+            ]);
+
+            $qrService->getOrCreateForParticipant($participant);
+        }
+
+        return $participant;
     }
 }

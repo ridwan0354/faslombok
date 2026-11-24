@@ -18,6 +18,7 @@ use App\Models\ScoreAuditLog;
 use App\Models\ScoreSubmission;
 use App\Models\SyncOperation;
 use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\User;
 use App\Services\ImportExportService;
 use App\Services\QrService;
@@ -209,6 +210,7 @@ class MasterController extends Controller
             'entries.participant.group',
             'entries.participant.gradeLevel',
             'entries.team.group',
+            'entries.team.members',
             'entries.scoreSubmissions',
             'awards',
         ]);
@@ -308,7 +310,7 @@ class MasterController extends Controller
     {
         $event = Event::where('status', 'active')->first() ?? Event::latest()->first();
 
-        $query = Participant::with(['group', 'gradeLevel', 'entries.competition', 'qrToken'])
+        $query = Participant::with(['group', 'gradeLevel', 'entries.competition', 'teams.competition', 'qrToken'])
             ->where('event_id', $event->id);
 
         if ($request->filled('search')) {
@@ -325,8 +327,12 @@ class MasterController extends Controller
 
         if ($request->filled('competition_id')) {
             $compId = $request->input('competition_id');
-            $query->whereHas('entries', function ($eq) use ($compId) {
-                $eq->where('competition_id', $compId);
+            $query->where(function ($sub) use ($compId) {
+                $sub->whereHas('entries', function ($eq) use ($compId) {
+                    $eq->where('competition_id', $compId);
+                })->orWhereHas('teams', function ($tq) use ($compId) {
+                    $tq->where('competition_id', $compId);
+                });
             });
         }
 
@@ -338,8 +344,23 @@ class MasterController extends Controller
             ->with('gradeLevels')
             ->orderBy('name')
             ->get();
+        $teamCompetitions = Competition::where('event_id', $event->id)
+            ->where('format', 'team')
+            ->orderBy('name')
+            ->get();
+        $filterCompetitions = Competition::where('event_id', $event->id)
+            ->orderBy('name')
+            ->get();
 
-        return view('master.participants.index', compact('event', 'participants', 'groups', 'grades', 'competitions'));
+        return view('master.participants.index', compact(
+            'event',
+            'participants',
+            'groups',
+            'grades',
+            'competitions',
+            'teamCompetitions',
+            'filterCompetitions'
+        ));
     }
 
     public function storeParticipant(Request $request)
@@ -352,6 +373,7 @@ class MasterController extends Controller
             'grade_id' => ['nullable', 'exists:grade_levels,id'],
             'gender' => ['required', 'in:L,P'],
             'competitions' => ['nullable', 'array'],
+            'team_competitions' => ['nullable', 'array'],
         ]);
 
         $nextCodeNum = Participant::where('event_id', $event->id)->count() + 1;
@@ -386,6 +408,10 @@ class MasterController extends Controller
             }
         }
 
+        if (!empty($data['team_competitions'])) {
+            $this->syncParticipantTeamCompetitions($participant, $data['team_competitions']);
+        }
+
         return redirect()->route('master.participants')->with('success', "Peserta {$participant->name} ({$participant->participant_code}) berhasil didaftarkan.");
     }
 
@@ -398,6 +424,7 @@ class MasterController extends Controller
             'gender' => ['required', 'in:L,P'],
             'active' => ['nullable', 'boolean'],
             'competitions' => ['nullable', 'array'],
+            'team_competitions' => ['nullable', 'array'],
         ]);
 
         DB::transaction(function () use ($participant, $data, $request) {
@@ -435,9 +462,72 @@ class MasterController extends Controller
                     }
                 }
             }
+
+            $this->syncParticipantTeamCompetitions($participant->fresh(), $data['team_competitions'] ?? []);
         });
 
         return redirect()->route('master.participants')->with('success', "Data peserta {$participant->name} ({$participant->participant_code}) berhasil diperbarui.");
+    }
+
+    protected function syncParticipantTeamCompetitions(Participant $participant, array $selectedTeamCompIds): void
+    {
+        $selectedIds = array_map('intval', $selectedTeamCompIds);
+
+        // Detach from teams in unselected competitions or outdated groups
+        $existingLinks = TeamMember::with('team')->where('participant_id', $participant->id)->get();
+        foreach ($existingLinks as $link) {
+            if (!$link->team || !in_array((int) $link->team->competition_id, $selectedIds, true) || (int) $link->team->group_id !== (int) $participant->group_id) {
+                $link->delete();
+            }
+        }
+
+        if (empty($selectedIds)) {
+            return;
+        }
+
+        $group = Group::find($participant->group_id);
+        foreach ($selectedIds as $compId) {
+            $comp = Competition::where('id', $compId)->where('format', 'team')->first();
+            if (!$comp || !$group) {
+                continue;
+            }
+
+            $team = Team::where('event_id', $participant->event_id)
+                ->where('competition_id', $comp->id)
+                ->where('group_id', $group->id)
+                ->first();
+
+            if (!$team) {
+                $prefix = strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $comp->name), 0, 3));
+                $num = Team::where('competition_id', $comp->id)->count() + 1;
+                do {
+                    $code = sprintf('TIM-%s-%02d', $prefix ?: 'TIM', $num++);
+                } while (Team::where('event_id', $participant->event_id)->where('team_code', $code)->exists());
+
+                $team = Team::create([
+                    'event_id' => $participant->event_id,
+                    'competition_id' => $comp->id,
+                    'group_id' => $group->id,
+                    'team_code' => $code,
+                    'name' => 'Tim ' . $comp->name . ' ' . $group->name,
+                ]);
+                $this->qrService->getOrCreateForTeam($team);
+            }
+
+            TeamMember::firstOrCreate(
+                ['team_id' => $team->id, 'participant_id' => $participant->id],
+                ['membership_status' => 'active']
+            );
+
+            Entry::firstOrCreate(
+                ['competition_id' => $comp->id, 'team_id' => $team->id],
+                [
+                    'event_id' => $participant->event_id,
+                    'queue_number' => Entry::where('competition_id', $comp->id)->count() + 1,
+                    'status' => 'registered',
+                ]
+            );
+        }
     }
 
     public function destroyParticipant(Participant $participant)

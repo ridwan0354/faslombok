@@ -1740,5 +1740,336 @@
         "gender": "L"
       }
     ]
+  },
+  {
+    "name": "Yel-Yel (Kls 1–6)",
+    "format": "team",
+    "eligibility_rule": "Kelas 1–6 SD/MI",
+    "grades": [
+      "KELAS_1",
+      "KELAS_2",
+      "KELAS_3",
+      "KELAS_4",
+      "KELAS_5",
+      "KELAS_6"
+    ],
+    "criteria": [
+      {
+        "title": "Kesesuaian Tema & Pesan Karakter Luhur",
+        "weight_pct": 20.0
+      },
+      {
+        "title": "Kreativitas & Keunikan",
+        "weight_pct": 20.0
+      },
+      {
+        "title": "Kekompakan & Semangat Tim",
+        "weight_pct": 20.0
+      },
+      {
+        "title": "Penampilan & Ekspresi",
+        "weight_pct": 20.0
+      },
+      {
+        "title": "Kostum & Properti",
+        "weight_pct": 20.0
+      }
+    ],
+    "judges": [
+      "Bp. Waluyo (Praya)",
+      "Bp. Dr. Sahrun",
+      "Bp. Hartono (Praya)"
+    ],
+    "participants": [],
+    "teams": [
+      {
+        "team_code": "TIM-YEL-01",
+        "name": "Tim Yel-Yel Pagutan",
+        "group": "Pagutan",
+        "members": []
+      },
+      {
+        "team_code": "TIM-YEL-02",
+        "name": "Tim Yel-Yel Selong",
+        "group": "Selong",
+        "members": [
+          {
+            "name": "Umar Rosyid Setiawan"
+          },
+          {
+            "name": "Muhammad Furqon Islahuddin"
+          },
+          {
+            "name": "Abimanyu Galih S"
+          },
+          {
+            "name": "Fatkhan Tanju Huda"
+          },
+          {
+            "name": "N. Fahira Salsabila Rahman"
+          },
+          {
+            "name": "Azka Putri Febrilian"
+          },
+          {
+            "name": "Hanum Khoirul Azzahra"
+          },
+          {
+            "name": "Sista Millanefisa Putri"
+          },
+          {
+            "name": "Alfina Tiara Romadona"
+          },
+          {
+            "name": "Aisyah Nur Zahira"
+          },
+          {
+            "name": "Alimah Nur Azizah"
+          },
+          {
+            "name": "Habibah Khoirun Najwa"
+          },
+          {
+            "name": "Zulfa Malihatun Najwa"
+          },
+          {
+            "name": "Annisa Mahira Triawarsa"
+          },
+          {
+            "name": "Alika Nisa Febriana"
+          }
+        ]
+      },
+      {
+        "team_code": "TIM-YEL-03",
+        "name": "Tim Yel-Yel Praya",
+        "group": "Praya",
+        "members": [
+          {
+            "name": "Ahmad Shifaurijal"
+          },
+          {
+            "name": "Lasna Roudhotul Jannas Alkindi"
+          },
+          {
+            "name": "Niswatin Sidqia Alkindi"
+          },
+          {
+            "name": "Athallah Hamizan"
+          },
+          {
+            "name": "Anita Shifaunnisa"
+          },
+          {
+            "name": "Irsyad Zaidan Khoiri",
+            "grade": "KELAS_1",
+            "gender": "L"
+          },
+          {
+            "name": "Hafizh Radeva Alfjr"
+          },
+          {
+            "name": "Nadhira Alfathunisa"
+          },
+          {
+            "name": "Ammar Zaydan Al Haqi"
+          },
+          {
+            "name": "Muhammad Risky Akvin"
+          },
+          {
+            "name": "Diva Julianda"
+          }
+        ]
+      },
+      {
+        "team_code": "TIM-YEL-04",
+        "name": "Tim Yel-Yel Ampenan",
+        "group": "Ampenan",
+        "members": [
+          {
+            "name": "Muhammad Al Fatih"
+          },
+          {
+            "name": "Muhammad Al Faris"
+          },
+          {
+            "name": "Rafasya Dzikri Hamadan"
+          },
+          {
+            "name": "Haidar Damara Huzam Sada"
+          },
+          {
+            "name": "Muhammad Ammar Asyraf"
+          },
+          {
+            "name": "Muhammad Azam Zein Haq"
+          },
+          {
+            "name": "Mifta Sabilur Rosyid"
+          },
+          {
+            "name": "Qaisara Hana Janant"
+          }
+        ]
+      },
+      {
+        "team_code": "TIM-YEL-05",
+        "name": "Tim Yel-Yel Mataram",
+        "group": "Mataram",
+        "members": [
+          {
+            "name": "Muhammad Galif Suradi"
+          },
+          {
+            "name": "Bhara Abizar Alfarizqi"
+          },
+          {
+            "name": "Azmi Al Hafidzi"
+          },
+          {
+            "name": "Fathan Izza Mahendra"
+          },
+          {
+            "name": "Dean Afsheen Myesha"
+          },
+          {
+            "name": "Chelyn Afreen Althafia"
+          },
+          {
+            "name": "Cendayam Maharani"
+          },
+          {
+            "name": "Kirana Prameswari"
+          },
+          {
+            "name": "Ashalina Rahma Rumaiza"
+          },
+          {
+            "name": "Azzura Vania Azizia"
+          },
+          {
+            "name": "Nayanika Eunoia Arunika"
+          },
+          {
+            "name": "Bunga Rojabia"
+          },
+          {
+            "name": "Utari Hamida Hariyanti"
+          },
+          {
+            "name": "Alesha Azzahra Alfathunnisa"
+          }
+        ]
+      },
+      {
+        "team_code": "TIM-YEL-06",
+        "name": "Tim Yel-Yel Prumnas",
+        "group": "Prumnas",
+        "members": [
+          {
+            "name": "Alexei Asshauqi Mukhtar Alfakhri"
+          },
+          {
+            "name": "Keenan Athaya Zayne"
+          },
+          {
+            "name": "Jasmine Almahyra Putri"
+          },
+          {
+            "name": "Ahmad Al Azzazi Syaher"
+          },
+          {
+            "name": "Andara Mehri Erinka Shani"
+          },
+          {
+            "name": "Mohammad Atta Faris Hidayatullah"
+          },
+          {
+            "name": "Zafran Rafarinsah"
+          },
+          {
+            "name": "Zahira Kayisahrin"
+          },
+          {
+            "name": "Byantara Nadhif Al Baikhaky"
+          },
+          {
+            "name": "Muhammad Fahreza Dwi Ardana"
+          },
+          {
+            "name": "Ainun Adiba Kusumah"
+          }
+        ]
+      },
+      {
+        "team_code": "TIM-YEL-07",
+        "name": "Tim Yel-Yel Sandik",
+        "group": "Sandik",
+        "members": [
+          {
+            "name": "Lion Hafes Rosidy"
+          },
+          {
+            "name": "Dirgam Al Haidar"
+          },
+          {
+            "name": "Fara Devana Sobron Jamilah"
+          },
+          {
+            "name": "Rumaisha Kanza Kharira"
+          },
+          {
+            "name": "Muhammad Anas Abdul Rahman",
+            "grade": "KELAS_1",
+            "gender": "L"
+          },
+          {
+            "name": "Baiq Aiza Fariza"
+          },
+          {
+            "name": "Kanaya Zareen Ayudia"
+          },
+          {
+            "name": "Kanza Forta Hayatul Hikam"
+          },
+          {
+            "name": "Nisa Adibah Shakila"
+          },
+          {
+            "name": "Az Zakir Putra Sasaka Rinjani",
+            "grade": "KELAS_1",
+            "gender": "L"
+          },
+          {
+            "name": "Harumi Senja Yafsakhillah"
+          },
+          {
+            "name": "Maryam Najma Yumaira Hawa"
+          },
+          {
+            "name": "Keynara Jasmine Sabilarosyad"
+          },
+          {
+            "name": "Jenahara Kheswari Hibatillah"
+          },
+          {
+            "name": "Maryam Karimah"
+          }
+        ]
+      },
+      {
+        "team_code": "TIM-YEL-08",
+        "name": "Tim Yel-Yel Cakranegara",
+        "group": "Cakranegara",
+        "members": []
+      },
+      {
+        "team_code": "TIM-YEL-09",
+        "name": "Tim Yel-Yel Narmada",
+        "group": "Narmada",
+        "members": []
+      }
+    ]
   }
 ]

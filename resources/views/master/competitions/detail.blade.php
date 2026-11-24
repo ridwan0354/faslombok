@@ -238,9 +238,18 @@
                         <td class="py-2.5 px-3 font-bold text-slate-900">
                             {{ $ent->display_name }}
                             <span class="block text-[10px] font-mono text-slate-400 font-normal">{{ $ent->entity_code }}</span>
+                            @if($ent->team && $ent->team->members->isNotEmpty())
+                                <span class="block text-[10px] text-purple-700 font-normal mt-0.5 leading-snug">
+                                    Anggota ({{ $ent->team->members->count() }}): {{ $ent->team->members->pluck('name')->implode(', ') }}
+                                </span>
+                            @elseif($ent->team)
+                                <span class="block text-[10px] text-slate-400 font-normal mt-0.5 italic">
+                                    Anggota tim belum diisi (siap dinilai per kelompok)
+                                </span>
+                            @endif
                         </td>
                         <td class="py-2.5 px-3 text-slate-700">{{ $ent->group ? $ent->group->name : '-' }}</td>
-                        <td class="py-2.5 px-3 text-slate-600">{{ $ent->participant && $ent->participant->gradeLevel ? $ent->participant->gradeLevel->name : '-' }}</td>
+                        <td class="py-2.5 px-3 text-slate-600">{{ $ent->participant && $ent->participant->gradeLevel ? $ent->participant->gradeLevel->name : ($ent->team ? 'Tim / Beregu' : '-') }}</td>
                         <td class="py-2.5 px-3 text-center">
                             @if($ent->scoreSubmissions->isNotEmpty())
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">

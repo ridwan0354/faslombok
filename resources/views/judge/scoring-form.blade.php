@@ -113,6 +113,12 @@
                 <p class="text-[11px] text-slate-400 mt-0.5">
                     Lomba: <span class="font-bold text-slate-700">{{ $competition->name }}</span> ({{ $competition->format === 'team' ? 'Beregu' : 'Individu' }})
                 </p>
+                @if($entry->team && $entry->team->members->isNotEmpty())
+                    <p class="text-[11px] text-purple-800 bg-purple-50 border border-purple-200 rounded-xl px-2.5 py-1.5 mt-2 leading-relaxed">
+                        <span class="font-bold">Anggota Tim ({{ $entry->team->members->count() }}):</span>
+                        {{ $entry->team->members->pluck('name')->implode(', ') }}
+                    </p>
+                @endif
             </div>
 
             @if($existingSubmission)

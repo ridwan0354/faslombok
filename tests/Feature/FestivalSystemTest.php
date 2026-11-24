@@ -699,21 +699,66 @@ class FestivalSystemTest extends TestCase
     }
 
     /**
-     * Test official 2026 seeded data integrity (14 competitions, 42 judges, 208 participants, no Yel-Yel)
+     * Test official 2026 seeded data integrity (15 competitions incl. Yel-Yel, 45 judges, 211 participants, 9 teams, 74 team members)
      */
     public function test_official_2026_seeded_dataset_integrity(): void
     {
-        $this->assertEquals(14, Competition::count());
-        $this->assertEquals(42, User::where('role', 'judge')->count());
-        $this->assertEquals(208, Participant::count());
-        $this->assertEquals(208, Entry::count());
-        $this->assertEquals(0, Team::count());
-        $this->assertNull(Competition::where('name', 'like', '%Yel-Yel%')->first());
+        $this->assertEquals(15, Competition::count());
+        $this->assertEquals(45, User::where('role', 'judge')->count());
+        $this->assertEquals(211, Participant::count());
+        $this->assertEquals(9, Team::count());
+        $this->assertEquals(217, Entry::count());
+        $this->assertEquals(74, \App\Models\TeamMember::count());
 
-        // Ambiguous entries preserved so Master can review/edit/delete
+        $yelYel = Competition::where('name', 'Yel-Yel (Kls 1–6)')->first();
+        $this->assertNotNull($yelYel);
+        $this->assertSame('team', $yelYel->format);
+        $this->assertCount(5, $yelYel->activeRubric->criteria);
+        $this->assertEquals(100.0, (float) $yelYel->activeRubric->criteria->sum('weight_pct'));
+        $this->assertCount(9, $yelYel->entries);
+
+        // Yel-Yel-only participants & ambiguous individual entries preserved so Master can review/edit/delete
+        $this->assertDatabaseHas('participants', ['name' => 'Muhammad Anas Abdul Rahman']);
+        $this->assertDatabaseHas('participants', ['name' => 'Az Zakir Putra Sasaka Rinjani']);
+        $this->assertDatabaseHas('participants', ['name' => 'Irsyad Zaidan Khoiri']);
         $this->assertDatabaseHas('participants', ['name' => 'Vina Aprilia Putri']);
         $this->assertDatabaseHas('participants', ['name' => 'Lalu Rahadean (Partisipan)']);
         $this->assertEquals(2, Participant::where('name', 'Venita Alexandria Bagus')->count());
+
+        // Yel-Yel judges login using phone number and view & score team entries with members visible
+        $judgeWaluyo = User::where('name', 'Bp. Waluyo (Praya)')->first();
+        $this->assertNotNull($judgeWaluyo);
+        $this->post(route('login.post'), [
+            'phone' => $judgeWaluyo->phone,
+            'password' => $judgeWaluyo->phone,
+        ])->assertRedirect(route('judge.dashboard'));
+
+        $sandikTeamEntry = $yelYel->entries()->whereHas('team', fn($q) => $q->where('team_code', 'TIM-YEL-07'))->first();
+        $this->assertNotNull($sandikTeamEntry);
+
+        $this->actingAs($judgeWaluyo)
+            ->get(route('judge.competition.entries', $yelYel))
+            ->assertStatus(200)
+            ->assertSee('Tim Yel-Yel Sandik')
+            ->assertSee('Muhammad Anas Abdul Rahman');
+
+        $this->actingAs($judgeWaluyo)
+            ->get(route('judge.scoring.form', $sandikTeamEntry))
+            ->assertStatus(200)
+            ->assertSee('Kesesuaian Tema & Pesan Karakter Luhur')
+            ->assertSee('Az Zakir Putra Sasaka Rinjani');
+
+        $master = User::where('role', 'master')->first();
+        $this->actingAs($master)
+            ->get(route('master.competitions.detail', $yelYel))
+            ->assertStatus(200)
+            ->assertSee('Tim Yel-Yel Praya')
+            ->assertSee('Irsyad Zaidan Khoiri');
+
+        $this->actingAs($master)
+            ->get(route('master.participants', ['competition_id' => $yelYel->id]))
+            ->assertStatus(200)
+            ->assertSee('Yel-Yel (Kls 1–6) (Tim)');
     }
 
     /**
