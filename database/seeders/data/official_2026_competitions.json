@@ -26,9 +26,24 @@
       }
     ],
     "judges": [
-      "Ibu Wida (Ampenan)",
-      "Ibu Nana (Sandik)",
-      "Ibu Silvia (Ampenan)"
+      {
+        "name": "Ibu Wida (Ampenan)",
+        "phone": "081286279317",
+        "legacy_name": "Ibu Wida (Ampenan)",
+        "dummy_phone": "085200260001"
+      },
+      {
+        "name": "Ibu Nana (Sandik)",
+        "phone": "087754025214",
+        "legacy_name": "Ibu Nana (Sandik)",
+        "dummy_phone": "085200260002"
+      },
+      {
+        "name": "Ibu Silvia (Ampenan)",
+        "phone": "082244448911",
+        "legacy_name": "Ibu Silvia (Ampenan)",
+        "dummy_phone": "085200260003"
+      }
     ],
     "participants": [
       {
@@ -144,9 +159,24 @@
       }
     ],
     "judges": [
-      "Ibu Ayu (Selong)",
-      "Mba Icha (Cakranegara)",
-      "Ibu Eli (Prumnas)"
+      {
+        "name": "Ibu Ayu (Selong)",
+        "phone": "085940430468",
+        "legacy_name": "Ibu Ayu (Selong)",
+        "dummy_phone": "085200260004"
+      },
+      {
+        "name": "Mba Icha (Cakranegara)",
+        "phone": "082134025411",
+        "legacy_name": "Mba Icha (Cakranegara)",
+        "dummy_phone": "085200260005"
+      },
+      {
+        "name": "Ibu Eli (Prumnas)",
+        "phone": "082133476797",
+        "legacy_name": "Ibu Eli (Prumnas)",
+        "dummy_phone": "085200260006"
+      }
     ],
     "participants": [
       {
@@ -304,9 +334,24 @@
       }
     ],
     "judges": [
-      "Bp. Agus (Mataram)",
-      "Bp. Hadi (Prumnas)",
-      "Ibu Hani (Sandik)"
+      {
+        "name": "Bp. Agus (Mataram)",
+        "phone": "081907033754",
+        "legacy_name": "Bp. Agus (Mataram)",
+        "dummy_phone": "085200260007"
+      },
+      {
+        "name": "Bp. Hadi (Prumnas)",
+        "phone": "082144193006",
+        "legacy_name": "Bp. Hadi (Prumnas)",
+        "dummy_phone": "085200260008"
+      },
+      {
+        "name": "Ibu Hani (Sandik)",
+        "phone": "085333342976",
+        "legacy_name": "Ibu Hani (Sandik)",
+        "dummy_phone": "085200260009"
+      }
     ],
     "participants": [
       {
@@ -422,9 +467,24 @@
       }
     ],
     "judges": [
-      "Ibu Diah (Cakranegara)",
-      "Ibu Anik (Sandik)",
-      "Ibu Widia (Mataram)"
+      {
+        "name": "Ibu Diah (Cakranegara)",
+        "phone": "087864586448",
+        "legacy_name": "Ibu Diah (Cakranegara)",
+        "dummy_phone": "085200260010"
+      },
+      {
+        "name": "Ibu Anik (Sandik)",
+        "phone": "082147786644",
+        "legacy_name": "Ibu Anik (Sandik)",
+        "dummy_phone": "085200260011"
+      },
+      {
+        "name": "Ibu Widia (Mataram)",
+        "phone": "082234822062",
+        "legacy_name": "Ibu Widia (Mataram)",
+        "dummy_phone": "085200260012"
+      }
     ],
     "participants": [
       {
@@ -540,9 +600,24 @@
       }
     ],
     "judges": [
-      "Ibu Citra (Praya)",
-      "Ibu Andini (Mataram)",
-      "Ibu Charin (Sandik)"
+      {
+        "name": "Ibu Citra (Praya)",
+        "phone": "081927608611",
+        "legacy_name": "Ibu Citra (Praya)",
+        "dummy_phone": "085200260013"
+      },
+      {
+        "name": "Ibu Andini (Mataram)",
+        "phone": "081229333273",
+        "legacy_name": "Ibu Andini (Mataram)",
+        "dummy_phone": "085200260014"
+      },
+      {
+        "name": "Ibu Charin (Sandik)",
+        "phone": "087871560738",
+        "legacy_name": "Ibu Charin (Sandik)",
+        "dummy_phone": "085200260015"
+      }
     ],
     "participants": [
       {
@@ -646,9 +721,24 @@
       }
     ],
     "judges": [
-      "Ibu Yeni (Selong)",
-      "Ibu Nurma (Cakranegara)",
-      "Ibu Ifa Hanifa (Mataram)"
+      {
+        "name": "Ibu Yeni (Selong)",
+        "phone": "081355739857",
+        "legacy_name": "Ibu Yeni (Selong)",
+        "dummy_phone": "085200260016"
+      },
+      {
+        "name": "Ibu Nurma (Cakranegara)",
+        "phone": "087860354563",
+        "legacy_name": "Ibu Nurma (Cakranegara)",
+        "dummy_phone": "085200260017"
+      },
+      {
+        "name": "Ibu Ifa Hanifa (Mataram)",
+        "phone": "087762473696",
+        "legacy_name": "Ibu Ifa Hanifa (Mataram)",
+        "dummy_phone": "085200260018"
+      }
     ],
     "participants": [
       {
@@ -723,9 +813,24 @@
       }
     ],
     "judges": [
-      "Bp. Alwan Wijaya (Ampenan)",
-      "Bp. Dayat (Mataram)",
-      "Bp. Muhammad Habib (Selong)"
+      {
+        "name": "Bp. Alwan Wijaya (Ampenan)",
+        "phone": "081907265313",
+        "legacy_name": "Bp. Alwan Wijaya (Ampenan)",
+        "dummy_phone": "085200260019"
+      },
+      {
+        "name": "Bp. Dayat (Mataram)",
+        "phone": "081293544764",
+        "legacy_name": "Bp. Dayat (Mataram)",
+        "dummy_phone": "085200260020"
+      },
+      {
+        "name": "Bp. Muhammad Habib (Selong)",
+        "phone": "081703366773",
+        "legacy_name": "Bp. Muhammad Habib (Selong)",
+        "dummy_phone": "085200260021"
+      }
     ],
     "participants": [
       {
@@ -815,9 +920,24 @@
       }
     ],
     "judges": [
-      "Bp. Saiful Khulud (Praya)",
-      "Bp. Taufiq (Ampenan)",
-      "Bp. Sholeh (Ampenan)"
+      {
+        "name": "Bp. Saiful Khulud (Praya)",
+        "phone": "08175784354",
+        "legacy_name": "Bp. Saiful Khulud (Praya)",
+        "dummy_phone": "085200260022"
+      },
+      {
+        "name": "Bp. Taufiq (Ampenan)",
+        "phone": "082340981459",
+        "legacy_name": "Bp. Taufiq (Ampenan)",
+        "dummy_phone": "085200260023"
+      },
+      {
+        "name": "Bp. Sholeh (Ampenan)",
+        "phone": "08123738643",
+        "legacy_name": "Bp. Sholeh (Ampenan)",
+        "dummy_phone": "085200260024"
+      }
     ],
     "participants": [
       {
@@ -895,9 +1015,24 @@
       }
     ],
     "judges": [
-      "Bp. Munirullah (Sandik)",
-      "Bp. Hamzah (Cakranegara)",
-      "Bp. Rifa’i"
+      {
+        "name": "Bp. Munirullah (Sandik)",
+        "phone": "081907661460",
+        "legacy_name": "Bp. Munirullah (Sandik)",
+        "dummy_phone": "085200260025"
+      },
+      {
+        "name": "Bp. Hamzah (Cakranegara)",
+        "phone": "085339426164",
+        "legacy_name": "Bp. Hamzah (Cakranegara)",
+        "dummy_phone": "085200260026"
+      },
+      {
+        "name": "Bp. Rifa’i (Mataram)",
+        "phone": "087865159300",
+        "legacy_name": "Bp. Rifa’i",
+        "dummy_phone": "085200260027"
+      }
     ],
     "participants": [
       {
@@ -975,9 +1110,24 @@
       }
     ],
     "judges": [
-      "Bp. H. Hendrayana (Sandik)",
-      "Bp. Mudofir",
-      "Bp. H. Mujari (Sandik)"
+      {
+        "name": "Bp. H. Hendrayana (Sandik)",
+        "phone": "087701651534",
+        "legacy_name": "Bp. H. Hendrayana (Sandik)",
+        "dummy_phone": "085200260028"
+      },
+      {
+        "name": "Bp. Mudofir",
+        "phone": "085238455768",
+        "legacy_name": "Bp. Mudofir",
+        "dummy_phone": "085200260029"
+      },
+      {
+        "name": "Bp. H. Mujari (Sandik)",
+        "phone": "087864595666",
+        "legacy_name": "Bp. H. Mujari (Sandik)",
+        "dummy_phone": "085200260030"
+      }
     ],
     "participants": [
       {
@@ -1031,9 +1181,24 @@
       }
     ],
     "judges": [
-      "Bp. Abdul Rahman (Praya)",
-      "Ibu Ikrimah (Mataram)",
-      "Ibu Arum (Ampenan)"
+      {
+        "name": "Bp. Abdul Rahman (Praya)",
+        "phone": "085337909337",
+        "legacy_name": "Bp. Abdul Rahman (Praya)",
+        "dummy_phone": "085200260031"
+      },
+      {
+        "name": "Ibu Ikrimah (Mataram)",
+        "phone": "085337131049",
+        "legacy_name": "Ibu Ikrimah (Mataram)",
+        "dummy_phone": "085200260032"
+      },
+      {
+        "name": "Ibu Arum (Ampenan)",
+        "phone": "081210494301",
+        "legacy_name": "Ibu Arum (Ampenan)",
+        "dummy_phone": "085200260033"
+      }
     ],
     "participants": [
       {
@@ -1125,9 +1290,24 @@
       }
     ],
     "judges": [
-      "Bp. Ahmad Muzani",
-      "Ibu Amanda (Ampenan)",
-      "Ibu Nita (Sandik)"
+      {
+        "name": "Bp. Ahmad Muzani",
+        "phone": "081803703541",
+        "legacy_name": "Bp. Ahmad Muzani",
+        "dummy_phone": "085200260034"
+      },
+      {
+        "name": "Ibu Amanda (Ampenan)",
+        "phone": "081213720454",
+        "legacy_name": "Ibu Amanda (Ampenan)",
+        "dummy_phone": "085200260035"
+      },
+      {
+        "name": "Ibu Nita (Sandik)",
+        "phone": "081917528649",
+        "legacy_name": "Ibu Nita (Sandik)",
+        "dummy_phone": "085200260036"
+      }
     ],
     "participants": [
       {
@@ -1202,9 +1382,24 @@
       }
     ],
     "judges": [
-      "Ibu Susi (Praya)",
-      "Ibu Dila (Sandik)",
-      "Ibu Maslihah (Prumnas)"
+      {
+        "name": "Ibu Susi (Praya)",
+        "phone": "085200260037",
+        "legacy_name": "Ibu Susi (Praya)",
+        "dummy_phone": "085200260037"
+      },
+      {
+        "name": "Ibu Dila (Sandik)",
+        "phone": "087865033706",
+        "legacy_name": "Ibu Dila (Sandik)",
+        "dummy_phone": "085200260038"
+      },
+      {
+        "name": "Ibu Maslihah (Prumnas)",
+        "phone": "085200260039",
+        "legacy_name": "Ibu Maslihah (Prumnas)",
+        "dummy_phone": "085200260039"
+      }
     ],
     "participants": [
       {
@@ -1656,9 +1851,24 @@
       }
     ],
     "judges": [
-      "Bp. Amiril (Prumnas)",
-      "Bp Aris Susanto (Ampenan)",
-      "Bp Sodiqin (Praya)"
+      {
+        "name": "Bp. Amiril (Prumnas)",
+        "phone": "085339443395",
+        "legacy_name": "Bp. Amiril (Prumnas)",
+        "dummy_phone": "085200260040"
+      },
+      {
+        "name": "Bp Aris Susanto (Ampenan)",
+        "phone": "089531933944",
+        "legacy_name": "Bp Aris Susanto (Ampenan)",
+        "dummy_phone": "085200260041"
+      },
+      {
+        "name": "Bp Sodiqin (Praya)",
+        "phone": "081913841818",
+        "legacy_name": "Bp Sodiqin (Praya)",
+        "dummy_phone": "085200260042"
+      }
     ],
     "participants": [
       {
@@ -1776,9 +1986,24 @@
       }
     ],
     "judges": [
-      "Bp. Waluyo (Praya)",
-      "Bp. Dr. Sahrun",
-      "Bp. Hartono (Praya)"
+      {
+        "name": "Bp. Waluyo (Praya)",
+        "phone": "083189882508",
+        "legacy_name": "Bp. Waluyo (Praya)",
+        "dummy_phone": "085200260043"
+      },
+      {
+        "name": "Bp. Dr. Sahrun (Mataram)",
+        "phone": "081907062354",
+        "legacy_name": "Bp. Dr. Sahrun",
+        "dummy_phone": "085200260044"
+      },
+      {
+        "name": "Bp. Hartono (Praya)",
+        "phone": "087742517175",
+        "legacy_name": "Bp. Hartono (Praya)",
+        "dummy_phone": "085200260045"
+      }
     ],
     "participants": [],
     "teams": [

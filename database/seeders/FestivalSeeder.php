@@ -225,12 +225,34 @@ class FestivalSeeder extends Seeder
         }
 
         // Create & Assign 3 Judges per Competition (Password default = Nomor HP masing-masing)
-        foreach ($cData['judges'] as $judgeName) {
-            $judge = User::where('role', 'judge')->where('name', $judgeName)->first();
+        foreach ($cData['judges'] as $judgeEntry) {
+            $judgeName = is_array($judgeEntry) ? $judgeEntry['name'] : $judgeEntry;
+            $preferredPhone = is_array($judgeEntry) ? ($judgeEntry['phone'] ?? null) : null;
+            $legacyName = is_array($judgeEntry) ? ($judgeEntry['legacy_name'] ?? $judgeName) : $judgeName;
+            $dummyPhone = is_array($judgeEntry) ? ($judgeEntry['dummy_phone'] ?? null) : null;
+
+            $judge = User::where('role', 'judge')
+                ->where(function ($q) use ($judgeName, $legacyName, $preferredPhone, $dummyPhone) {
+                    $q->where('name', $judgeName)
+                        ->orWhere('name', $legacyName);
+                    if ($preferredPhone) {
+                        $q->orWhere('phone', $preferredPhone);
+                    }
+                    if ($dummyPhone) {
+                        $q->orWhere('phone', $dummyPhone);
+                    }
+                })
+                ->first();
+
             if (!$judge) {
-                do {
-                    $phone = sprintf('08520026%04d', $judgeCounter++);
-                } while (User::where('phone', $phone)->exists());
+                $phone = $preferredPhone;
+                if (!$phone || User::where('phone', $phone)->exists()) {
+                    do {
+                        $phone = sprintf('08520026%04d', $judgeCounter++);
+                    } while (User::where('phone', $phone)->exists());
+                } else {
+                    $judgeCounter++;
+                }
 
                 $judge = User::create([
                     'name' => $judgeName,
@@ -239,6 +261,13 @@ class FestivalSeeder extends Seeder
                     'password' => Hash::make($phone),
                     'role' => 'judge',
                     'status' => 'active',
+                ]);
+            } elseif ($preferredPhone && $judge->phone !== $preferredPhone && !User::where('phone', $preferredPhone)->where('id', '!=', $judge->id)->exists()) {
+                $judge->update([
+                    'name' => $judgeName,
+                    'phone' => $preferredPhone,
+                    'email' => "juri{$preferredPhone}@faslombok2026.id",
+                    'password' => Hash::make($preferredPhone),
                 ]);
             }
 

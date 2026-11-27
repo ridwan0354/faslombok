@@ -34,7 +34,7 @@ class FestivalSystemTest extends TestCase
      */
     public function test_judge_with_adzan_permission_can_scan_and_resolve_adzan_entry(): void
     {
-        $judgeAdzan = User::where('phone', '085200260025')->first(); // Bp. Munirullah (Sandik)
+        $judgeAdzan = User::where('phone', '081907661460')->first(); // Bp. Munirullah (Sandik)
         $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
 
         // Peserta Adzan: Muhammad Al Fatih
@@ -62,7 +62,7 @@ class FestivalSystemTest extends TestCase
      */
     public function test_judge_adzan_scanning_participant_who_only_joined_kaligrafi_is_safely_rejected(): void
     {
-        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $judgeAdzan = User::where('phone', '081907661460')->first();
 
         // Alesha Azzahra Alfathunnisa only joined Kaligrafi
         $participant = Participant::where('name', 'Alesha Azzahra Alfathunnisa')->first();
@@ -86,7 +86,7 @@ class FestivalSystemTest extends TestCase
      */
     public function test_participant_in_multiple_competitions_only_exposes_authorized_competitions_to_judge(): void
     {
-        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $judgeAdzan = User::where('phone', '081907661460')->first();
         $daiComp = Competition::where('name', "Da'i Cilik (Kls 1–6)")->first();
 
         // Add Da'i Cilik entry to Muhammad Al Fatih
@@ -120,7 +120,7 @@ class FestivalSystemTest extends TestCase
      */
     public function test_view_only_judge_cannot_submit_score(): void
     {
-        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $judgeAdzan = User::where('phone', '081907661460')->first();
         $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
 
         $assignment = JudgeAssignment::where('user_id', $judgeAdzan->id)
@@ -162,9 +162,9 @@ class FestivalSystemTest extends TestCase
      */
     public function test_two_judges_score_same_entry_independently_and_aggregate(): void
     {
-        $judge1 = User::where('phone', '085200260025')->first();
-        $judge2 = User::where('phone', '085200260026')->first();
-        $judge3 = User::where('phone', '085200260027')->first();
+        $judge1 = User::where('phone', '081907661460')->first();
+        $judge2 = User::where('phone', '085339426164')->first();
+        $judge3 = User::where('phone', '087865159300')->first();
         $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
         $entry = Entry::where('competition_id', $adzanComp->id)->first();
 
@@ -220,7 +220,7 @@ class FestivalSystemTest extends TestCase
      */
     public function test_score_updates_locked_when_competition_is_locked(): void
     {
-        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $judgeAdzan = User::where('phone', '081907661460')->first();
         $adzanComp = Competition::where('name', 'Adzan (Kls 1–6)')->first();
         $entry = Entry::where('competition_id', $adzanComp->id)->first();
 
@@ -241,7 +241,7 @@ class FestivalSystemTest extends TestCase
     {
         $event = Event::first();
         $group = \App\Models\Group::first();
-        $judgeAdzan = User::where('phone', '085200260025')->first();
+        $judgeAdzan = User::where('phone', '081907661460')->first();
 
         $teamComp = Competition::create([
             'event_id' => $event->id,
@@ -823,13 +823,22 @@ class FestivalSystemTest extends TestCase
      */
     public function test_judge_can_login_with_phone_as_username_and_password(): void
     {
-        // 1. Seeded judge logs in with phone as both username & password
+        // 1. Seeded judge logs in with real WhatsApp phone as both username & password
         $res1 = $this->post(route('login.post'), [
-            'phone' => '085200260025',
-            'password' => '085200260025',
+            'phone' => '081907661460',
+            'password' => '081907661460',
         ]);
         $res1->assertRedirect(route('judge.dashboard'));
-        $this->assertAuthenticatedAs(User::where('phone', '085200260025')->first());
+        $this->assertAuthenticatedAs(User::where('phone', '081907661460')->first());
+
+        $this->post(route('logout'));
+
+        // Verify additional updated WhatsApp numbers log in cleanly
+        $this->post(route('login.post'), [
+            'phone' => '083189882508',
+            'password' => '083189882508',
+        ])->assertRedirect(route('judge.dashboard'));
+        $this->assertAuthenticatedAs(User::where('name', 'Bp. Waluyo (Praya)')->first());
 
         $this->post(route('logout'));
 
