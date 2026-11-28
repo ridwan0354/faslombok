@@ -1001,6 +1001,14 @@ class FestivalSystemTest extends TestCase
         ] as $url) {
             $this->actingAs($judge)->get($url)->assertStatus(200);
         }
+
+        // Verify scanner defaults to rear camera (environment) and exposes camera switch controls
+        $scannerResponse = $this->actingAs($judge)->get(route('judge.scanner'));
+        $scannerResponse->assertStatus(200);
+        $scannerResponse->assertSee("facingMode: 'environment'", false);
+        $scannerResponse->assertSee('Ganti ke Kamera Depan');
+        $scannerResponse->assertSee('Ganti ke Kamera Belakang');
+        $scannerResponse->assertSee('toggleCamera()');
     }
 
     /**
