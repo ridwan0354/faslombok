@@ -48,54 +48,105 @@
     border: 1px dashed #64748b;
     border-radius: 2mm;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
     position: relative;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
 
-.badge-header {
-    height: 8.5mm;
-    background: linear-gradient(90deg, #3b0764 0%, #581c87 60%, #831843 100%);
-    color: #ffffff;
-    padding: 0 3mm;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
+.badge-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: 0;
+    pointer-events: none;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
 
-.badge-body {
-    flex: 1;
-    min-height: 0;
-    padding: 2.2mm 3mm;
+.badge-field {
+    position: absolute;
+    z-index: 2;
     display: flex;
     align-items: center;
-    gap: 2.8mm;
+    color: #3b0764;
+    font-weight: 800;
+    line-height: 1.08;
+    text-align: left;
+    overflow: hidden;
 }
 
-.badge-qr-col {
-    width: 25.5mm;
-    flex-shrink: 0;
+/* Pill 1: Nama : (white band y=36.7%..48.1%, colon ends x=33.7%, pill ends x=87.4%) */
+.badge-field-name {
+    top: 36.7%;
+    height: 11.4%;
+    left: 35.4%;
+    width: 50.4%;
+    font-size: 7.8pt;
+}
+
+.badge-field-name > span {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+/* Pill 2: Kelas : (left of QR box) */
+.badge-field-grade {
+    top: 49.9%;
+    height: 11.2%;
+    left: 35.4%;
+    width: 29.2%;
+    font-size: 7.6pt;
+    white-space: nowrap;
+}
+
+/* Pill 3: TPQ : (left of QR box) */
+.badge-field-tpq {
+    top: 63.0%;
+    height: 11.3%;
+    left: 35.4%;
+    width: 29.2%;
+    font-size: 7.8pt;
+    color: #6b21a8;
+    white-space: nowrap;
+}
+
+.badge-field-grade > span,
+.badge-field-tpq > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+/* QR Code floating card aligned neatly on right side beside Kelas & TPQ without covering kids or Lombok */
+.badge-qr-wrap {
+    position: absolute;
+    z-index: 3;
+    top: 49.8%;
+    left: 65.5%;
+    width: calc(var(--card-h) * 0.285);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
 
 .badge-qr-box {
-    width: 24.5mm;
-    height: 24.5mm;
-    padding: 1mm;
-    border: 0.3mm solid #cbd5e1;
-    border-radius: 1.5mm;
+    width: calc(var(--card-h) * 0.285);
+    height: calc(var(--card-h) * 0.285);
+    padding: 0.7mm;
     background: #ffffff;
+    border: 0.35mm solid #6b21a8;
+    border-radius: 1.5mm;
+    box-shadow: 0 1px 3px rgba(59, 7, 100, 0.18);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .badge-qr-box svg {
@@ -104,74 +155,18 @@
     display: block;
 }
 
-.badge-code {
-    margin-top: 1.3mm;
-    padding: 0.4mm 1.8mm;
+.badge-code-pill {
+    margin-top: 0.7mm;
+    padding: 0.25mm 1.3mm;
     border-radius: 999px;
-    background: #f3e8ff;
-    border: 0.25mm solid #d8b4fe;
+    background: rgba(255, 255, 255, 0.96);
+    border: 0.25mm solid #a855f7;
     color: #3b0764;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 6.2pt;
+    font-size: 5.2pt;
     font-weight: 800;
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-}
-
-.badge-info-col {
-    flex: 1;
-    min-width: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    text-align: left;
-}
-
-.badge-name {
-    font-size: 9.5pt;
-    font-weight: 800;
-    color: #0f172a;
     line-height: 1.15;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: break-word;
-}
-
-.badge-group {
-    margin-top: 1.4mm;
-    display: inline-block;
-    padding: 0.45mm 2mm;
-    border-radius: 999px;
-    background: #fdf2f8;
-    border: 0.25mm solid #f9a8d4;
-    color: #9d174d;
-    font-size: 7.2pt;
-    font-weight: 800;
-    line-height: 1.2;
-}
-
-.badge-grade {
-    margin-top: 1mm;
-    font-size: 6.8pt;
-    color: #475569;
-    font-weight: 600;
-    line-height: 1.2;
-}
-
-.badge-comps {
-    border-top: 0.25mm solid #e2e8f0;
-    padding-top: 1.3mm;
-    font-size: 6.3pt;
-    line-height: 1.25;
-    color: #475569;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    white-space: nowrap;
 }
 
 @page {
@@ -234,7 +229,7 @@
             <div>
                 <div class="flex flex-wrap items-center gap-2">
                     <h1 class="text-base sm:text-lg font-extrabold text-purple-950">
-                        Cetak Name Tag & Badge QR Peserta ({{ count($badges) }} Kartu)
+                        Cetak Name Tag &amp; Badge QR Peserta ({{ count($badges) }} Kartu)
                     </h1>
                     <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-900 border border-purple-200">
                         {{ $sheetCount }} Lembar A4 • {{ $activeSize['w'] / 10 }} × {{ str_replace('.', ',', (string) ($activeSize['h'] / 10)) }} cm
@@ -329,37 +324,29 @@
                 <div class="badge-grid">
                     @foreach($pageBadges as $b)
                     <div class="badge-card">
-                        <!-- Top Header Ribbon -->
-                        <div class="badge-header">
-                            <div style="display:flex;align-items:center;gap:1.6mm;">
-                                <img src="/images/logo.png" alt="PPG Lombok" style="width:5.2mm;height:5.2mm;object-fit:contain;">
-                                <span style="font-size:6.8pt;font-weight:900;letter-spacing:0.03em;color:#fcd34d;text-transform:uppercase;">FAS &amp; Bazar Remaja 2026</span>
-                            </div>
-                            <span style="font-size:5.8pt;font-weight:700;color:#f5d0fe;text-transform:uppercase;letter-spacing:0.04em;">Lombok</span>
+                        <img src="/images/nametag-peserta-bg.jpg" alt="" class="badge-bg-img">
+
+                        <!-- Field 1: Nama -->
+                        <div class="badge-field badge-field-name">
+                            <span>{{ $b['name'] }}</span>
                         </div>
 
-                        <!-- Horizontal Body: QR (Left) + Identity (Right) -->
-                        <div class="badge-body">
-                            <div class="badge-qr-col">
-                                <div class="badge-qr-box">
-                                    {!! $b['qr_svg'] !!}
-                                </div>
-                                <span class="badge-code">{{ $b['code'] }}</span>
-                            </div>
+                        <!-- Field 2: Kelas -->
+                        <div class="badge-field badge-field-grade">
+                            <span>{{ $b['grade'] }}</span>
+                        </div>
 
-                            <div class="badge-info-col">
-                                <div>
-                                    <div class="badge-name">{{ $b['name'] }}</div>
-                                    <div>
-                                        <span class="badge-group">{{ $b['group'] }}</span>
-                                    </div>
-                                    <div class="badge-grade">Tingkat: {{ $b['grade'] }}</div>
-                                </div>
+                        <!-- Field 3: TPQ / Kelompok -->
+                        <div class="badge-field badge-field-tpq">
+                            <span>{{ $b['group'] }}</span>
+                        </div>
 
-                                <div class="badge-comps">
-                                    <span style="font-weight:700;color:#1e293b;">Lomba:</span> {{ $b['comps'] ?: 'Semua' }}
-                                </div>
+                        <!-- Field 4: QR Code + Kode -->
+                        <div class="badge-qr-wrap">
+                            <div class="badge-qr-box">
+                                {!! $b['qr_svg'] !!}
                             </div>
+                            <span class="badge-code-pill">{{ $b['code'] }}</span>
                         </div>
                     </div>
                     @endforeach
