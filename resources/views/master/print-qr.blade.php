@@ -94,22 +94,22 @@
     word-break: break-word;
 }
 
-/* Pill 2: Kelas : (left of QR box) */
+/* Pill 2: Kelas : (full width inside white band) */
 .badge-field-grade {
     top: 49.9%;
     height: 11.2%;
     left: 35.4%;
-    width: 29.2%;
+    width: 50.4%;
     font-size: 8.2pt;
     white-space: nowrap;
 }
 
-/* Pill 3: TPQ : (left of QR box) */
+/* Pill 3: TPQ : (full width inside white band) */
 .badge-field-tpq {
     top: 63.0%;
     height: 11.3%;
     left: 35.4%;
-    width: 29.2%;
+    width: 50.4%;
     font-size: 8.4pt;
     color: #6b21a8;
     white-space: nowrap;
@@ -123,26 +123,26 @@
     width: 100%;
 }
 
-/* QR Code floating card aligned neatly on right side beside Kelas & TPQ without covering kids or Lombok */
+/* QR Code placed cleanly at top-right corner clear of PESERTA/FAS 2026, all 3 pills, and characters */
 .badge-qr-wrap {
     position: absolute;
     z-index: 3;
-    top: 49.8%;
-    left: 65.5%;
-    width: calc(var(--card-h) * 0.285);
+    top: 3.5%;
+    right: 2.8%;
+    width: calc(var(--card-h) * 0.255);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .badge-qr-box {
-    width: calc(var(--card-h) * 0.285);
-    height: calc(var(--card-h) * 0.285);
-    padding: 0.7mm;
+    width: calc(var(--card-h) * 0.255);
+    height: calc(var(--card-h) * 0.255);
+    padding: 0.65mm;
     background: #ffffff;
     border: 0.35mm solid #6b21a8;
     border-radius: 1.5mm;
-    box-shadow: 0 1px 3px rgba(59, 7, 100, 0.18);
+    box-shadow: 0 1px 3px rgba(59, 7, 100, 0.22);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,14 +156,14 @@
 }
 
 .badge-code-pill {
-    margin-top: 0.7mm;
-    padding: 0.25mm 1.3mm;
+    margin-top: 0.6mm;
+    padding: 0.2mm 1.2mm;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.96);
     border: 0.25mm solid #a855f7;
     color: #3b0764;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 5.2pt;
+    font-size: 5pt;
     font-weight: 800;
     line-height: 1.15;
     white-space: nowrap;
