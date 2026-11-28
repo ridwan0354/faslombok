@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Piagam Penghargaan FAS Lombok 2026</title>
     <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/fonts/cert-fonts.css">
     
     <style>
         * {
@@ -130,7 +131,8 @@
             position: absolute;
             z-index: 10;
             white-space: nowrap;
-            line-height: 1.2;
+            line-height: 1.15;
+            transform-origin: center center;
         }
     </style>
 </head>
@@ -163,85 +165,44 @@
             <!-- Background Image -->
             <img src="{{ $template['background_image'] }}" alt="Template Piagam" class="cert-bg-img">
 
-            <!-- Field: Nomor Sertifikat -->
-            @if(!empty($template['fields']['number']['enabled']))
-            <div class="cert-field" style="
-                left: {{ $template['fields']['number']['x'] }}%;
-                top: {{ $template['fields']['number']['y'] }}%;
-                transform: translate(-50%, -50%);
-                font-size: {{ $template['fields']['number']['font_size'] }}px;
-                font-family: {{ $template['fields']['number']['font_family'] }};
-                font-weight: {{ $template['fields']['number']['font_weight'] }};
-                color: {{ $template['fields']['number']['color'] }};
-                text-align: {{ $template['fields']['number']['align'] }};
-            ">
-                {{ $template['fields']['number']['prefix'] ?? '' }}{{ $item['certificate_number'] }}
-            </div>
-            @endif
+            @php
+                $fieldValues = [
+                    'number' => $item['certificate_number'],
+                    'name' => $item['name'],
+                    'award' => $item['award'],
+                    'competition' => $item['competition'],
+                    'group' => $item['group'],
+                ];
+            @endphp
 
-            <!-- Field: Nama Penerima -->
-            @if(!empty($template['fields']['name']['enabled']))
-            <div class="cert-field" style="
-                left: {{ $template['fields']['name']['x'] }}%;
-                top: {{ $template['fields']['name']['y'] }}%;
-                transform: translate(-50%, -50%);
-                font-size: {{ $template['fields']['name']['font_size'] }}px;
-                font-family: {{ $template['fields']['name']['font_family'] }};
-                font-weight: {{ $template['fields']['name']['font_weight'] }};
-                color: {{ $template['fields']['name']['color'] }};
-                text-align: {{ $template['fields']['name']['align'] }};
-            ">
-                {{ $template['fields']['name']['prefix'] ?? '' }}{{ $item['name'] }}
-            </div>
-            @endif
-
-            <!-- Field: Predikat / Juara -->
-            @if(!empty($template['fields']['award']['enabled']))
-            <div class="cert-field" style="
-                left: {{ $template['fields']['award']['x'] }}%;
-                top: {{ $template['fields']['award']['y'] }}%;
-                transform: translate(-50%, -50%);
-                font-size: {{ $template['fields']['award']['font_size'] }}px;
-                font-family: {{ $template['fields']['award']['font_family'] }};
-                font-weight: {{ $template['fields']['award']['font_weight'] }};
-                color: {{ $template['fields']['award']['color'] }};
-                text-align: {{ $template['fields']['award']['align'] }};
-            ">
-                {{ $template['fields']['award']['prefix'] ?? '' }}{{ $item['award'] }}
-            </div>
-            @endif
-
-            <!-- Field: Cabang Lomba -->
-            @if(!empty($template['fields']['competition']['enabled']))
-            <div class="cert-field" style="
-                left: {{ $template['fields']['competition']['x'] }}%;
-                top: {{ $template['fields']['competition']['y'] }}%;
-                transform: translate(-50%, -50%);
-                font-size: {{ $template['fields']['competition']['font_size'] }}px;
-                font-family: {{ $template['fields']['competition']['font_family'] }};
-                font-weight: {{ $template['fields']['competition']['font_weight'] }};
-                color: {{ $template['fields']['competition']['color'] }};
-                text-align: {{ $template['fields']['competition']['align'] }};
-            ">
-                {{ $template['fields']['competition']['prefix'] ?? '' }}{{ $item['competition'] }}
-            </div>
-            @endif
-
-            <!-- Field: Kelompok / TPQ -->
-            @if(!empty($template['fields']['group']['enabled']))
-            <div class="cert-field" style="
-                left: {{ $template['fields']['group']['x'] }}%;
-                top: {{ $template['fields']['group']['y'] }}%;
-                transform: translate(-50%, -50%);
-                font-size: {{ $template['fields']['group']['font_size'] }}px;
-                font-family: {{ $template['fields']['group']['font_family'] }};
-                font-weight: {{ $template['fields']['group']['font_weight'] }};
-                color: {{ $template['fields']['group']['color'] }};
-                text-align: {{ $template['fields']['group']['align'] }};
-            ">
-                {{ $template['fields']['group']['prefix'] ?? '' }}{{ $item['group'] }}
-            </div>
-            @endif
+            @foreach($fieldValues as $fieldKey => $fieldValue)
+                @php
+                    $cfg = $template['fields'][$fieldKey] ?? null;
+                @endphp
+                @if(!empty($cfg['enabled']))
+                    @php
+                        $strokeWidth = (float) ($cfg['stroke_width'] ?? 0);
+                        $strokeColor = trim((string) ($cfg['stroke_color'] ?? ''));
+                        $strokeCss = ($strokeWidth > 0 && $strokeColor !== '')
+                            ? "-webkit-text-stroke: {$strokeWidth}px {$strokeColor}; paint-order: stroke fill;"
+                            : '';
+                    @endphp
+                    <div class="cert-field {{ in_array($fieldKey, ['name', 'competition']) ? 'cert-autofit' : '' }}" style="
+                        left: {{ $cfg['x'] }}%;
+                        top: {{ $cfg['y'] }}%;
+                        transform: translate(-50%, -50%);
+                        font-size: {{ $cfg['font_size'] }}px;
+                        font-family: {{ $cfg['font_family'] }};
+                        font-weight: {{ $cfg['font_weight'] }};
+                        font-style: {{ $cfg['font_style'] ?? 'normal' }};
+                        color: {{ $cfg['color'] }};
+                        text-align: {{ $cfg['align'] }};
+                        {!! $strokeCss !!}
+                    ">
+                        {{ $cfg['prefix'] ?? '' }}{{ $fieldValue }}
+                    </div>
+                @endif
+            @endforeach
 
         </div>
         @empty
@@ -252,5 +213,26 @@
         @endforelse
     </div>
 
+    <script>
+        (function () {
+            function fitFields() {
+                document.querySelectorAll('.certificate-page').forEach(function (page) {
+                    const maxW = page.clientWidth * 0.62;
+                    page.querySelectorAll('.cert-autofit').forEach(function (el) {
+                        el.style.transform = 'translate(-50%, -50%)';
+                        const w = el.scrollWidth;
+                        if (w > maxW && w > 0) {
+                            const scale = Math.max(0.55, maxW / w);
+                            el.style.transform = 'translate(-50%, -50%) scale(' + scale.toFixed(4) + ')';
+                        }
+                    });
+                });
+            }
+            window.addEventListener('load', fitFields);
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(fitFields);
+            }
+        })();
+    </script>
 </body>
 </html>

@@ -1135,12 +1135,28 @@ class MasterController extends Controller
 
         $data = $validator->validate();
 
+        $defaults = EventSetting::defaultCertificateTemplate();
+        $normalizedFields = [];
+        foreach ($data['fields'] as $key => $field) {
+            $base = $defaults['fields'][$key] ?? [];
+            $normalizedFields[$key] = array_merge($base, $field, [
+                'x' => (float) ($field['x'] ?? ($base['x'] ?? 50)),
+                'y' => (float) ($field['y'] ?? ($base['y'] ?? 50)),
+                'font_size' => (int) ($field['font_size'] ?? ($base['font_size'] ?? 24)),
+                'font_style' => (string) ($field['font_style'] ?? ($base['font_style'] ?? 'normal')),
+                'stroke_color' => (string) ($field['stroke_color'] ?? ($base['stroke_color'] ?? '')),
+                'stroke_width' => (float) ($field['stroke_width'] ?? ($base['stroke_width'] ?? 0)),
+                'prefix' => (string) ($field['prefix'] ?? ''),
+                'enabled' => filter_var($field['enabled'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            ]);
+        }
+
         $currentConfig = $setting->config_json ?? [];
         $currentConfig['certificate_template'] = [
-            'background_image' => $data['background_image'] ?? ($currentConfig['certificate_template']['background_image'] ?? '/images/sample-sertifikat-a4.jpg'),
+            'background_image' => $data['background_image'] ?? ($currentConfig['certificate_template']['background_image'] ?? $defaults['background_image']),
             'paper_size' => $data['paper_size'] ?? 'a4',
             'orientation' => $data['orientation'] ?? 'landscape',
-            'fields' => $data['fields'],
+            'fields' => $normalizedFields,
         ];
 
         $setting->config_json = $currentConfig;

@@ -2,6 +2,10 @@
 
 @section('title', 'Cetak Sertifikat & Piagam Penghargaan - FAS Lombok 2026')
 
+@push('styles')
+<link rel="stylesheet" href="/fonts/cert-fonts.css">
+@endpush
+
 @section('content')
 <script>
 function certEditor() {
@@ -9,6 +13,13 @@ function certEditor() {
         template: {!! json_encode($template) !!},
         recipients: {!! json_encode($recipients) !!},
         activeField: 'name',
+        canvasFields: [
+            { key: 'number', hint: 'Geser No Sertifikat' },
+            { key: 'name', hint: 'Geser Nama Peserta' },
+            { key: 'award', hint: 'Geser Predikat/Juara' },
+            { key: 'competition', hint: 'Geser Cabang Lomba' },
+            { key: 'group', hint: 'Geser Kelompok / TPQ' },
+        ],
         sampleData: {
             name: @json($recipients[0]['name'] ?? 'Muhammad Al Fatih'),
             award: @json($recipients[0]['award'] ?? 'JUARA 1'),
@@ -20,6 +31,23 @@ function certEditor() {
         dragField: null,
         showUploadModal: false,
         uploadedFileName: '',
+        fieldStyle(key) {
+            const f = this.template.fields[key] || {};
+            const size = Number(f.font_size || 24);
+            const strokeW = Number(f.stroke_width || 0);
+            const strokeColor = (f.stroke_color || '').trim();
+            let style = `font-size: calc(${size} * 0.089085cqw); font-family: ${f.font_family}; font-weight: ${f.font_weight}; font-style: ${f.font_style || 'normal'}; color: ${f.color}; text-align: ${f.align}; line-height: 1.15;`;
+            if (strokeW > 0 && strokeColor) {
+                style += ` -webkit-text-stroke: calc(${strokeW} * 0.089085cqw) ${strokeColor}; paint-order: stroke fill;`;
+            }
+            return style;
+        },
+        adjustFontSize(delta) {
+            const f = this.template.fields[this.activeField];
+            if (!f) return;
+            const next = Math.max(10, Math.min(84, Number(f.font_size || 24) + delta));
+            f.font_size = next;
+        },
         startDrag(field, event) {
             event.preventDefault();
             this.isDragging = true;
@@ -126,7 +154,7 @@ function certEditor() {
 
                 <!-- A4 Aspect Ratio Container (297 / 210 = 1.414) -->
                 <div class="w-full relative rounded-2xl overflow-hidden border-2 border-slate-300 shadow-md bg-slate-100 select-none cursor-crosshair"
-                     style="aspect-ratio: 297 / 210; width: 100%; min-height: 400px;"
+                     style="aspect-ratio: 297 / 210; width: 100%; container-type: inline-size;"
                      x-ref="certCanvas">
 
                     <!-- Background Image (Rendered with fallback src) -->
@@ -135,93 +163,22 @@ function certEditor() {
                          alt="Template Piagam FAS 2026" 
                          class="w-full h-full object-cover pointer-events-none absolute inset-0">
 
-                    <!-- Field 1: Nomor Sertifikat -->
-                    <template x-if="template.fields.number && template.fields.number.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
-                             :class="activeField === 'number' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.number.x}%; top: ${template.fields.number.y}%; z-index: ${activeField === 'number' ? 40 : 20};`"
-                             @mousedown="startDrag('number', $event)"
-                             @touchstart="startDrag('number', $event)"
-                             @click="activeField = 'number'">
-                            <div :style="`font-size: clamp(8px, 1.1vw, ${template.fields.number.font_size}px); font-family: ${template.fields.number.font_family}; font-weight: ${template.fields.number.font_weight}; color: ${template.fields.number.color}; text-align: ${template.fields.number.align};`"
-                                 class="whitespace-nowrap px-1.5 py-0.5 font-mono">
-                                <span x-text="template.fields.number.prefix"></span><span x-text="sampleData.number"></span>
+                    <template x-for="meta in canvasFields" :key="meta.key">
+                        <div x-show="template.fields[meta.key] && template.fields[meta.key].enabled">
+                            <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
+                                 :class="activeField === meta.key ? 'ring-2 ring-purple-600 bg-purple-500/15 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
+                                 :style="{ left: (template.fields[meta.key]?.x ?? 50) + '%', top: (template.fields[meta.key]?.y ?? 50) + '%', zIndex: activeField === meta.key ? 40 : 20 }"
+                                 @mousedown="startDrag(meta.key, $event)"
+                                 @touchstart="startDrag(meta.key, $event)"
+                                 @click="activeField = meta.key">
+                                <div :style="fieldStyle(meta.key)"
+                                     class="whitespace-nowrap px-2 py-0.5">
+                                    <span x-text="template.fields[meta.key]?.prefix || ''"></span><span x-text="sampleData[meta.key]"></span>
+                                </div>
+                                <span x-text="meta.hint"
+                                      class="absolute -top-5 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                </span>
                             </div>
-                            <span class="absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Geser No Sertifikat
-                            </span>
-                        </div>
-                    </template>
-
-                    <!-- Field 2: Nama Penerima -->
-                    <template x-if="template.fields.name && template.fields.name.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1.5 rounded-lg transition-all"
-                             :class="activeField === 'name' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-lg' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.name.x}%; top: ${template.fields.name.y}%; z-index: ${activeField === 'name' ? 40 : 20};`"
-                             @mousedown="startDrag('name', $event)"
-                             @touchstart="startDrag('name', $event)"
-                             @click="activeField = 'name'">
-                            <div :style="`font-size: clamp(14px, 2.3vw, ${template.fields.name.font_size}px); font-family: ${template.fields.name.font_family}; font-weight: ${template.fields.name.font_weight}; color: ${template.fields.name.color}; text-align: ${template.fields.name.align};`"
-                                 class="whitespace-nowrap px-3 py-0.5 drop-shadow-xs">
-                                <span x-text="template.fields.name.prefix"></span><span x-text="sampleData.name"></span>
-                            </div>
-                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Geser Nama Peserta
-                            </span>
-                        </div>
-                    </template>
-
-                    <!-- Field 3: Predikat / Juara -->
-                    <template x-if="template.fields.award && template.fields.award.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
-                             :class="activeField === 'award' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.award.x}%; top: ${template.fields.award.y}%; z-index: ${activeField === 'award' ? 40 : 20};`"
-                             @mousedown="startDrag('award', $event)"
-                             @touchstart="startDrag('award', $event)"
-                             @click="activeField = 'award'">
-                            <div :style="`font-size: clamp(11px, 1.8vw, ${template.fields.award.font_size}px); font-family: ${template.fields.award.font_family}; font-weight: ${template.fields.award.font_weight}; color: ${template.fields.award.color}; text-align: ${template.fields.award.align};`"
-                                 class="whitespace-nowrap px-2 py-0.5 tracking-wider font-extrabold">
-                                <span x-text="template.fields.award.prefix"></span><span x-text="sampleData.award"></span>
-                            </div>
-                            <span class="absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Geser Predikat/Juara
-                            </span>
-                        </div>
-                    </template>
-
-                    <!-- Field 4: Cabang Lomba -->
-                    <template x-if="template.fields.competition && template.fields.competition.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
-                             :class="activeField === 'competition' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.competition.x}%; top: ${template.fields.competition.y}%; z-index: ${activeField === 'competition' ? 40 : 20};`"
-                             @mousedown="startDrag('competition', $event)"
-                             @touchstart="startDrag('competition', $event)"
-                             @click="activeField = 'competition'">
-                            <div :style="`font-size: clamp(10px, 1.4vw, ${template.fields.competition.font_size}px); font-family: ${template.fields.competition.font_family}; font-weight: ${template.fields.competition.font_weight}; color: ${template.fields.competition.color}; text-align: ${template.fields.competition.align};`"
-                                 class="whitespace-nowrap px-2 py-0.5">
-                                <span x-text="template.fields.competition.prefix"></span><span x-text="sampleData.competition"></span>
-                            </div>
-                            <span class="absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Geser Cabang Lomba
-                            </span>
-                        </div>
-                    </template>
-
-                    <!-- Field 5: Kelompok / TPQ -->
-                    <template x-if="template.fields.group && template.fields.group.enabled">
-                        <div class="absolute group transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 rounded-lg transition-all"
-                             :class="activeField === 'group' ? 'ring-2 ring-purple-600 bg-purple-500/20 shadow-md' : 'hover:ring-1 hover:ring-purple-400'"
-                             :style="`left: ${template.fields.group.x}%; top: ${template.fields.group.y}%; z-index: ${activeField === 'group' ? 40 : 20};`"
-                             @mousedown="startDrag('group', $event)"
-                             @touchstart="startDrag('group', $event)"
-                             @click="activeField = 'group'">
-                            <div :style="`font-size: clamp(9px, 1.2vw, ${template.fields.group.font_size}px); font-family: ${template.fields.group.font_family}; font-weight: ${template.fields.group.font_weight}; color: ${template.fields.group.color}; text-align: ${template.fields.group.align};`"
-                                 class="whitespace-nowrap px-2 py-0.5">
-                                <span x-text="template.fields.group.prefix"></span><span x-text="sampleData.group"></span>
-                            </div>
-                            <span class="absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-purple-900 text-[10px] text-white rounded font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Geser Kelompok / TPQ
-                            </span>
                         </div>
                     </template>
 
@@ -287,7 +244,7 @@ function certEditor() {
                             <span class="text-xs font-black text-purple-950 uppercase tracking-wider" x-text="template.fields[activeField].label"></span>
                             <label class="inline-flex items-center cursor-pointer">
                                 <input type="checkbox" x-model="template.fields[activeField].enabled" class="sr-only peer">
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
+                                <div class="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
                                 <span class="ml-2 text-xs font-bold text-slate-700">Tampilkan</span>
                             </label>
                         </div>
@@ -322,11 +279,15 @@ function certEditor() {
                         <!-- Font Size & Color -->
                         <div class="grid grid-cols-2 gap-3">
                             <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200">
-                                <div class="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
+                                <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
                                     <span>Ukuran Font</span>
-                                    <span class="font-mono text-purple-700" x-text="template.fields[activeField].font_size + 'px'"></span>
+                                    <div class="flex items-center space-x-1">
+                                        <button type="button" @click="adjustFontSize(-1)" class="w-5 h-5 rounded bg-white border border-slate-300 text-slate-700 hover:bg-purple-50 font-black leading-none cursor-pointer">-</button>
+                                        <span class="font-mono text-purple-700 min-w-[34px] text-center" x-text="template.fields[activeField].font_size + 'px'"></span>
+                                        <button type="button" @click="adjustFontSize(1)" class="w-5 h-5 rounded bg-white border border-slate-300 text-slate-700 hover:bg-purple-50 font-black leading-none cursor-pointer">+</button>
+                                    </div>
                                 </div>
-                                <input type="range" min="10" max="64" step="1" x-model.number="template.fields[activeField].font_size" 
+                                <input type="range" min="10" max="84" step="1" x-model.number="template.fields[activeField].font_size" 
                                        class="w-full accent-purple-700 cursor-pointer">
                             </div>
                             <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200">
@@ -346,6 +307,11 @@ function certEditor() {
                                 <label class="block text-[11px] font-bold text-slate-600 mb-1">Jenis Huruf</label>
                                 <select x-model="template.fields[activeField].font_family" 
                                         class="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-medium">
+                                    <option value="'Baloo 2', 'Arial Rounded MT Bold', sans-serif">Baloo 2 (Resmi FAS)</option>
+                                    <option value="'Berkshire Swash', 'Playfair Display', Georgia, serif">Berkshire Swash (Romman Juara)</option>
+                                    <option value="'Playfair Display', Georgia, serif">Playfair Display (Serif Elegan)</option>
+                                    <option value="'Lobster Two', cursive">Lobster Two (Kaligrafi)</option>
+                                    <option value="'Shrikhand', serif">Shrikhand (Display Tebal)</option>
                                     <option value="'Times New Roman', serif">Times New Roman (Serif)</option>
                                     <option value="'Georgia', serif">Georgia (Klasik)</option>
                                     <option value="'Arial', sans-serif">Arial (Modern)</option>
@@ -356,9 +322,35 @@ function certEditor() {
                                 <label class="block text-[11px] font-bold text-slate-600 mb-1">Ketebalan</label>
                                 <select x-model="template.fields[activeField].font_weight" 
                                         class="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-medium">
+                                    <option value="800">Ekstra Tebal (800)</option>
+                                    <option value="900">Super Tebal (900)</option>
                                     <option value="bold">Tebal (Bold)</option>
                                     <option value="normal">Normal</option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <!-- Font Style & Outline -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Gaya Huruf</label>
+                                <select x-model="template.fields[activeField].font_style"
+                                        class="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-1 focus:ring-purple-600 font-medium">
+                                    <option value="normal">Normal (Tegak)</option>
+                                    <option value="italic">Miring (Italic)</option>
+                                </select>
+                            </div>
+                            <div class="p-2 bg-slate-50 rounded-xl border border-slate-200">
+                                <div class="flex justify-between text-[11px] font-bold text-slate-600 mb-1">
+                                    <span>Outline Teks</span>
+                                    <span class="font-mono text-purple-700" x-text="(template.fields[activeField].stroke_width || 0) + 'px'"></span>
+                                </div>
+                                <div class="flex items-center space-x-1.5">
+                                    <input type="color" x-model="template.fields[activeField].stroke_color"
+                                           class="w-6 h-6 rounded cursor-pointer border border-slate-300 p-0.5 shrink-0">
+                                    <input type="range" min="0" max="8" step="0.5" x-model.number="template.fields[activeField].stroke_width"
+                                           class="w-full accent-purple-700 cursor-pointer">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -379,7 +371,10 @@ function certEditor() {
                             <input type="hidden" :name="`template[fields][${key}][font_size]`" :value="f.font_size">
                             <input type="hidden" :name="`template[fields][${key}][font_family]`" :value="f.font_family">
                             <input type="hidden" :name="`template[fields][${key}][font_weight]`" :value="f.font_weight">
+                            <input type="hidden" :name="`template[fields][${key}][font_style]`" :value="f.font_style || 'normal'">
                             <input type="hidden" :name="`template[fields][${key}][color]`" :value="f.color">
+                            <input type="hidden" :name="`template[fields][${key}][stroke_color]`" :value="f.stroke_color || ''">
+                            <input type="hidden" :name="`template[fields][${key}][stroke_width]`" :value="f.stroke_width || 0">
                             <input type="hidden" :name="`template[fields][${key}][align]`" :value="f.align">
                             <input type="hidden" :name="`template[fields][${key}][prefix]`" :value="f.prefix || ''">
                             <input type="hidden" :name="`template[fields][${key}][enabled]`" :value="f.enabled ? 1 : 0">

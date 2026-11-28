@@ -647,7 +647,7 @@ class FestivalSystemTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Visual Kanvas Piagam');
-        $response->assertSee('sample-sertifikat-a4.jpg');
+        $response->assertSee('sertifikat-resmi-a4.jpg');
     }
 
     /**
@@ -658,16 +658,18 @@ class FestivalSystemTest extends TestCase
         $master = User::where('role', 'master')->first();
         $defaults = \App\Models\EventSetting::defaultCertificateTemplate();
 
-        // Modify X/Y coordinate for name
+        // Modify X/Y coordinate, size, and outline style for name/award
         $fields = $defaults['fields'];
         $fields['name']['x'] = 52.5;
         $fields['name']['y'] = 40.0;
-        $fields['name']['font_size'] = 42;
+        $fields['name']['font_size'] = 44;
+        $fields['award']['stroke_color'] = '#5b197d';
+        $fields['award']['stroke_width'] = 5;
 
         $response = $this->actingAs($master)
             ->post(route('master.certificates.template.save'), [
                 'template' => [
-                    'background_image' => '/images/sample-sertifikat-a4.jpg',
+                    'background_image' => '/images/sertifikat-resmi-a4.jpg',
                     'paper_size' => 'a4',
                     'orientation' => 'landscape',
                     'fields' => $fields,
@@ -681,7 +683,10 @@ class FestivalSystemTest extends TestCase
         $tpl = $setting->getCertificateTemplate();
         $this->assertEquals(52.5, $tpl['fields']['name']['x']);
         $this->assertEquals(40.0, $tpl['fields']['name']['y']);
-        $this->assertEquals(42, $tpl['fields']['name']['font_size']);
+        $this->assertEquals(44, $tpl['fields']['name']['font_size']);
+        $this->assertEquals('#5b197d', $tpl['fields']['award']['stroke_color']);
+        $this->assertEquals(5, $tpl['fields']['award']['stroke_width']);
+        $this->assertFalse($tpl['fields']['number']['enabled']);
     }
 
     /**
