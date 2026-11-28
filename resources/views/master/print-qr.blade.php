@@ -23,9 +23,9 @@
 
 .sheet-page {
     width: 210mm;
-    min-height: 270mm;
+    min-height: 290mm;
     margin: 0 auto 1.25rem auto;
-    padding: 8mm 6mm;
+    padding: 6mm 5mm;
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 12px;
@@ -37,7 +37,7 @@
     grid-template-columns: repeat(2, var(--card-w));
     grid-auto-rows: var(--card-h);
     justify-content: center;
-    gap: 5mm 4mm;
+    gap: 4mm 4mm;
 }
 
 .badge-card {
@@ -83,7 +83,7 @@
     height: 11.4%;
     left: 35.4%;
     width: 50.4%;
-    font-size: 7.8pt;
+    font-size: 8.4pt;
 }
 
 .badge-field-name > span {
@@ -100,7 +100,7 @@
     height: 11.2%;
     left: 35.4%;
     width: 29.2%;
-    font-size: 7.6pt;
+    font-size: 8.2pt;
     white-space: nowrap;
 }
 
@@ -110,7 +110,7 @@
     height: 11.3%;
     left: 35.4%;
     width: 29.2%;
-    font-size: 7.8pt;
+    font-size: 8.4pt;
     color: #6b21a8;
     white-space: nowrap;
 }
@@ -171,7 +171,7 @@
 
 @page {
     size: A4 portrait;
-    margin: 6mm;
+    margin: 5mm;
 }
 
 @media print {
@@ -232,7 +232,7 @@
                         Cetak Name Tag &amp; Badge QR Peserta ({{ count($badges) }} Kartu)
                     </h1>
                     <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-900 border border-purple-200">
-                        {{ $sheetCount }} Lembar A4 • {{ $activeSize['w'] / 10 }} × {{ str_replace('.', ',', (string) ($activeSize['h'] / 10)) }} cm
+                        {{ $sheetCount }} Lembar A4 • {{ str_replace('.', ',', (string) ($activeSize['w'] / 10)) }} × {{ str_replace('.', ',', (string) ($activeSize['h'] / 10)) }} cm
                     </span>
                 </div>
                 <p class="text-xs text-slate-500 mt-0.5">

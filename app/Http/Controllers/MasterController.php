@@ -698,13 +698,14 @@ class MasterController extends Controller
         $selectedParticipantId = $request->filled('participant_id') ? (int) $request->input('participant_id') : null;
 
         $sizePresets = [
+            '95x65' => ['label' => '9,5 × 6,5 cm (Plastik A2 / BIG-802 • 8/A4)', 'w' => 95, 'h' => 65],
             '90x55' => ['label' => '9 × 5,5 cm (Name Tag Peniti • 8/A4)', 'w' => 90, 'h' => 55],
             '95x60' => ['label' => '9,5 × 6 cm (Name Tag Sedang • 8/A4)', 'w' => 95, 'h' => 60],
             '85x54' => ['label' => '8,5 × 5,4 cm (ID Card / KTP • 8/A4)', 'w' => 85, 'h' => 54],
         ];
         $selectedSize = array_key_exists((string) $request->input('size'), $sizePresets)
             ? (string) $request->input('size')
-            : '90x55';
+            : '95x65';
 
         $query = Participant::with(['group', 'gradeLevel', 'entries.competition'])
             ->where('event_id', $event->id)

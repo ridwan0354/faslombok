@@ -347,8 +347,8 @@ class FestivalSystemTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Cetak Kartu & Badge QR Peserta');
         $response->assertSee('nametag-peserta-bg.jpg');
-        $response->assertSee('--card-w: 90mm;', false);
-        $response->assertSee('--card-h: 55mm;', false);
+        $response->assertSee('--card-w: 95mm;', false);
+        $response->assertSee('--card-h: 65mm;', false);
         $response->assertSee('<svg', false);
     }
 
